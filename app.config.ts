@@ -3,13 +3,13 @@ import type { ConfigContext, ExpoConfig } from '@expo/config';
 import type { AppIconBadgeConfig } from 'app-icon-badge/types';
 import { version } from './package.json';
 
-const EAS_PROJECT_ID = 'eff7876c-f5b5-43fc-89db-bee61e1dc263';
-const PROJECT_SLUG = 'pre-xervices';
-const OWNER = 'pena56';
-const BUNDLE_IDENTIFIER = 'com.prexervices.general.com'; // ios bundle id
-const PACKAGE_NAME = 'com.prexervices.general.com'; // android package name
-const APP_NAME = 'PreXervices'; // app name
-const SCHEME = 'prexervices'; // app scheme
+const EAS_PROJECT_ID = '8d392d19-984f-472a-8eea-23beb3881c25';
+const PROJECT_SLUG = 'xervices';
+const OWNER = 'xervices';
+const BUNDLE_IDENTIFIER = 'com.xervices.client'; // ios bundle id
+const PACKAGE_NAME = 'com.xervices.client'; // android package name
+const APP_NAME = 'Xervices'; // app name
+const SCHEME = 'xervices'; // app scheme
 
 const appIconBadgeConfig: AppIconBadgeConfig = {
   enabled: process.env.APP_ENV !== 'production',

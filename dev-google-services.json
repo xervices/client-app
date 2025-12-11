@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "730609918552",
-    "project_id": "pre-xervices-dev",
-    "storage_bucket": "pre-xervices-dev.firebasestorage.app"
+    "project_number": "256395368678",
+    "project_id": "xervices-dev",
+    "storage_bucket": "xervices-dev.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:730609918552:android:98a35891e0bf5398c5e02d",
+        "mobilesdk_app_id": "1:256395368678:android:74ee9809ce4492615e4327",
         "android_client_info": {
-          "package_name": "com.prexervices.general.com.dev"
+          "package_name": "com.xervices.client.dev"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDVSE4ou0EPTq2yi5txUINkZzuDNOxGI3E"
+          "current_key": "AIzaSyDoap4m4y0m5m6FXDnml2wPqq0pJJ_mHLA"
         }
       ],
       "services": {
