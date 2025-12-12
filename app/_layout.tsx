@@ -9,6 +9,7 @@ import { Toaster } from 'sonner-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SheetProvider } from 'react-native-actions-sheet';
 import { Sheets } from '@/components/sheets';
+import { View } from 'react-native';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -22,39 +23,41 @@ export default function RootLayout() {
   return (
     // <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
     <GestureHandlerRootView>
-      <SheetProvider>
-        <Sheets />
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-        <Stack>
-          <Stack.Protected guard={isLoggedIn}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="chat" options={{ headerShown: false }} />
-          </Stack.Protected>
+      <View className="flex-1 bg-white">
+        <SheetProvider>
+          <Sheets />
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+          <Stack>
+            <Stack.Protected guard={isLoggedIn}>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="chat" options={{ headerShown: false }} />
+            </Stack.Protected>
 
-          <Stack.Protected guard={!isLoggedIn && hasCompletedOnboarding}>
-            <Stack.Screen name="login" options={{ headerShown: false }} />
-            <Stack.Screen name="register" options={{ headerShown: false }} />
-            <Stack.Screen name="verify-email" options={{ headerShown: false }} />
-            <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
-            <Stack.Screen name="forgot-password-otp" options={{ headerShown: false }} />
-            <Stack.Screen name="new-password" options={{ headerShown: false }} />
-          </Stack.Protected>
+            <Stack.Protected guard={!isLoggedIn && hasCompletedOnboarding}>
+              <Stack.Screen name="login" options={{ headerShown: false }} />
+              <Stack.Screen name="register" options={{ headerShown: false }} />
+              <Stack.Screen name="verify-email" options={{ headerShown: false }} />
+              <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
+              <Stack.Screen name="forgot-password-otp" options={{ headerShown: false }} />
+              <Stack.Screen name="new-password" options={{ headerShown: false }} />
+            </Stack.Protected>
 
-          <Stack.Protected guard={!hasCompletedOnboarding}>
-            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-          </Stack.Protected>
-        </Stack>
-        <Toaster
-          theme="light"
-          richColors
-          styles={{
-            title: {
-              fontFamily: 'CabinetGrotesk-Bold',
-            },
-          }}
-        />
-        <PortalHost />
-      </SheetProvider>
+            <Stack.Protected guard={!hasCompletedOnboarding}>
+              <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+            </Stack.Protected>
+          </Stack>
+          <Toaster
+            theme="light"
+            richColors
+            styles={{
+              title: {
+                fontFamily: 'CabinetGrotesk-Bold',
+              },
+            }}
+          />
+          <PortalHost />
+        </SheetProvider>
+      </View>
     </GestureHandlerRootView>
     // </ThemeProvider>
   );

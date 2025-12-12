@@ -47,7 +47,7 @@ export default function Screen() {
   });
 
   return (
-    <Layout>
+    <Layout useBackground>
       <View className="flex-1 gap-6">
         <View className="flex gap-2">
           <AuthHeader title="Login" />
@@ -130,7 +130,7 @@ export default function Screen() {
           <View className="h-0.5 flex-1 bg-[#FFDCC1]" />
         </View>
 
-        <Button className="border-[#B4B4BC] bg-background">
+        <Button className="border-[#B4B4BC] bg-[#F4F4F5]">
           <Image
             source={require('@/assets/icons/google.svg')}
             style={{ width: 18, height: 18 }}

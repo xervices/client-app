@@ -41,7 +41,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
           secureTextEntry={isSecureInput ? !isPasswordVisible : secureTextEntry}
           className={cn(
             // Base styles
-            'flex h-[56px] w-full min-w-0 flex-row items-center rounded-[4px] border bg-background px-4 py-1 font-cabinet text-base font-thin text-[#1B1B1E]',
+            'flex h-[56px] w-full min-w-0 flex-row items-center rounded-[4px] border bg-white px-4 py-1 font-cabinet text-base font-thin text-[#1B1B1E]',
             // Error state border color
             hasError ? 'border-error' : 'border-[#DFDFE1]',
             // Add right padding only if we have the eye icon to prevent text overlap

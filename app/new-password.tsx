@@ -44,7 +44,7 @@ export default function Screen() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      toast.success('Login was successful');
+      toast.success('Password reset successful');
       SheetManager.show('success-sheet', {
         payload: {
           title: 'Password changed successfully',

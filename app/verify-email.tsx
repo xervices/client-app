@@ -21,7 +21,7 @@ export default function Screen() {
   };
 
   return (
-    <Layout>
+    <Layout useBackground>
       <View className="flex-1 gap-6">
         <View className="flex gap-2">
           <AuthHeader title="Verify Email Address" />

@@ -32,16 +32,17 @@ export function Layout({
 
   const containerStyles: ViewStyle = {
     flex: 1,
-    backgroundColor: useBackground ? '#FFFFFF' : undefined,
+    backgroundColor: '#FFFFFF',
   };
 
   const stickyHeaderStyles: ViewStyle = {
     paddingTop: safePaddingTop,
     ...(horizontalPadding && { paddingHorizontal }),
-    backgroundColor: useBackground ? '#FFFFFF' : undefined,
+    backgroundColor: '#FFFFFF',
   };
 
   const contentContainerStyles: ViewStyle = {
+    backgroundColor: '#FFFFFF',
     flexGrow: 1,
     paddingTop: stickyHeader ? 0 : safePaddingTop,
     paddingBottom: safePaddingBottom,

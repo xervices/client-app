@@ -37,7 +37,7 @@ export default function Screen() {
   });
 
   return (
-    <Layout horizontalPadding={false}>
+    <Layout horizontalPadding={false} useBackground>
       <View className="flex-1 gap-6">
         <View className="flex gap-2 px-6">
           <AuthHeader title="Forgot password" />

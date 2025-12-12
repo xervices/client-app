@@ -9,8 +9,6 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
   withSpring,
-  interpolate,
-  Extrapolate,
 } from 'react-native-reanimated';
 
 const data = [
@@ -37,10 +35,42 @@ const data = [
   },
 ];
 
+const AUTO_ADVANCE_INTERVAL = 4000; // 4 seconds
+
 export default function Screen() {
   const { completeOnboarding } = useAuthStore();
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const progress = useSharedValue(0);
+  const autoAdvanceTimerRef = React.useRef<NodeJS.Timeout | number>(null);
+
+  // Function to clear the timer
+  const clearAutoAdvanceTimer = () => {
+    if (autoAdvanceTimerRef.current) {
+      clearTimeout(autoAdvanceTimerRef.current);
+      autoAdvanceTimerRef.current = null;
+    }
+  };
+
+  // Function to start/restart the timer
+  const startAutoAdvanceTimer = () => {
+    clearAutoAdvanceTimer();
+
+    autoAdvanceTimerRef.current = setTimeout(() => {
+      handleAutoAdvance();
+    }, AUTO_ADVANCE_INTERVAL);
+  };
+
+  // Auto-advance handler - cycles through slides
+  const handleAutoAdvance = () => {
+    if (currentIndex < data.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      progress.value = withSpring(currentIndex + 1);
+    } else {
+      // When reaching the last slide, go back to first
+      setCurrentIndex(0);
+      progress.value = withSpring(0);
+    }
+  };
 
   const handleNext = () => {
     if (currentIndex < data.length - 1) {
@@ -54,6 +84,17 @@ export default function Screen() {
       setCurrentIndex(currentIndex - 1);
       progress.value = withSpring(currentIndex - 1);
     }
+  };
+
+  // Manual navigation - resets auto-advance timer
+  const handleManualNext = () => {
+    handleNext();
+    startAutoAdvanceTimer();
+  };
+
+  const handleManualPrev = () => {
+    handlePrev();
+    startAutoAdvanceTimer();
   };
 
   const imageAnimatedStyle = useAnimatedStyle(() => {
@@ -87,8 +128,15 @@ export default function Screen() {
     };
   });
 
+  // Start auto-advance timer when component mounts or index changes
   React.useEffect(() => {
     progress.value = withSpring(currentIndex);
+    startAutoAdvanceTimer();
+
+    // Cleanup timer on unmount
+    return () => {
+      clearAutoAdvanceTimer();
+    };
   }, [currentIndex]);
 
   const isFirstSlide = currentIndex === 0;
@@ -125,7 +173,7 @@ export default function Screen() {
                 <Text className="text-[#737381]">{data[currentIndex].subtitle}</Text>
               </View>
 
-              <View className="flex flex-row items-center justify-between">
+              <View className="flex flex-row items-center justify-between gap-4">
                 {/* Animated Indicators */}
                 <View className="flex flex-row gap-1">
                   {data.map((_, index) => {
@@ -146,10 +194,12 @@ export default function Screen() {
                   })}
                 </View>
 
+                <View className="h-0.5 flex-1 bg-[#DFDFE1]" />
+
                 <View className="flex flex-row items-center gap-4">
                   {/* Left Arrow Navigator */}
                   <Pressable
-                    onPress={handlePrev}
+                    onPress={handleManualPrev}
                     disabled={isFirstSlide}
                     className={`flex h-8 w-8 items-center justify-center rounded-[8px] border ${
                       isFirstSlide
@@ -165,7 +215,7 @@ export default function Screen() {
 
                   {/* Right Arrow Navigator */}
                   <Pressable
-                    onPress={handleNext}
+                    onPress={handleManualNext}
                     disabled={isLastSlide}
                     className={`flex h-8 w-8 items-center justify-center rounded-[8px] border ${
                       isLastSlide
@@ -181,7 +231,7 @@ export default function Screen() {
                 </View>
               </View>
 
-              <Button size={'sm'} className="mt-2" onPress={completeOnboarding}>
+              <Button className="mt-2 h-12" onPress={completeOnboarding}>
                 Get Started
               </Button>
             </Animated.View>
