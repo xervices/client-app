@@ -1,7 +1,7 @@
 {
   "name": "expo-sample",
   "main": "expo-router/entry",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "scripts": {
     "dev": "expo start",
     "build": "eas build --platform all",
