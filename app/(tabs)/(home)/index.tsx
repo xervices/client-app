@@ -8,6 +8,7 @@ import { Promotions } from '@/components/home/promotions';
 import { Services } from '@/components/home/services';
 import { UserOfWeek } from '@/components/home/user-of-week';
 import { ActiveJobs } from '@/components/home/active-jobs';
+import EnableLocationDialog from '@/components/enable-location-dialog';
 
 export default function Screen() {
   return (
@@ -20,6 +21,8 @@ export default function Screen() {
         </View>
       }>
       <View className="flex-1 gap-4">
+        <EnableLocationDialog />
+
         <SearchInput />
 
         <Promotions />

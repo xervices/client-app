@@ -99,7 +99,22 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       'expo-router',
       ['app-icon-badge', appIconBadgeConfig],
       'expo-sqlite',
+      'expo-video',
+      [
+        'expo-location',
+        {
+          locationWhenInUsePermission: `Allow ${name} to use your location for route tracking functionality.`,
+        },
+      ],
       'expo-notifications',
+      [
+        'expo-camera',
+        {
+          cameraPermission: `Allow ${name} to access your camera`,
+          microphonePermission: `Allow ${name} to access your microphone`,
+          recordAudioAndroid: true,
+        },
+      ],
     ],
     extra: {
       eas: {

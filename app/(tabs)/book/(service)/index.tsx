@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { ArrowUpRight, Search } from 'lucide-react-native';
 import * as React from 'react';
 import { Pressable, View } from 'react-native';
@@ -20,7 +20,8 @@ const data = [
 ];
 
 export default function Screen() {
-  const [searchValue, setSearchValue] = React.useState('');
+  const { search } = useLocalSearchParams();
+  const [searchValue, setSearchValue] = React.useState(typeof search === 'string' ? search : '');
 
   return (
     <View className="flex flex-1 gap-4 bg-white">

@@ -194,7 +194,7 @@ export default function Screen() {
                   })}
                 </View>
 
-                <View className="h-0.5 flex-1 bg-[#DFDFE1]" />
+                <View className="h-[1px] flex-1 bg-[#DFDFE1]" />
 
                 <View className="flex flex-row items-center gap-4">
                   {/* Left Arrow Navigator */}

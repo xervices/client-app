@@ -22,10 +22,10 @@ export function DeleteAccountSheet() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      SheetManager.hide('delete-account-sheet');
+      let deleteSheet = await SheetManager.hide('delete-account-sheet');
 
-      setTimeout(() => {
-        SheetManager.show('success-sheet', {
+      if (deleteSheet)
+        return await SheetManager.show('success-sheet', {
           payload: {
             subtitle:
               'Your card has been deleted successfully. You will be redirected to the login page shortly',
@@ -33,7 +33,6 @@ export function DeleteAccountSheet() {
             useCheckImage: true,
           },
         });
-      }, 1000);
     },
   });
 

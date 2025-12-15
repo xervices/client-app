@@ -6,6 +6,7 @@ import { ImagePreviewSheet } from './image-preview-sheet';
 import { DeleteImageSheet } from './delete-image-sheet';
 import { CounterOfferSheet } from './counter-offer-sheet';
 import { AddPromoCodeSheet } from './add-promo-code-sheet';
+import { CameraSheet } from './camera-sheet';
 
 declare module 'react-native-actions-sheet' {
   interface Sheets {
@@ -17,6 +18,11 @@ declare module 'react-native-actions-sheet' {
     'add-promo-code-sheet': SheetDefinition<{
       payload: {
         onAdd?: (code: string) => void;
+      };
+    }>;
+    'camera-sheet': SheetDefinition<{
+      payload: {
+        onSelect?: (url: string) => void;
       };
     }>;
     'delete-account-sheet': SheetDefinition;
@@ -45,6 +51,7 @@ export const Sheets = () => {
         'delete-image-sheet': DeleteImageSheet,
         'counter-offer-sheet': CounterOfferSheet,
         'add-promo-code-sheet': AddPromoCodeSheet,
+        'camera-sheet': CameraSheet,
       }}
     />
   );

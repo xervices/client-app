@@ -4,6 +4,7 @@ import { Search, X } from 'lucide-react-native';
 import { Button } from '../ui/button';
 import { Text } from '../ui/text';
 import { useState } from 'react';
+import { router } from 'expo-router';
 
 export function SearchInput() {
   const [showBanner, setShowBanner] = useState(false);
@@ -12,6 +13,12 @@ export function SearchInput() {
   const handleOnSearch = () => {
     console.log('You searched for: ', searchValue);
     setShowBanner(false);
+    router.navigate({
+      pathname: '/book',
+      params: {
+        search: searchValue,
+      },
+    });
   };
 
   return (

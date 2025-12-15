@@ -1,4 +1,4 @@
-Install Expo File manager
-Install Expo Camera
+
 Install Maps
-Install Contacts
+Install Expo Location 
+Install Expo Video

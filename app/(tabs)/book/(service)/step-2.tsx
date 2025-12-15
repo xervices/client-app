@@ -1,3 +1,4 @@
+import CameraPermissionDialog from '@/components/camera-permission-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
@@ -90,7 +91,9 @@ export default function Screen() {
             </View>
           </View>
 
-          <Pressable className="flex aspect-square w-16 items-center justify-center rounded-[8px] border border-[#E0E0E0]">
+          <Pressable
+            onPress={() => SheetManager.show('camera-sheet')}
+            className="flex aspect-square w-16 items-center justify-center rounded-[8px] border border-[#E0E0E0]">
             <Camera size={24} color={'#737381'} />
           </Pressable>
         </View>
@@ -99,6 +102,8 @@ export default function Screen() {
       <Button onPress={() => router.navigate('/book/step-3')} className="mt-auto">
         Continue
       </Button>
+
+      <CameraPermissionDialog />
     </View>
   );
 }
