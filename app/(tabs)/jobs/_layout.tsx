@@ -24,6 +24,7 @@ export default function Layout() {
         options={{
           headerShown: false,
           title: 'Ongoing Job',
+          gestureEnabled: false,
         }}
       />
 

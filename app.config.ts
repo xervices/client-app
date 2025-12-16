@@ -28,9 +28,10 @@ const appIconBadgeConfig: AppIconBadgeConfig = {
 };
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-  const { name, bundleIdentifier, packageName, scheme, googleServicesFile } = getDynamicAppConfig(
-    (process.env.APP_ENV as 'development' | 'preview' | 'production') || 'development'
-  );
+  const { name, bundleIdentifier, packageName, scheme, googleServicesFile, googleMapsApiKey } =
+    getDynamicAppConfig(
+      (process.env.APP_ENV as 'development' | 'preview' | 'production') || 'development'
+    );
 
   return {
     ...config,
@@ -74,6 +75,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       },
       package: packageName,
       googleServicesFile,
+      config: {
+        googleMaps: {
+          apiKey: googleMapsApiKey,
+        },
+      },
     },
     web: {
       bundler: 'metro',
@@ -115,6 +121,18 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           recordAudioAndroid: true,
         },
       ],
+      [
+        'expo-contacts',
+        {
+          contactsPermission: `Allow ${name} to access your contacts.`,
+        },
+      ],
+      [
+        'expo-audio',
+        {
+          microphonePermission: `Allow ${name} to access your microphone.`,
+        },
+      ],
     ],
     extra: {
       eas: {
@@ -132,6 +150,7 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
       packageName: PACKAGE_NAME,
       scheme: SCHEME,
       googleServicesFile: './prod-google-services.json',
+      googleMapsApiKey: 'process.env.GOOGLE_MAPS_API_KEY',
     };
   }
 
@@ -142,6 +161,7 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
       packageName: `${PACKAGE_NAME}.preview`,
       scheme: `${SCHEME}-prev`,
       googleServicesFile: './preview-google-services.json',
+      googleMapsApiKey: 'process.env.GOOGLE_MAPS_API_KEY',
     };
   }
 
@@ -151,5 +171,6 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
     packageName: `${PACKAGE_NAME}.dev`,
     scheme: `${SCHEME}-dev`,
     googleServicesFile: './dev-google-services.json',
+    googleMapsApiKey: 'AIzaSyDA7HnZnWADQ3h1AYCUgCLAccJGPJo67gU',
   };
 };

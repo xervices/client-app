@@ -38,11 +38,22 @@ export function DeleteImageSheet(props: SheetProps<'delete-image-sheet'>) {
         </Text>
 
         <View className="flex flex-row gap-4">
-          <Button className="flex-1 border-[#1B1B1E] bg-white">
+          <Button
+            onPress={() => {
+              SheetManager.hide('delete-image-sheet');
+            }}
+            className="flex-1 border-[#1B1B1E] bg-white">
             <Text className="font-cabinet-bold text-[#1B1B1E]">Cancel</Text>
           </Button>
 
-          <Button className="flex-1">Yes delete</Button>
+          <Button
+            onPress={() => {
+              props.payload?.onDelete?.();
+              SheetManager.hide('delete-image-sheet');
+            }}
+            className="flex-1">
+            Yes delete
+          </Button>
         </View>
       </View>
     </ActionSheet>

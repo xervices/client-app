@@ -21,7 +21,7 @@ web-build/
 
 
 dev-service-account.json
-dev-google-services.json
+# dev-google-services.json
 prod-service-account.json
 prod-google-services.json
 preview-service-account.json

@@ -22,11 +22,15 @@ declare module 'react-native-actions-sheet' {
     }>;
     'camera-sheet': SheetDefinition<{
       payload: {
-        onSelect?: (url: string) => void;
+        onSelect?: (url: string, isVideo?: boolean) => void;
       };
     }>;
     'delete-account-sheet': SheetDefinition;
-    'delete-image-sheet': SheetDefinition;
+    'delete-image-sheet': SheetDefinition<{
+      payload: {
+        onDelete?: () => void;
+      };
+    }>;
     'ongoing-job-sheet': SheetDefinition;
     'counter-offer-sheet': SheetDefinition;
     'success-sheet': SheetDefinition<{

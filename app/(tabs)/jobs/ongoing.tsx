@@ -1,18 +1,30 @@
 import { Text } from '@/components/ui/text';
 import * as React from 'react';
-import { Pressable, View } from 'react-native';
+import { BackHandler, Platform, Pressable, View } from 'react-native';
 import { Layout } from '@/components/layout';
-import { useLocalSearchParams } from 'expo-router';
+import { useNavigation, usePathname } from 'expo-router';
 import { SheetManager } from 'react-native-actions-sheet';
 import { Image } from 'expo-image';
 
 export default function Screen() {
-  const { id } = useLocalSearchParams();
+  const pathname = usePathname();
+  const navigation = useNavigation();
 
   React.useEffect(() => {
-    SheetManager.hideAll();
-    SheetManager.show('ongoing-job-sheet');
-  }, []);
+    if (pathname === '/jobs/ongoing') {
+      SheetManager.show('ongoing-job-sheet');
+    } else {
+      SheetManager.hide('ongoing-job-sheet');
+    }
+  }, [pathname]);
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      SheetManager.hide('ongoing-job-sheet');
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <Layout useBackground scrollable={false} horizontalPadding={false} bottomPadding={0}>

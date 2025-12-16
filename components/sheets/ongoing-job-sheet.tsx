@@ -9,7 +9,7 @@ import { Button } from '../ui/button';
 import { Image } from 'expo-image';
 
 export function OngoingJobSheet() {
-  const snapPoints = [80, 40];
+  const snapPoints = [100];
 
   return (
     <ActionSheet
@@ -105,7 +105,7 @@ export function OngoingJobSheet() {
             </Button>
           </View>
 
-          <View className="flex gap-4 pb-11">
+          {/* <View className="flex gap-4 pb-11">
             <Text className="font-cabinet-bold leading-none text-[#737381]">Progress update</Text>
 
             <View
@@ -275,7 +275,7 @@ export function OngoingJobSheet() {
                 <Text className="font-cabinet-bold text-[#1B1B1E]">Reject</Text>
               </Button>
             </View>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     </ActionSheet>

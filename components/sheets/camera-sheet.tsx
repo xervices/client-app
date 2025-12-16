@@ -2,19 +2,27 @@ import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import ActionSheet, { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { Text } from '../ui/text';
 import { Image } from 'expo-image';
-import { CameraMode, CameraType, CameraView, useCameraPermissions } from 'expo-camera';
+import { useVideoPlayer, VideoView } from 'expo-video';
+import { CameraMode, CameraType, CameraView } from 'expo-camera';
 import { useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { Camera, Video } from 'lucide-react-native';
+import { RecordingIndicator } from '../recording-indicator';
 
 const screenHeight = Dimensions.get('window').height;
 
 export function CameraSheet(props: SheetProps<'camera-sheet'>) {
   const ref = useRef<CameraView>(null);
-  const [uri, setUri] = useState<string | null>(null);
+  const [uri, setUri] = useState<string | undefined>(undefined);
+  const [videoUri, setVideoUri] = useState<string | undefined>(undefined);
   const [mode, setMode] = useState<CameraMode>('picture');
   const [facing, setFacing] = useState<CameraType>('back');
   const [recording, setRecording] = useState(false);
+
+  const player = useVideoPlayer(videoUri || '', (player) => {
+    player.loop = true;
+    player.play();
+  });
 
   const takePicture = async () => {
     const photo = await ref.current?.takePictureAsync();
@@ -29,14 +37,14 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
     }
     setRecording(true);
     const video = await ref.current?.recordAsync();
-    console.log({ video });
+    if (video?.uri) setVideoUri(video.uri);
   };
 
   const toggleMode = () => {
     setMode((prev) => (prev === 'picture' ? 'video' : 'picture'));
   };
 
-  const renderPicture = (uri: string) => {
+  const renderPicture = (uri?: string, videoUri?: string) => {
     return (
       <View className="flex-1 rounded-[8px] bg-white">
         <View className="p-4">
@@ -47,16 +55,47 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
         </View>
 
         <View className="flex-1">
-          <Image source={uri} style={{ width: '100%', height: '100%' }} contentFit="cover" />
+          {uri ? (
+            <Image source={uri} style={{ width: '100%', height: '100%' }} contentFit="cover" />
+          ) : videoUri ? (
+            <View className="flex flex-1 gap-4">
+              <VideoView
+                contentFit="cover"
+                style={{ width: '100%', height: '100%' }}
+                player={player}
+              />
+            </View>
+          ) : null}
         </View>
 
         <View className="flex flex-row gap-4 p-4">
-          <Button onPress={() => setUri('')} className="flex-1 border-2 border-[#1B1B1E] bg-white">
+          <Button
+            onPress={() => {
+              setVideoUri('');
+              setUri('');
+            }}
+            className="flex-1 border-2 border-[#1B1B1E] bg-white">
             <Text className="font-cabinet-bold text-[#1B1B1E]">Retake</Text>
           </Button>
 
-          <Button className="border-1 flex-1 border-[#1B1B1E] bg-[#1B1B1E]">
-            <Text className="font-cabinet-bold text-white">Use Photo</Text>
+          <Button
+            onPress={() => {
+              if (uri) {
+                props.payload?.onSelect?.(uri);
+              }
+
+              if (videoUri) {
+                props.payload?.onSelect?.(videoUri, true);
+              }
+
+              setUri('');
+              setVideoUri('');
+              SheetManager.hide('camera-sheet');
+            }}
+            className="border-1 flex-1 border-[#1B1B1E] bg-[#1B1B1E]">
+            <Text className="font-cabinet-bold text-white">
+              Use {uri ? 'Photo' : videoUri ? 'Video' : null}
+            </Text>
           </Button>
         </View>
       </View>
@@ -71,9 +110,15 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
           ref={ref}
           mode={mode}
           facing={facing}
-          mute={false}
+          mute={true}
           responsiveOrientationWhenOrientationLocked
         />
+
+        {recording && (
+          <View className="absolute right-6 top-6">
+            <RecordingIndicator isRecording={recording} />
+          </View>
+        )}
       </View>
     );
   };
@@ -90,6 +135,7 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
           <Pressable
             onPress={() => {
               setUri('');
+              setVideoUri('');
               SheetManager.hide('camera-sheet');
             }}
             className="flex h-10 items-center justify-center rounded-[8px] bg-[#1B1B1E] px-4">
@@ -97,7 +143,7 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
           </Pressable>
         </View>
 
-        {uri ? renderPicture(uri) : renderCamera()}
+        {uri || videoUri ? renderPicture(uri, videoUri) : renderCamera()}
 
         <View className="mt-auto flex flex-row items-center justify-between">
           <Pressable className="flex h-10 w-10 items-center justify-center rounded-full bg-[#27272B]">
@@ -110,6 +156,7 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
 
           <View className="flex items-center justify-center">
             <Pressable
+              disabled={!!uri}
               onPress={() => (mode === 'picture' ? takePicture() : recordVideo())}
               className="flex h-[100px] w-[100px] items-center justify-center rounded-full bg-[#FF7C1F]">
               <View className="flex h-[90px] w-[90px] items-center justify-center rounded-full bg-[#FFB884]">
@@ -121,7 +168,7 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
             </Pressable>
 
             <Text className="text-sm text-white">
-              {mode === 'picture' ? 'Capture Photo' : 'Record Video'}
+              {mode === 'picture' ? 'Capture Photo' : recording ? 'Stop Recording' : 'Record Video'}
             </Text>
           </View>
 

@@ -1,4 +1,4 @@
 
 Install Maps
-Install Expo Location 
-Install Expo Video
+Install Expo audio
+Install Expo Image Picker
