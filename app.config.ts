@@ -131,6 +131,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         'expo-audio',
         {
           microphonePermission: `Allow ${name} to access your microphone.`,
+          recordAudioAndroid: true,
+        },
+      ],
+      [
+        'expo-image-picker',
+        {
+          photosPermission: 'The app accesses your photos to let you share them with your friends.',
         },
       ],
     ],

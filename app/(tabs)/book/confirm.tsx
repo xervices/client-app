@@ -20,11 +20,32 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { Button } from '@/components/ui/button';
 import { SheetManager } from 'react-native-actions-sheet';
-import { LegendList } from '@legendapp/list';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+
+const routeCoordinates = [
+  { latitude: 37.78825, longitude: -122.4324 }, // Start point
+  { latitude: 37.78625, longitude: -122.4304 },
+  { latitude: 37.78425, longitude: -122.4284 },
+  { latitude: 37.78225, longitude: -122.4264 },
+  { latitude: 37.78025, longitude: -122.4244 },
+  { latitude: 37.77825, longitude: -122.4224 },
+  { latitude: 37.77625, longitude: -122.4204 }, // End point
+];
 
 export default function Screen() {
   const [promoCode, setPromoCode] = React.useState('');
   const [useReferralReward, setUseReferralReward] = React.useState(false);
+
+  const mapRef = React.useRef<MapView>(null);
+
+  React.useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.fitToCoordinates(routeCoordinates, {
+        edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+        animated: true,
+      });
+    }
+  }, []);
 
   return (
     <Layout
@@ -37,11 +58,74 @@ export default function Screen() {
       <View className="flex-1 gap-4">
         <View className="flex gap-2 rounded-[8px] border border-[#DFDFE1] p-2">
           <View className="relative aspect-[311/120] w-full overflow-hidden rounded-[8px]">
-            <Image
-              source={require('@/assets/images/map-view.svg')}
-              style={{ width: '100%', height: '100%', borderRadius: 8 }}
-              contentFit="cover"
-            />
+            <MapView
+              ref={mapRef}
+              provider={PROVIDER_GOOGLE}
+              style={{ width: '100%', height: '100%' }}
+              initialRegion={{
+                latitude: 37.78225,
+                longitude: -122.4264,
+                latitudeDelta: 0.02,
+                longitudeDelta: 0.02,
+              }}>
+              <Polyline
+                coordinates={routeCoordinates}
+                strokeColor="#FE6A00" // Orange color
+                strokeWidth={4}
+                lineCap="round"
+                lineJoin="round"
+              />
+
+              <Marker coordinate={routeCoordinates[0]} anchor={{ x: 0.5, y: 1 }}>
+                <View
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: 99999999,
+                    backgroundColor: '#FFDCC1',
+                    borderWidth: 1,
+                    borderColor: '#606D5D1F',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
+                    elevation: 5,
+                  }}>
+                  <Image
+                    style={{ width: 16, height: 16 }}
+                    contentFit="contain"
+                    source={require('@/assets/icons/map-pin.svg')}
+                  />
+                </View>
+              </Marker>
+
+              <Marker
+                coordinate={routeCoordinates[routeCoordinates.length - 1]}
+                anchor={{ x: 0.5, y: 0.5 }}>
+                <View
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: 99999999,
+                    backgroundColor: '#1B1B1E',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
+                    elevation: 5,
+                  }}>
+                  <Image
+                    style={{ width: 16, height: 16 }}
+                    contentFit="contain"
+                    source={require('@/assets/icons/map-home.svg')}
+                  />
+                </View>
+              </Marker>
+            </MapView>
 
             <View className="absolute right-2 top-2 flex h-6 flex-row items-center justify-center rounded-sm bg-[#FFF4EA] px-2">
               <Text className="font-cabinet-bold text-xs leading-none text-[#FE6A00]">

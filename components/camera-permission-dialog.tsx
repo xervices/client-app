@@ -4,6 +4,7 @@ import { Modal, Pressable, View } from 'react-native';
 import { X } from 'lucide-react-native';
 import { Button } from './ui/button';
 import { useCameraPermissions } from 'expo-camera';
+import { requestRecordingPermissionsAsync } from 'expo-audio';
 
 export default function CameraPermissionDialog() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -21,8 +22,12 @@ export default function CameraPermissionDialog() {
     return null;
   }
 
-  const onRequestPermission = () => {
-    requestPermission().finally(() => setVisible(false));
+  const onRequestPermission = async () => {
+    requestPermission()
+      .then(() => {
+        requestRecordingPermissionsAsync();
+      })
+      .finally(() => setVisible(false));
   };
 
   return (

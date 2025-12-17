@@ -7,6 +7,7 @@ import { CameraMode, CameraType, CameraView } from 'expo-camera';
 import { useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { Camera, Video } from 'lucide-react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { RecordingIndicator } from '../recording-indicator';
 
 const screenHeight = Dimensions.get('window').height;
@@ -42,6 +43,32 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
 
   const toggleMode = () => {
     setMode((prev) => (prev === 'picture' ? 'video' : 'picture'));
+  };
+
+  const pickImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images', 'videos'],
+      allowsEditing: false,
+      // aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const asset = result.assets[0];
+      if (asset.type === 'image') {
+        setUri(asset.uri);
+      }
+
+      if (asset.type === 'video') {
+        setVideoUri(asset.uri);
+      }
+    }
   };
 
   const renderPicture = (uri?: string, videoUri?: string) => {
@@ -110,7 +137,7 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
           ref={ref}
           mode={mode}
           facing={facing}
-          mute={true}
+          mute={false}
           responsiveOrientationWhenOrientationLocked
         />
 
@@ -146,7 +173,9 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
         {uri || videoUri ? renderPicture(uri, videoUri) : renderCamera()}
 
         <View className="mt-auto flex flex-row items-center justify-between">
-          <Pressable className="flex h-10 w-10 items-center justify-center rounded-full bg-[#27272B]">
+          <Pressable
+            onPress={pickImage}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#27272B]">
             <Image
               source={require('@/assets/icons/element-plus.svg')}
               style={{ width: 24, height: 24 }}
