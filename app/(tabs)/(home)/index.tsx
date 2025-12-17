@@ -9,6 +9,7 @@ import { Services } from '@/components/home/services';
 import { UserOfWeek } from '@/components/home/user-of-week';
 import { ActiveJobs } from '@/components/home/active-jobs';
 import EnableLocationDialog from '@/components/enable-location-dialog';
+import { useUsersControllerGetCurrentUser } from '@/api/generated/users/users';
 
 export default function Screen() {
   return (
