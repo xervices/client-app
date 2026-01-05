@@ -6,6 +6,7 @@ import { AuthHeader } from '@/components/auth-header';
 import { Image } from 'expo-image';
 import { ChevronRight } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { useAuthStore } from '@/store/auth-store';
 
 const data = [
   {
@@ -68,7 +69,10 @@ const data = [
     icon: require('@/assets/icons/logout.svg'),
     isLink: false,
     isDestructive: true,
-    onPress: () => router.navigate('/profile'),
+    onPress: () => {
+      useAuthStore.getState().logout();
+      useAuthStore.getState().resetOnboarding();
+    },
   },
 ];
 

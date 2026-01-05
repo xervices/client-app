@@ -16,6 +16,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Image } from 'expo-image';
 import * as Haptics from 'expo-haptics';
 import { toast } from 'sonner-native';
+import { useHealthControllerCheck } from '@/api/generated/health/health';
 
 const formSchema = z.object({
   email: z.email().min(1, 'Email is required.'),
@@ -24,6 +25,10 @@ const formSchema = z.object({
 
 export default function Screen() {
   const { login } = useAuthStore();
+  const { data, error } = useHealthControllerCheck();
+
+  console.log(data);
+  console.log(error);
 
   const [checked, setChecked] = React.useState(false);
 

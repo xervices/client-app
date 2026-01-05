@@ -2,8 +2,8 @@ import Axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 // Base URL - change based on environment
 const BASE_URL = __DEV__
-  ? 'http://10.0.2.2:3000/api' // Android emulator
-  : 'https://api.yourapp.com';
+  ? 'https://server-api-bibv.onrender.com' // Android emulator
+  : 'https://server-api-bibv.onrender.com';
 
 // Create axios instance
 export const AXIOS_INSTANCE = Axios.create({
