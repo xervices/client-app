@@ -70,7 +70,7 @@ const data = [
     isLink: false,
     isDestructive: true,
     onPress: () => {
-      useAuthStore.getState().logout();
+      useAuthStore.getState().setLoginState(false);
       useAuthStore.getState().resetOnboarding();
     },
   },

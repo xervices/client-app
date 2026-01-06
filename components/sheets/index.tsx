@@ -39,6 +39,7 @@ declare module 'react-native-actions-sheet' {
         subtitle: string;
         hideBackButton?: boolean;
         useCheckImage?: boolean;
+        onRedirect?: () => void;
       };
     }>;
   }

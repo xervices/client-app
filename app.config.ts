@@ -28,10 +28,17 @@ const appIconBadgeConfig: AppIconBadgeConfig = {
 };
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-  const { name, bundleIdentifier, packageName, scheme, googleServicesFile, googleMapsApiKey } =
-    getDynamicAppConfig(
-      (process.env.APP_ENV as 'development' | 'preview' | 'production') || 'development'
-    );
+  const {
+    name,
+    bundleIdentifier,
+    packageName,
+    scheme,
+    googleServicesFile,
+    googleMapsApiKey,
+    iosUrlScheme,
+  } = getDynamicAppConfig(
+    (process.env.APP_ENV as 'development' | 'preview' | 'production') || 'development'
+  );
 
   return {
     ...config,
@@ -140,6 +147,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           photosPermission: 'The app accesses your photos to let you share them with your friends.',
         },
       ],
+      [
+        '@react-native-google-signin/google-signin',
+        {
+          iosUrlScheme: iosUrlScheme,
+        },
+      ],
     ],
     extra: {
       eas: {
@@ -158,6 +171,7 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
       scheme: SCHEME,
       googleServicesFile: './prod-google-services.json',
       googleMapsApiKey: 'process.env.GOOGLE_MAPS_API_KEY',
+      iosUrlScheme: 'com.googleusercontent.apps._some_id_here_',
     };
   }
 
@@ -169,6 +183,7 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
       scheme: `${SCHEME}-prev`,
       googleServicesFile: './preview-google-services.json',
       googleMapsApiKey: 'process.env.GOOGLE_MAPS_API_KEY',
+      iosUrlScheme: 'com.googleusercontent.apps._some_id_here_',
     };
   }
 
@@ -179,5 +194,6 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
     scheme: `${SCHEME}-dev`,
     googleServicesFile: './dev-google-services.json',
     googleMapsApiKey: 'AIzaSyDA7HnZnWADQ3h1AYCUgCLAccJGPJo67gU',
+    iosUrlScheme: 'com.googleusercontent.apps.254247444720-nk2nrjvqda0r37s9kudt7embqirg3efu',
   };
 };

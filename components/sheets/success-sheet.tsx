@@ -13,8 +13,9 @@ export function SuccessSheet(props: SheetProps<'success-sheet'>) {
 
   useEffect(() => {
     const redirectTimeout = setTimeout(() => {
+      props.payload?.onRedirect?.();
       SheetManager.hide('success-sheet');
-    }, 8000);
+    }, 5000);
 
     return () => clearTimeout(redirectTimeout);
   }, []);

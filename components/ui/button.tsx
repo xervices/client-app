@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 import { Platform, Pressable } from 'react-native';
+import { LoadingIndicator } from './loading-indicator';
 
 const buttonVariants = cva(
   cn(
@@ -95,9 +96,10 @@ type ButtonProps = React.ComponentProps<typeof Pressable> &
   VariantProps<typeof buttonVariants> & {
     children?: React.ReactNode;
     icon?: React.ReactNode;
+    isLoading?: boolean;
   };
 
-function Button({ className, variant, size, children, icon, ...props }: ButtonProps) {
+function Button({ className, variant, size, children, icon, isLoading, ...props }: ButtonProps) {
   const hasText =
     typeof children === 'string' || (React.isValidElement(children) && children.type === Text);
 
@@ -107,8 +109,14 @@ function Button({ className, variant, size, children, icon, ...props }: ButtonPr
         className={cn(props.disabled && 'opacity-50', buttonVariants({ variant, size }), className)}
         role="button"
         {...props}>
-        {icon}
-        {typeof children === 'string' ? <Text>{children}</Text> : children}
+        {isLoading ? (
+          <LoadingIndicator color="#ffffff" size={24} />
+        ) : (
+          <>
+            {icon}
+            {typeof children === 'string' ? <Text>{children}</Text> : children}
+          </>
+        )}
       </Pressable>
     </TextClassContext.Provider>
   );

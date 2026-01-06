@@ -1,56 +1,64 @@
 import * as React from 'react';
-import { Platform, Pressable, View } from 'react-native';
-import { useAuthStore } from '@/store/auth-store';
-import { Text } from '@/components/ui/text';
-import { Layout } from '@/components/layout';
-import { router } from 'expo-router';
-import { AuthHeader } from '@/components/auth-header';
+import { View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useForm } from '@tanstack/react-form';
 import * as z from 'zod';
+import { toast } from 'sonner-native';
+import { SheetManager } from 'react-native-actions-sheet';
+
+import { Text } from '@/components/ui/text';
+import { Layout } from '@/components/layout';
+import { AuthHeader } from '@/components/auth-header';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { InputError } from '@/components/ui/input-error';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Image } from 'expo-image';
-import * as Haptics from 'expo-haptics';
-import { toast } from 'sonner-native';
-import { SheetManager } from 'react-native-actions-sheet';
+import { useMutation } from '@tanstack/react-query';
+import { api } from '@/api';
+import { showErrorMessage } from '@/api/helpers';
 
 const formSchema = z
   .object({
-    password: z.string().min(1, 'Password is required.'),
+    token: z.string().min(1, 'OTP is required.'),
+    newPassword: z.string().min(1, 'Password is required.'),
     confirmPassword: z.string().min(1, 'Password confirmation is required.'),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords don't match",
     path: ['confirmPassword'],
   });
 
 export default function Screen() {
-  const [checked, setChecked] = React.useState(false);
+  const { email } = useLocalSearchParams();
 
-  function onCheckedChange(checked: boolean) {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setChecked(checked);
-  }
+  const { mutate, isPending } = useMutation(api.resetPassword());
 
   const form = useForm({
     defaultValues: {
-      password: '',
+      token: '',
+      newPassword: '',
       confirmPassword: '',
     },
     validators: {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      toast.success('Password reset successful');
-      SheetManager.show('success-sheet', {
-        payload: {
-          title: 'Password changed successfully',
-          subtitle:
-            'Your account is ready to use. You will be redirected to the home page shortly.',
-          hideBackButton: true,
+      const { confirmPassword, ...data } = value;
+
+      mutate(data, {
+        onSuccess: () => {
+          SheetManager.show('success-sheet', {
+            payload: {
+              title: 'Password changed successfully',
+              subtitle:
+                'Your account is ready to use. You will be redirected to the login page shortly.',
+              hideBackButton: true,
+              onRedirect: () => router.replace('/login'),
+            },
+          });
+        },
+        onError: (err) => {
+          showErrorMessage(err.message);
         },
       });
     },
@@ -68,7 +76,24 @@ export default function Screen() {
         </View>
 
         <View className="flex gap-4">
-          <form.Field name="password">
+          <form.Field name="token">
+            {(field) => (
+              <View>
+                <Label nativeID="token">OTP token</Label>
+                <Input
+                  id="token"
+                  value={field.state.value}
+                  onChangeText={field.handleChange}
+                  placeholder={`Enter the token sent to ${email}`}
+                  hasError={!field.state.meta.isValid}
+                  keyboardType="numeric"
+                />
+                {!field.state.meta.isValid ? <InputError errors={field.state.meta.errors} /> : null}
+              </View>
+            )}
+          </form.Field>
+
+          <form.Field name="newPassword">
             {(field) => (
               <View>
                 <Label nativeID="password">Password</Label>
@@ -102,7 +127,7 @@ export default function Screen() {
             )}
           </form.Field>
 
-          <Button className="mt-6" onPress={form.handleSubmit}>
+          <Button className="mt-6" onPress={form.handleSubmit} isLoading={isPending}>
             Continue
           </Button>
         </View>

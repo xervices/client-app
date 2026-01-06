@@ -2,12 +2,20 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 import Storage from 'expo-sqlite/kv-store';
+import { paths } from '@/api/schema';
+
+export type UserType =
+  paths['/api/auth/login']['post']['responses'][200]['content']['application/json']['user'];
+export type TokensType =
+  paths['/api/auth/login']['post']['responses'][200]['content']['application/json']['tokens'];
 
 type AuthStoreState = {
+  user: UserType | null;
+  setUser: (user: UserType) => void;
+  clearUser: () => void;
   isLoggedIn: boolean;
+  setLoginState: (state: boolean) => void;
   hasCompletedOnboarding: boolean;
-  login: () => void;
-  logout: () => void;
   completeOnboarding: () => void;
   resetOnboarding: () => void;
 };
@@ -15,10 +23,12 @@ type AuthStoreState = {
 export const useAuthStore = create<AuthStoreState>()(
   persist(
     (set) => ({
+      user: null,
+      setUser: (user) => set({ user }),
+      clearUser: () => set({ user: null }),
       isLoggedIn: false,
+      setLoginState: (state) => set({ isLoggedIn: state }),
       hasCompletedOnboarding: false,
-      login: () => set({ isLoggedIn: true }),
-      logout: () => set({ isLoggedIn: false }),
       completeOnboarding: () => set({ hasCompletedOnboarding: true }),
       resetOnboarding: () => set({ hasCompletedOnboarding: false }),
     }),

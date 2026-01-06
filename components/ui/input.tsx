@@ -22,6 +22,8 @@ const Input = React.forwardRef<TextInput, InputProps>(
   ) => {
     const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
 
+    const [isFocused, setIsFocused] = React.useState(false);
+
     // Determine if this is meant to be a secure input (password field)
     const isSecureInput = secureTextEntry === true;
 
@@ -43,7 +45,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
             // Base styles
             'flex h-[56px] w-full min-w-0 flex-row items-center rounded-[4px] border bg-white px-4 py-1 font-cabinet text-base font-thin text-[#1B1B1E]',
             // Error state border color
-            hasError ? 'border-error' : 'border-[#DFDFE1]',
+            hasError ? 'border-error' : isFocused ? 'border-[#FE6A00]' : 'border-[#DFDFE1]',
             // Add right padding only if we have the eye icon to prevent text overlap
             isSecureInput && 'pr-12',
             isPhoneInput && 'pl-14',
@@ -70,6 +72,8 @@ const Input = React.forwardRef<TextInput, InputProps>(
             }),
             className
           )}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           {...props}
         />
 

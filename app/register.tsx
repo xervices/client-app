@@ -1,27 +1,30 @@
 import * as React from 'react';
-import { Platform, Pressable, View } from 'react-native';
-import { useAuthStore } from '@/store/auth-store';
-import { Text } from '@/components/ui/text';
-import { Layout } from '@/components/layout';
-import { Icon } from '@/components/ui/icon';
+import { Pressable, View } from 'react-native';
 import { router } from 'expo-router';
-import { AuthHeader } from '@/components/auth-header';
 import { useForm } from '@tanstack/react-form';
 import * as z from 'zod';
+import { Image } from 'expo-image';
+import { useMutation } from '@tanstack/react-query';
+
+import { Text } from '@/components/ui/text';
+import { Layout } from '@/components/layout';
+import { AuthHeader } from '@/components/auth-header';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { InputError } from '@/components/ui/input-error';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Image } from 'expo-image';
+
+import { api } from '@/api';
+import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 
 const formSchema = z
   .object({
-    fullname: z.string().min(1, 'Fullname is required.'),
-    phone: z.string().min(1, 'Phone number is required.'),
+    fullName: z.string().min(1, 'Your fullname is required.'),
+    phoneNumber: z.string().min(1, 'Phone number is required.'),
     email: z.email('Invalid email address').min(1, 'Email is required.'),
     password: z.string().min(1, 'Password is required.'),
     confirmPassword: z.string().min(1, 'Password confirmation is required.'),
+    role: z.union([z.literal('user')]),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -29,31 +32,38 @@ const formSchema = z
   });
 
 export default function Screen() {
-  const { login } = useAuthStore();
-
-  const [checked, setChecked] = React.useState(false);
-
-  function onCheckedChange(checked: boolean) {
-    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setChecked(checked);
-  }
+  const { mutate, isPending } = useMutation({
+    ...api.register(),
+    onError: (err) => {
+      showErrorMessage(err.message);
+    },
+  });
 
   const form = useForm({
     defaultValues: {
-      fullname: '',
-      phone: '',
+      fullName: '',
+      phoneNumber: '',
       email: '',
       password: '',
       confirmPassword: '',
+      role: 'user' as const,
     },
     validators: {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      router.navigate({
-        pathname: '/verify-email',
-        params: {
-          email: value.email,
+      const { confirmPassword, ...registerData } = value;
+
+      mutate(registerData, {
+        onSuccess: () => {
+          showSuccessMessage('Account created successfully');
+
+          router.navigate({
+            pathname: '/verify-email',
+            params: {
+              email: value.email,
+            },
+          });
         },
       });
     },
@@ -71,12 +81,12 @@ export default function Screen() {
         </View>
 
         <View className="flex gap-4">
-          <form.Field name="fullname">
+          <form.Field name="fullName">
             {(field) => (
               <View>
-                <Label nativeID="fullname">Full name</Label>
+                <Label nativeID="fullName">Full name</Label>
                 <Input
-                  id="fullname"
+                  id="fullName"
                   value={field.state.value}
                   onChangeText={field.handleChange}
                   placeholder="Enter your name"
@@ -104,7 +114,7 @@ export default function Screen() {
             )}
           </form.Field>
 
-          <form.Field name="phone">
+          <form.Field name="phoneNumber">
             {(field) => (
               <View>
                 <Label nativeID="phone">Phone Number</Label>
@@ -155,7 +165,9 @@ export default function Screen() {
             )}
           </form.Field>
 
-          <Button onPress={form.handleSubmit}>Get Started</Button>
+          <Button onPress={form.handleSubmit} isLoading={isPending}>
+            Get Started
+          </Button>
         </View>
 
         <View className="flex flex-row items-center justify-between gap-4">
@@ -192,13 +204,13 @@ export default function Screen() {
               </Text>
             </Pressable>
 
-            <Pressable>
+            <Pressable onPress={() => router.navigate('/terms')}>
               <Text className="leading-normal text-primary">Terms of Service</Text>
             </Pressable>
             <Pressable>
               <Text className="mx-1 leading-normal text-[#737381]">and</Text>
             </Pressable>
-            <Pressable>
+            <Pressable onPress={() => router.navigate('/privacy')}>
               <Text className="leading-normal text-primary">Privacy Policy</Text>
             </Pressable>
           </Text>

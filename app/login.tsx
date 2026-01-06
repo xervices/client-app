@@ -1,34 +1,36 @@
 import * as React from 'react';
 import { Platform, Pressable, View } from 'react-native';
-import { useAuthStore } from '@/store/auth-store';
+import { useForm } from '@tanstack/react-form';
+import { router } from 'expo-router';
+import * as z from 'zod';
+import { Image } from 'expo-image';
+import * as Haptics from 'expo-haptics';
+import { useMutation } from '@tanstack/react-query';
+
 import { Text } from '@/components/ui/text';
 import { Layout } from '@/components/layout';
-import { Icon } from '@/components/ui/icon';
-import { router } from 'expo-router';
 import { AuthHeader } from '@/components/auth-header';
-import { useForm } from '@tanstack/react-form';
-import * as z from 'zod';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { InputError } from '@/components/ui/input-error';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Image } from 'expo-image';
-import * as Haptics from 'expo-haptics';
-import { toast } from 'sonner-native';
-import { useHealthControllerCheck } from '@/api/generated/health/health';
+
+import { api } from '@/api';
+import { showErrorMessage } from '@/api/helpers';
 
 const formSchema = z.object({
-  email: z.email().min(1, 'Email is required.'),
+  emailOrPhone: z.string().min(1, 'Email or Phone is required.'),
   password: z.string().min(1, 'Password is required.'),
 });
 
 export default function Screen() {
-  const { login } = useAuthStore();
-  const { data, error } = useHealthControllerCheck();
-
-  console.log(data);
-  console.log(error);
+  const { mutate, isPending } = useMutation({
+    ...api.login(),
+    onError: (err) => {
+      showErrorMessage(err.message);
+    },
+  });
 
   const [checked, setChecked] = React.useState(false);
 
@@ -39,15 +41,14 @@ export default function Screen() {
 
   const form = useForm({
     defaultValues: {
-      email: '',
+      emailOrPhone: '',
       password: '',
     },
     validators: {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      toast.success('Login was successful');
-      login();
+      mutate(value);
     },
   });
 
@@ -63,7 +64,7 @@ export default function Screen() {
         </View>
 
         <View className="flex gap-4">
-          <form.Field name="email">
+          <form.Field name="emailOrPhone">
             {(field) => (
               <View>
                 <Label nativeID="email">Email</Label>
@@ -97,7 +98,9 @@ export default function Screen() {
             )}
           </form.Field>
 
-          <Button onPress={form.handleSubmit}>Log In</Button>
+          <Button onPress={form.handleSubmit} isLoading={isPending}>
+            Log In
+          </Button>
         </View>
 
         <View className="flex w-full flex-row items-center justify-between">
