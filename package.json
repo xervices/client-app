@@ -1,7 +1,7 @@
 {
   "name": "expo-sample",
   "main": "expo-router/entry",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "scripts": {
     "dev": "expo start",
     "generate": "orval",
