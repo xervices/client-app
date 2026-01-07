@@ -178,4 +178,49 @@ export const api = {
       },
     };
   },
+  googleSignin: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/auth/google/mobile', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/auth/google/mobile', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Google signin request failed'));
+        }
+
+        if (data?.tokens) {
+          await tokenStorage.setTokens(data.tokens.accessToken, data.tokens.refreshToken);
+        }
+
+        if (data.user) {
+          useAuthStore.getState().setUser(data.user);
+          useAuthStore.getState().setLoginState(true);
+        }
+
+        return data;
+      },
+    };
+  },
+
+  // User management endpoints
+  updateProfile: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/users/me', 'patch'>) => {
+        const { data, error } = await apiClient.PATCH('/api/users/me', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Login failed'));
+        }
+
+        // if (data.user) {
+        //   useAuthStore.getState().setUser(data.user);
+        // }
+
+        return data;
+      },
+    };
+  },
 };

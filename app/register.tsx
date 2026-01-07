@@ -3,7 +3,6 @@ import { Pressable, View } from 'react-native';
 import { router } from 'expo-router';
 import { useForm } from '@tanstack/react-form';
 import * as z from 'zod';
-import { Image } from 'expo-image';
 import { useMutation } from '@tanstack/react-query';
 
 import { Text } from '@/components/ui/text';
@@ -13,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { InputError } from '@/components/ui/input-error';
+import { GoogleSigninButton } from '@/components/google-signin-button';
 
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
@@ -178,15 +178,7 @@ export default function Screen() {
           <View className="h-0.5 flex-1 bg-[#FFDCC1]" />
         </View>
 
-        <Button className="border-[#B4B4BC] bg-background">
-          <Image
-            source={require('@/assets/icons/google.svg')}
-            style={{ width: 18, height: 18 }}
-            contentFit="contain"
-          />
-
-          <Text className="font-cabinet-extrabold text-[#737381]">Continue with Google</Text>
-        </Button>
+        <GoogleSigninButton />
 
         <View className="flex flex-row items-center justify-center gap-1.5">
           <Text className="text-[#737381]">Already have an account?</Text>

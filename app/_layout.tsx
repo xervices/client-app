@@ -12,6 +12,8 @@ import { Sheets } from '@/components/sheets';
 import { View } from 'react-native';
 import { LocationProvider } from 'solomo';
 import { QueryProvider } from '@/providers/query-provider';
+import { useEffect } from 'react';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -21,6 +23,13 @@ export {
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();
   const { isLoggedIn, hasCompletedOnboarding } = useAuthStore();
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      iosClientId: '254247444720-nk2nrjvqda0r37s9kudt7embqirg3efu.apps.googleusercontent.com',
+      webClientId: '254247444720-3g5icekin9d9ls4hg0faag1mgsarb3u6.apps.googleusercontent.com',
+    });
+  }, []);
 
   return (
     // <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
