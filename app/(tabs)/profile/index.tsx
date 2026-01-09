@@ -7,6 +7,7 @@ import { Image } from 'expo-image';
 import { ChevronRight } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useAuthStore } from '@/store/auth-store';
+import { tokenStorage } from '@/api/token-storage';
 
 const data = [
   {
@@ -69,9 +70,9 @@ const data = [
     icon: require('@/assets/icons/logout.svg'),
     isLink: false,
     isDestructive: true,
-    onPress: () => {
+    onPress: async () => {
+      await tokenStorage.clearTokens();
       useAuthStore.getState().setLoginState(false);
-      useAuthStore.getState().resetOnboarding();
     },
   },
 ];

@@ -4,3211 +4,5709 @@
  */
 
 export interface paths {
-  '/api/health': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Health check endpoint
+         * @description Returns the health status of the API including database, memory, and disk checks.
+         */
+        get: operations["HealthController_check"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Health check endpoint
-     * @description Returns the health status of the API including database, memory, and disk checks.
-     */
-    get: operations['HealthController_check'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/health/ping': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/health/ping": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Simple ping endpoint
+         * @description Returns a simple pong response to verify the API is responding.
+         */
+        get: operations["HealthController_ping"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Simple ping endpoint
-     * @description Returns a simple pong response to verify the API is responding.
-     */
-    get: operations['HealthController_ping'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/register': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Register new user
+         * @description Create a new user account. Sends verification codes to email and phone.
+         */
+        post: operations["AuthController_register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Register new user
-     * @description Create a new user account. Sends verification codes to email and phone.
-     */
-    post: operations['AuthController_register'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/login': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Login user
+         * @description Authenticate user with email/phone and password. Returns JWT tokens.
+         */
+        post: operations["AuthController_login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Login user
-     * @description Authenticate user with email/phone and password. Returns JWT tokens.
-     */
-    post: operations['AuthController_login'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/refresh': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Refresh access token
+         * @description Get new access and refresh tokens using a valid refresh token.
+         */
+        post: operations["AuthController_refresh"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Refresh access token
-     * @description Get new access and refresh tokens using a valid refresh token.
-     */
-    post: operations['AuthController_refresh'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/logout': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Logout user
+         * @description Revoke the refresh token to logout user. No authentication required - just provide the refresh token to revoke.
+         */
+        post: operations["AuthController_logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Logout user
-     * @description Revoke the refresh token to logout user. No authentication required - just provide the refresh token to revoke.
-     */
-    post: operations['AuthController_logout'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/verify': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify account with code
+         * @description Verify user account using the 6-digit code sent to both email and phone. Marks both as verified and sends welcome email.
+         */
+        post: operations["AuthController_verifyAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Verify account with code
-     * @description Verify user account using the 6-digit code sent to both email and phone. Marks both as verified and sends welcome email.
-     */
-    post: operations['AuthController_verifyAccount'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/resend-verification': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/resend-verification": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Resend verification code
+         * @description Resend verification code to email or phone.
+         */
+        post: operations["AuthController_resendVerification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Resend verification code
-     * @description Resend verification code to email or phone.
-     */
-    post: operations['AuthController_resendVerification'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/forgot-password': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/forgot-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Request password reset code
+         * @description Send a password reset code to email or phone. Always returns success for security.
+         */
+        post: operations["AuthController_forgotPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Request password reset code
-     * @description Send a password reset code to email or phone. Always returns success for security.
-     */
-    post: operations['AuthController_forgotPassword'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/reset-password': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reset password with code
+         * @description Reset user password using the code received via email/SMS.
+         */
+        post: operations["AuthController_resetPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Reset password with code
-     * @description Reset user password using the code received via email/SMS.
-     */
-    post: operations['AuthController_resetPassword'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/change-password': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/change-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change password for authenticated user
+         * @description Change password for the currently authenticated user. Requires current password.
+         */
+        post: operations["AuthController_changePassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Change password for authenticated user
-     * @description Change password for the currently authenticated user. Requires current password.
-     */
-    post: operations['AuthController_changePassword'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/google/mobile': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/google/mobile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Google Sign-In for mobile apps
+         * @description Authenticate using Google ID token from mobile Google Sign-In SDK. Creates user if not exists.
+         */
+        post: operations["AuthController_googleMobileLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Google Sign-In for mobile apps
-     * @description Authenticate using Google ID token from mobile Google Sign-In SDK. Creates user if not exists.
-     */
-    post: operations['AuthController_googleMobileLogin'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/promotions/me': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/promotions/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get promotions dashboard (earnings, referrals, discounts) */
+        get: operations["PromotionsController_getPromotionsDashboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get promotions dashboard (earnings, referrals, discounts) */
-    get: operations['PromotionsController_getPromotionsDashboard'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/promotions/discounts': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/promotions/discounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get my active discounts */
+        get: operations["PromotionsController_getMyDiscounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get my active discounts */
-    get: operations['PromotionsController_getMyDiscounts'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/promotions/apply': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/promotions/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Apply discount to a job */
+        post: operations["PromotionsController_applyDiscount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Apply discount to a job */
-    post: operations['PromotionsController_applyDiscount'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/referrals/me': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/referrals/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get my referral info (code, link, stats) */
+        get: operations["ReferralsController_getMyReferralInfo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get my referral info (code, link, stats) */
-    get: operations['ReferralsController_getMyReferralInfo'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/referrals/apply': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/referrals/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Apply a referral code (for new users) */
+        post: operations["ReferralsController_applyReferralCode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Apply a referral code (for new users) */
-    post: operations['ReferralsController_applyReferralCode'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/referrals/rewards': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/referrals/rewards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get my referral rewards/earnings */
+        get: operations["ReferralsController_getMyReferralRewards"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get my referral rewards/earnings */
-    get: operations['ReferralsController_getMyReferralRewards'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/referrals/use-reward': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/referrals/use-reward": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Use referral reward during checkout */
+        post: operations["ReferralsController_useReferralReward"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Use referral reward during checkout */
-    post: operations['ReferralsController_useReferralReward'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/users/me': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get current user
+         * @description Get the currently authenticated user with their profile and settings
+         */
+        get: operations["UsersController_getCurrentUser"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete account
+         * @description Soft delete the user account (can be recovered within 90 days)
+         */
+        delete: operations["UsersController_deleteAccount"];
+        options?: never;
+        head?: never;
+        /**
+         * Update profile
+         * @description Update user profile (name, avatar, bio, address, etc.)
+         */
+        patch: operations["UsersController_updateProfile"];
+        trace?: never;
     };
-    /**
-     * Get current user
-     * @description Get the currently authenticated user with their profile and settings
-     */
-    get: operations['UsersController_getCurrentUser'];
-    put?: never;
-    post?: never;
-    /**
-     * Delete account
-     * @description Soft delete the user account (can be recovered within 90 days)
-     */
-    delete: operations['UsersController_deleteAccount'];
-    options?: never;
-    head?: never;
-    /**
-     * Update profile
-     * @description Update user profile (name, avatar, bio, address, etc.)
-     */
-    patch: operations['UsersController_updateProfile'];
-    trace?: never;
-  };
-  '/api/users/location': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update location
+         * @description Update user geographic location (latitude, longitude)
+         */
+        patch: operations["UsersController_updateLocation"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Update location
-     * @description Update user geographic location (latitude, longitude)
-     */
-    patch: operations['UsersController_updateLocation'];
-    trace?: never;
-  };
-  '/api/users/settings': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update notification settings
+         * @description Update notification preferences (email, SMS, push)
+         */
+        patch: operations["UsersController_updateSettings"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Update notification settings
-     * @description Update notification preferences (email, SMS, push)
-     */
-    patch: operations['UsersController_updateSettings'];
-    trace?: never;
-  };
-  '/api/artisans/onboard': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/artisans/onboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Complete artisan onboarding
+         * @description Complete Step 2 of artisan signup with KYC and professional information
+         */
+        post: operations["ArtisansController_completeOnboarding"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Complete artisan onboarding
-     * @description Complete Step 2 of artisan signup with KYC and professional information
-     */
-    post: operations['ArtisansController_completeOnboarding'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/artisans/me': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/artisans/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan profile
+         * @description Get the artisan profile for the currently authenticated user
+         */
+        get: operations["ArtisansController_getProfile"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete artisan account
+         * @description Soft delete the artisan account (can be recovered within 90 days)
+         */
+        delete: operations["ArtisansController_deleteAccount"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get artisan profile
-     * @description Get the artisan profile for the currently authenticated user
-     */
-    get: operations['ArtisansController_getProfile'];
-    put?: never;
-    post?: never;
-    /**
-     * Delete artisan account
-     * @description Soft delete the artisan account (can be recovered within 90 days)
-     */
-    delete: operations['ArtisansController_deleteAccount'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/artisans/me/level': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/artisans/me/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update artisan skills
+         * @description Update the service categories/skills the artisan offers
+         */
+        patch: operations["ArtisansController_updateSkills"];
+        trace?: never;
     };
-    /**
-     * Get artisan level and progress
-     * @description Get the current level, commission rate, and progress towards next level
-     */
-    get: operations['ArtisansController_getLevel'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/artisans/me/commission': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/artisans/me/level": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan level and progress
+         * @description Get the current level, commission rate, and progress towards next level
+         */
+        get: operations["ArtisansController_getLevel"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get current commission rate
-     * @description Get the current commission rate considering level and discounts
-     */
-    get: operations['ArtisansController_getCommissionRate'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/artisans/levels': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/artisans/me/commission": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get current commission rate
+         * @description Get the current commission rate considering level and discounts
+         */
+        get: operations["ArtisansController_getCommissionRate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get all artisan level definitions
-     * @description Get the list of all artisan levels and their requirements
-     */
-    get: operations['ArtisansController_getAllLevels'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/artisans/availability': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/artisans/levels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all artisan level definitions
+         * @description Get the list of all artisan levels and their requirements
+         */
+        get: operations["ArtisansController_getAllLevels"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Update availability
-     * @description Toggle artisan availability status
-     */
-    patch: operations['ArtisansController_updateAvailability'];
-    trace?: never;
-  };
-  '/api/earnings': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/artisans/availability": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update availability
+         * @description Toggle artisan availability status
+         */
+        patch: operations["ArtisansController_updateAvailability"];
+        trace?: never;
     };
-    /** Get earnings overview */
-    get: operations['EarningsController_getEarningsOverview'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/earnings/transactions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all categories (Skills)
+         * @description Get all service categories/skills. Results are personalized and sorted by your recently viewed categories first, then by default display order.
+         */
+        get: operations["CategoriesController_findAll"];
+        put?: never;
+        /**
+         * Create a new category
+         * @description Admin can create a new service category/skill. Upload icon file via "icon" field.
+         */
+        post: operations["CategoriesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get transaction history with filters */
-    get: operations['EarningsController_getTransactionHistory'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/security/pin': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/categories/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get category by ID
+         * @description Get details of a category. This action logs a view to personalize your future category lists.
+         */
+        get: operations["CategoriesController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Create or update withdrawal PIN */
-    post: operations['SecurityController_createOrUpdatePin'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/security/verify-pin': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/service-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get user service requests
+         * @description Get all service requests for the authenticated user
+         */
+        get: operations["ServiceRequestsController_findMine"];
+        put?: never;
+        /**
+         * Create a service request
+         * @description Create a new service request for artisan services
+         */
+        post: operations["ServiceRequestsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Verify withdrawal PIN */
-    post: operations['SecurityController_verifyPin'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/security/check-pin-status': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/service-requests/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get service request by ID
+         * @description Get a single service request by its ID.
+         *
+         *     **WebSocket Notification:**
+         *     When an **Artisan** calls this endpoint, a `request:viewed` event is emitted to the `/offers` namespace.
+         *     The User must be joined to the `service_request:{id}` room to receive it.
+         */
+        get: operations["ServiceRequestsController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Check if user has a PIN set */
-    post: operations['SecurityController_checkPinStatus'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/withdrawals': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/service-requests/{id}/matching-artisans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get matching artisans
+         * @description Get artisans that match the service request category and location
+         */
+        get: operations["ServiceRequestsController_getMatchingArtisans"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get my withdrawal history */
-    get: operations['WithdrawalsController_getWithdrawals'];
-    put?: never;
-    /** Request a withdrawal */
-    post: operations['WithdrawalsController_createWithdrawal'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/disputes': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/service-requests/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel a service request
+         * @description Cancel an open service request
+         */
+        post: operations["ServiceRequestsController_cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List my disputes
-     * @description Get all disputes where the user is a participant
-     */
-    get: operations['DisputesController_getDisputes'];
-    put?: never;
-    /**
-     * Create a dispute
-     * @description Raise a dispute on a job. Only job participants can raise disputes.
-     */
-    post: operations['DisputesController_createDispute'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/disputes/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/offers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a new offer
+         * @description Create a new offer for a service request.
+         *
+         *     **WebSocket Notification:**
+         *     Emits an `offer:new` event to the `/offers` namespace in the `service_request:{id}` room.
+         */
+        post: operations["OffersController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get dispute details
-     * @description Get a single dispute with all evidence. Only accessible by job participants.
-     */
-    get: operations['DisputesController_getDisputeById'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/disputes/{id}/evidence': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/offers/{id}/counter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Make a counter-offer
+         * @description Create a counter-offer to an existing offer
+         */
+        post: operations["OffersController_counterOffer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Add evidence to dispute
-     * @description Upload evidence for an open or under-review dispute. Only job participants can add evidence.
-     */
-    post: operations['DisputesController_addEvidence'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/support/tickets': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/offers/{id}/respond": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Respond to an offer
+         * @description Accept or reject an offer
+         */
+        post: operations["OffersController_respond"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get my support tickets
-     * @description Retrieve all support tickets submitted by the current user.
-     */
-    get: operations['SupportController_getMyTickets'];
-    put?: never;
-    /**
-     * Create a support ticket
-     * @description Submit a new support ticket. The ticket will be reviewed by our support team.
-     */
-    post: operations['SupportController_createTicket'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/support/tickets/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/offers/service-request/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get offers for a service request
+         * @description Get all offers for a specific service request
+         */
+        get: operations["OffersController_findByServiceRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get a specific support ticket
-     * @description Retrieve details of a specific support ticket by ID.
-     */
-    get: operations['SupportController_getTicket'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/admin/support/tickets': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/offers/my-offers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan offers
+         * @description Get all offers made by the authenticated artisan
+         */
+        get: operations["OffersController_findMyOffers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List all support tickets
-     * @description Retrieve all support tickets with optional filtering by status. Admin only.
-     */
-    get: operations['AdminSupportController_getAllTickets'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/admin/support/tickets/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/offers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get offer details
+         * @description Get a single offer by ID
+         */
+        get: operations["OffersController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get a specific support ticket
-     * @description Retrieve details of a specific support ticket by ID. Admin only.
-     */
-    get: operations['AdminSupportController_getTicket'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Update support ticket
-     * @description Update ticket status, priority, or add a response. Admin only.
-     */
-    patch: operations['AdminSupportController_updateTicket'];
-    trace?: never;
-  };
-  '/api/admin/support/stats': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/offers/{id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get negotiation history
+         * @description Get all offers in the negotiation chain
+         */
+        get: operations["OffersController_getNegotiationHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get support ticket statistics
-     * @description Retrieve statistics about support tickets including counts by status. Admin only.
-     */
-    get: operations['AdminSupportController_getStats'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/app-ratings': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get user jobs
+         * @description Get all jobs for the authenticated user or artisan
+         */
+        get: operations["JobsController_findMine"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Submit or update app rating
-     * @description Submit a rating for the app. If user already rated, updates the existing rating.
-     */
-    post: operations['AppRatingsController_submitRating'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/app-ratings/me': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/jobs/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get job statistics
+         * @description Get job statistics for the authenticated user or artisan
+         */
+        get: operations["JobsController_getStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get my app rating
-     * @description Retrieve the current user's app rating if it exists.
-     */
-    get: operations['AppRatingsController_getMyRating'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/admin/app-ratings': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/jobs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get job details
+         * @description Get a single job by ID
+         */
+        get: operations["JobsController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List all app ratings
-     * @description Retrieve all user app ratings with pagination. Admin only.
-     */
-    get: operations['AdminAppRatingsController_getAllRatings'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/admin/app-ratings/stats': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/jobs/{id}/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start a job
+         * @description Artisan marks the job as in progress
+         */
+        post: operations["JobsController_startJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get app rating statistics
-     * @description Retrieve app rating statistics including average rating and distribution. Admin only.
-     */
-    get: operations['AdminAppRatingsController_getStats'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/api/jobs/{id}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Complete a job
+         * @description Artisan marks the job as completed
+         */
+        post: operations["JobsController_completeJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Approve a job
+         * @description User approves the completed job
+         */
+        post: operations["JobsController_approveJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel a job
+         * @description Cancel a pending or in-progress job
+         */
+        post: operations["JobsController_cancelJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/earnings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get earnings overview */
+        get: operations["EarningsController_getEarningsOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/earnings/transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get transaction history with filters */
+        get: operations["EarningsController_getTransactionHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/security/pin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create or update withdrawal PIN */
+        post: operations["SecurityController_createOrUpdatePin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/security/verify-pin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Verify withdrawal PIN */
+        post: operations["SecurityController_verifyPin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/security/check-pin-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check if user has a PIN set */
+        post: operations["SecurityController_checkPinStatus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/withdrawals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get my withdrawal history */
+        get: operations["WithdrawalsController_getWithdrawals"];
+        put?: never;
+        /** Request a withdrawal */
+        post: operations["WithdrawalsController_createWithdrawal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/disputes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List my disputes
+         * @description Get all disputes where the user is a participant
+         */
+        get: operations["DisputesController_getDisputes"];
+        put?: never;
+        /**
+         * Create a dispute
+         * @description Raise a dispute on a job. Only job participants can raise disputes.
+         */
+        post: operations["DisputesController_createDispute"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/disputes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get dispute details
+         * @description Get a single dispute with all evidence. Only accessible by job participants.
+         */
+        get: operations["DisputesController_getDisputeById"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/disputes/{id}/evidence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add evidence to dispute
+         * @description Upload evidence for an open or under-review dispute. Only job participants can add evidence.
+         */
+        post: operations["DisputesController_addEvidence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/support/tickets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get my support tickets
+         * @description Retrieve all support tickets submitted by the current user.
+         */
+        get: operations["SupportController_getMyTickets"];
+        put?: never;
+        /**
+         * Create a support ticket
+         * @description Submit a new support ticket. The ticket will be reviewed by our support team.
+         */
+        post: operations["SupportController_createTicket"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/support/tickets/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a specific support ticket
+         * @description Retrieve details of a specific support ticket by ID.
+         */
+        get: operations["SupportController_getTicket"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/support/tickets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List all support tickets
+         * @description Retrieve all support tickets with optional filtering by status. Admin only.
+         */
+        get: operations["AdminSupportController_getAllTickets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/support/tickets/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a specific support ticket
+         * @description Retrieve details of a specific support ticket by ID. Admin only.
+         */
+        get: operations["AdminSupportController_getTicket"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update support ticket
+         * @description Update ticket status, priority, or add a response. Admin only.
+         */
+        patch: operations["AdminSupportController_updateTicket"];
+        trace?: never;
+    };
+    "/api/admin/support/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get support ticket statistics
+         * @description Retrieve statistics about support tickets including counts by status. Admin only.
+         */
+        get: operations["AdminSupportController_getStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/app-ratings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit or update app rating
+         * @description Submit a rating for the app. If user already rated, updates the existing rating.
+         */
+        post: operations["AppRatingsController_submitRating"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/app-ratings/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get my app rating
+         * @description Retrieve the current user's app rating if it exists.
+         */
+        get: operations["AppRatingsController_getMyRating"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/app-ratings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List all app ratings
+         * @description Retrieve all user app ratings with pagination. Admin only.
+         */
+        get: operations["AdminAppRatingsController_getAllRatings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/app-ratings/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get app rating statistics
+         * @description Retrieve app rating statistics including average rating and distribution. Admin only.
+         */
+        get: operations["AdminAppRatingsController_getStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    PingResponseDto: {
-      /**
-       * @description Success status
-       * @example true
-       */
-      success: boolean;
-      /**
-       * @description Response message
-       * @example pong
-       */
-      message: string;
-      /**
-       * @description Server timestamp
-       * @example 2025-12-07T12:00:00.000Z
-       */
-      timestamp: string;
+    schemas: {
+        PingResponseDto: {
+            /**
+             * @description Success status
+             * @example true
+             */
+            success: boolean;
+            /**
+             * @description Response message
+             * @example pong
+             */
+            message: string;
+            /**
+             * @description Server timestamp
+             * @example 2025-12-07T12:00:00.000Z
+             */
+            timestamp: string;
+        };
+        RegisterDto: {
+            /**
+             * Format: email
+             * @description User email address (will be lowercased)
+             * @example john@example.com
+             */
+            email: string;
+            /**
+             * @description Phone number in international format (e.g., +234...)
+             * @example +2348012345678
+             */
+            phoneNumber: string;
+            /**
+             * @description Password (min 8 chars, must contain uppercase, lowercase, number, and special character)
+             * @example Password123!
+             */
+            password: string;
+            /**
+             * @description User full name
+             * @example John Doe
+             */
+            fullName: string;
+            /**
+             * @description User role (user or artisan)
+             * @default user
+             * @example user
+             * @enum {string}
+             */
+            role: "user" | "artisan" | "admin";
+        };
+        UserResponseDto: {
+            id: string;
+            email: string;
+            phoneNumber: string;
+            /** @enum {string} */
+            role: "user" | "artisan" | "admin";
+            emailVerified: boolean;
+            phoneVerified: boolean;
+            isActive: boolean;
+            /** Format: date-time */
+            lastLoginAt?: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            profile?: components["schemas"]["UserProfileResponseDto"];
+            settings?: components["schemas"]["UserSettingsResponseDto"];
+        };
+        TokensResponseDto: {
+            /**
+             * @description JWT access token for API authentication
+             * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+             */
+            accessToken: string;
+            /**
+             * @description Refresh token for obtaining new access tokens
+             * @example a1b2c3d4e5f6g7h8i9j0...
+             */
+            refreshToken: string;
+        };
+        AuthResponseDto: {
+            /** @description User information (without password) */
+            user: components["schemas"]["UserResponseDto"];
+            /** @description Authentication tokens */
+            tokens: components["schemas"]["TokensResponseDto"];
+            /**
+             * @description Indicates if the user needs to verify their account. If true, a verification code has been sent to email and phone.
+             * @example true
+             */
+            requiresVerification?: boolean;
+        };
+        ValidationErrorResponseDto: {
+            /**
+             * @description HTTP status code
+             * @example 400
+             */
+            statusCode: number;
+            /**
+             * @description Validation error messages
+             * @example [
+             *       "email must be an email",
+             *       "password is too weak"
+             *     ]
+             */
+            message: string[];
+            /**
+             * @description Error type
+             * @example Bad Request
+             */
+            error: string;
+        };
+        ErrorResponseDto: {
+            /**
+             * @description HTTP status code
+             * @example 400
+             */
+            statusCode: number;
+            /**
+             * @description Error message
+             * @example Invalid credentials
+             */
+            message: string;
+            /**
+             * @description Error type
+             * @example BadRequestException
+             */
+            error?: string;
+        };
+        LoginDto: {
+            /**
+             * @description Email address or phone number
+             * @example john@example.com
+             */
+            emailOrPhone: string;
+            /**
+             * @description User password
+             * @example Password123!
+             */
+            password: string;
+        };
+        RefreshTokenDto: {
+            /**
+             * @description Refresh token obtained from login/register response
+             * @example a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6...
+             */
+            refreshToken: string;
+        };
+        MessageResponseDto: {
+            /**
+             * @description Response message
+             * @example Operation completed successfully
+             */
+            message: string;
+        };
+        VerifyAccountDto: {
+            /**
+             * @description User email address
+             * @example user@example.com
+             */
+            email: string;
+            /**
+             * @description The 6-digit verification code sent to email and phone
+             * @example 123456
+             */
+            code: string;
+        };
+        ResendVerificationDto: {
+            /**
+             * @description User email address
+             * @example user@example.com
+             */
+            email: string;
+            /**
+             * @description Type of verification to resend. Use "email" to resend email verification or "phone" to resend SMS verification. The code will be sent to the email/phone associated with your account.
+             * @example email
+             * @enum {string}
+             */
+            type: "email" | "phone";
+        };
+        ForgotPasswordDto: {
+            /**
+             * @description Email address or phone number
+             * @example john@example.com
+             */
+            emailOrPhone: string;
+        };
+        ResetPasswordDto: {
+            /**
+             * @description Password reset token from email/SMS
+             * @example abc123def456
+             */
+            token: string;
+            /**
+             * @description New password (min 8 chars, must contain uppercase, lowercase, number, and special character)
+             * @example NewPassword123!
+             */
+            newPassword: string;
+        };
+        ChangePasswordDto: {
+            /**
+             * @description Current password for verification
+             * @example OldPassword123!
+             */
+            currentPassword: string;
+            /**
+             * @description New password (min 8 chars, must contain uppercase, lowercase, number, and special character)
+             * @example NewPassword123!
+             */
+            newPassword: string;
+        };
+        GoogleMobileLoginDto: {
+            /**
+             * @description Google ID token received from Google Sign-In SDK on mobile app
+             * @example eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
+             */
+            idToken: string;
+        };
+        PromotionsDashboardResponseDto: {
+            /** @description User ID */
+            userId: string;
+            /** @description Total referral earnings (Naira) */
+            totalReferralEarnings: number;
+            /** @description Available referral balance (Naira) */
+            availableReferralBalance: number;
+            /** @description Number of successful referrals */
+            referralCount: number;
+            /** @description Reward per referral (Naira) */
+            rewardPerReferral: number;
+            /** @description User's referral code */
+            referralCode: string;
+            /** @description Referral link */
+            referralLink: string;
+            /** @description Active discounts */
+            activeDiscounts: Record<string, never>[];
+        };
+        DiscountItemDto: {
+            /** @description Discount ID */
+            id: string;
+            /**
+             * @description Type of discount
+             * @enum {string}
+             */
+            discountType: "first_time_user" | "first_time_artisan" | "referral_reward" | "promo_code";
+            /** @description Discount percentage */
+            discountPercent: number;
+            /** @description Maximum uses allowed */
+            maxUses: number;
+            /** @description Number of times used */
+            usedCount: number;
+            /** @description Remaining uses */
+            remainingUses: number;
+            /**
+             * Format: date-time
+             * @description Valid until date
+             */
+            validUntil: string;
+            /** @description Description of the discount */
+            description: string;
+            /** @description Whether the discount is still active */
+            isActive: boolean;
+        };
+        ApplyDiscountDto: {
+            /**
+             * @description Job ID to apply discount to
+             * @example 123e4567-e89b-12d3-a456-426614174000
+             */
+            jobId: string;
+            /**
+             * @description Original amount before discount (Naira)
+             * @example 5000
+             */
+            originalAmount: number;
+        };
+        ApplyDiscountResponseDto: {
+            /** @description Success status */
+            success: boolean;
+            /** @description Amount discounted (Naira) */
+            discountAmount: number;
+            /**
+             * @description Discount type applied
+             * @enum {string}
+             */
+            discountType: "first_time_user" | "first_time_artisan" | "referral_reward" | "promo_code";
+            /** @description Message describing the discount */
+            message: string;
+        };
+        ReferralInfoResponseDto: {
+            /** @description User ID */
+            userId: string;
+            /**
+             * @description Unique referral code
+             * @example ALEX2025
+             */
+            referralCode: string;
+            /**
+             * @description Full referral link
+             * @example https://xervices.ng/referral/ALEX2025
+             */
+            referralLink: string;
+            /** @description Number of successful referrals */
+            referralCount: number;
+            /** @description Total earnings from referrals (Naira) */
+            totalEarned: number;
+            /** @description Available balance from referrals (Naira) */
+            availableBalance: number;
+            /** @description Reward amount per successful referral (Naira) */
+            rewardPerReferral: number;
+        };
+        ApplyReferralCodeDto: {
+            /**
+             * @description Referral code to apply
+             * @example ALEX2025
+             */
+            referralCode: string;
+        };
+        ApplyReferralResponseDto: {
+            /** @description Success status */
+            success: boolean;
+            /** @description Message describing the result */
+            message: string;
+            /** @description Name of the referrer (who referred this user) */
+            referrerName: string;
+        };
+        ReferralRewardResponseDto: {
+            /** @description Total rewards earned (Naira) */
+            totalEarned: number;
+            /** @description Available balance (Naira) */
+            availableBalance: number;
+            /** @description Used/redeemed amount (Naira) */
+            usedBalance: number;
+            /** @description Number of successful referrals */
+            referralCount: number;
+            /** @description List of referral history */
+            referralHistory: Record<string, never>[];
+        };
+        UseReferralRewardDto: {
+            /**
+             * @description Job ID to apply the reward to
+             * @example 123e4567-e89b-12d3-a456-426614174000
+             */
+            jobId: string;
+            /**
+             * @description Amount to use from referral rewards (in Naira)
+             * @example 1000
+             */
+            amount: number;
+        };
+        UserProfileResponseDto: {
+            fullName: string;
+            avatarUrl?: string;
+            bio?: string;
+            address?: string;
+            city?: string;
+            state?: string;
+            country: string;
+            postalCode?: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UserSettingsResponseDto: {
+            notificationEnabled: boolean;
+            emailNotification: boolean;
+            smsNotification: boolean;
+            pushNotification: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateProfileDto: {
+            /**
+             * @description User full name
+             * @example John Doe
+             */
+            fullName?: string;
+            /**
+             * @description Profile avatar URL
+             * @example https://storage.example.com/avatars/user-123.jpg
+             */
+            avatarUrl?: string;
+            /**
+             * Format: binary
+             * @description Avatar image file
+             */
+            avatar?: string;
+            /**
+             * @description User bio/description
+             * @example I love hiring great artisans for home projects.
+             */
+            bio?: string;
+            /**
+             * @description Full street address
+             * @example 123 Main Street, Ikoyi
+             */
+            address?: string;
+            /**
+             * @description City name
+             * @example Lagos
+             */
+            city?: string;
+            /**
+             * @description State/Province name
+             * @example Lagos
+             */
+            state?: string;
+            /**
+             * @description Country
+             * @default Nigeria
+             * @example Nigeria
+             */
+            country: string;
+            /**
+             * @description Postal/ZIP code
+             * @example 100001
+             */
+            postalCode?: string;
+        };
+        UpdateLocationDto: {
+            /**
+             * @description Latitude coordinate
+             * @example 6.4541
+             */
+            latitude: number;
+            /**
+             * @description Longitude coordinate
+             * @example 3.3947
+             */
+            longitude: number;
+        };
+        UpdateSettingsDto: {
+            /**
+             * @description Master notification toggle
+             * @example true
+             */
+            notificationEnabled?: boolean;
+            /**
+             * @description Email notification preference
+             * @example true
+             */
+            emailNotification?: boolean;
+            /**
+             * @description SMS notification preference
+             * @example true
+             */
+            smsNotification?: boolean;
+            /**
+             * @description Push notification preference
+             * @example true
+             */
+            pushNotification?: boolean;
+        };
+        OnboardArtisanDto: {
+            /**
+             * @description Category IDs representing artisan skills/services
+             * @example [
+             *       "550e8400-e29b-41d4-a716-446655440000"
+             *     ]
+             */
+            categoryIds: string[];
+            /**
+             * @description Type of identification (BVN or NIN)
+             * @example NIN
+             * @enum {string}
+             */
+            identificationType: "BVN" | "NIN";
+            /**
+             * @description Identification number
+             * @example 12345567788
+             */
+            identificationNumber: string;
+            /**
+             * @description Years of professional experience
+             * @example 10
+             */
+            yearsOfExperience: number;
+            /**
+             * @description Professional license number
+             * @example 12345567788
+             */
+            professionalLicenseNumber?: string;
+            /**
+             * @description State where license was issued
+             * @example Rivers
+             */
+            licenseIssueState?: string;
+            /**
+             * @description License issue date (ISO format)
+             * @example 2025-11-27
+             */
+            licenseIssueDate?: string;
+            /**
+             * @description URLs to uploaded certification documents
+             * @example [
+             *       "https://storage.example.com/cert1.pdf"
+             *     ]
+             */
+            certificationUrls?: string[];
+            /**
+             * @description URLs to uploaded previous job photos
+             * @example [
+             *       "https://storage.example.com/job1.jpg",
+             *       "https://storage.example.com/job2.jpg"
+             *     ]
+             */
+            previousJobUrls?: string[];
+            /** @description Certification documents */
+            certifications?: string[];
+            /** @description Photos of previous jobs */
+            previousJobs?: string[];
+        };
+        ArtisanProfile: {
+            id: string;
+            userId: string;
+            /** @enum {string} */
+            identificationType: "BVN" | "NIN";
+            identificationNumber: string;
+            /** @enum {string} */
+            verificationStatus: "pending" | "verified" | "rejected";
+            /** Format: date-time */
+            verifiedAt?: string;
+            verificationProvider?: string;
+            yearsOfExperience?: number;
+            professionalLicenseNumber?: string;
+            /** Format: date-time */
+            licenseIssueDate?: string;
+            /** Format: date-time */
+            licenseExpiryDate?: string;
+            certificationUrls?: string[];
+            previousJobUrls?: string[];
+            serviceRadiusKm: number;
+            baseHourlyRate?: number;
+            averageRating: number;
+            totalReviews: number;
+            totalJobsCompleted: number;
+            isAvailable: boolean;
+            isVerified: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateSkillsDto: {
+            /**
+             * @description Category IDs representing artisan skills/services
+             * @example [
+             *       "550e8400-e29b-41d4-a716-446655440000"
+             *     ]
+             */
+            categoryIds: string[];
+        };
+        CreateCategoryDto: {
+            /** @example Plumbing */
+            name: string;
+            /** @example plumbing */
+            slug: string;
+            /** @example All plumbing services */
+            description?: string;
+            /** Format: binary */
+            icon?: string;
+            /**
+             * @description URL of the icon (if not uploading file)
+             * @example https://example.com/icon.png
+             */
+            iconUrl?: string;
+            /** @example 0 */
+            displayOrder?: number;
+            /** @example true */
+            isActive?: boolean;
+        };
+        CategoryResponseDto: {
+            /**
+             * @description Category unique identifier (UUID)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Category display name
+             * @example Plumbing
+             */
+            name: string;
+            /**
+             * @description URL-friendly slug for the category
+             * @example plumbing
+             */
+            slug: string;
+            /**
+             * @description Category description
+             * @example Installation and repair of water pipes
+             */
+            description?: string | null;
+            /**
+             * @description URL to category icon
+             * @example https://storage.example.com/icons/plumbing.png
+             */
+            iconUrl?: string | null;
+            /**
+             * @description Whether category is active
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * @description Display order for sorting
+             * @example 1
+             */
+            displayOrder: number;
+            /**
+             * Format: date-time
+             * @description Creation timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Last update timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            updatedAt: string;
+        };
+        CreateServiceRequestDto: {
+            /**
+             * @description Category ID for the type of service needed
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            categoryId: string;
+            /**
+             * @description Brief title/summary of the service request
+             * @example Fix leaking pipe in bathroom
+             */
+            title: string;
+            /**
+             * @description Detailed description of the service needed
+             * @example There is a leaking pipe under the bathroom sink. Water is dripping constantly.
+             */
+            description: string;
+            /**
+             * @description Full address where service is needed
+             * @example 123 Main Street, Victoria Island, Lagos
+             */
+            serviceAddress: string;
+            /**
+             * @description Latitude of service location
+             * @example 6.4281
+             */
+            latitude: number;
+            /**
+             * @description Longitude of service location
+             * @example 3.4219
+             */
+            longitude: number;
+            /**
+             * @description Contact phone number for this service
+             * @example +2348012345678
+             */
+            contactPhone: string;
+            /**
+             * @description Minimum budget (in Naira)
+             * @example 5000
+             */
+            budgetMin?: number;
+            /**
+             * @description Maximum budget (in Naira)
+             * @example 20000
+             */
+            budgetMax?: number;
+            /**
+             * @description Preferred date/time for the service (ISO format)
+             * @example 2026-01-15T10:00:00.000Z
+             */
+            preferredDate?: string;
+        };
+        ServiceRequestResponseDto: {
+            /**
+             * @description Service Request unique identifier (UUID)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description User ID of the requester
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            userId: string;
+            /** @description User details */
+            user: components["schemas"]["UserResponseDto"];
+            /**
+             * @description Category ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            categoryId: string;
+            /** @description Category details */
+            category: components["schemas"]["CategoryResponseDto"];
+            /**
+             * @description Title of the request
+             * @example Need a plumber for leaking sink
+             */
+            title: string;
+            /**
+             * @description Detailed description
+             * @example The kitchen sink is leaking from the bottom pipe.
+             */
+            description: string;
+            /**
+             * @description Service address
+             * @example 123 Main St, Lagos
+             */
+            serviceAddress: string;
+            /**
+             * @description Contact phone number
+             * @example +2348012345678
+             */
+            contactPhone: string;
+            /**
+             * @description Request status
+             * @example open
+             * @enum {string}
+             */
+            status: "open" | "in_negotiation" | "accepted" | "cancelled" | "expired";
+            /**
+             * @description Minimum budget
+             * @example 5000
+             */
+            budgetMin?: number | null;
+            /**
+             * @description Maximum budget
+             * @example 10000
+             */
+            budgetMax?: number | null;
+            /**
+             * Format: date-time
+             * @description Preferred date
+             * @example 2025-12-10T10:00:00.000Z
+             */
+            preferredDate?: string | null;
+            /**
+             * Format: date-time
+             * @description Expiration date
+             * @example 2025-12-14T10:00:00.000Z
+             */
+            expiresAt: string;
+            /**
+             * Format: date-time
+             * @description Creation timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Last update timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            updatedAt: string;
+        };
+        CreateServiceRequestResponseDto: {
+            /** @description Created service request */
+            serviceRequest: components["schemas"]["ServiceRequestResponseDto"];
+            /**
+             * @description Number of matching artisans found
+             * @example 5
+             */
+            matchingArtisansCount: number;
+        };
+        MatchingArtisanResponseDto: {
+            /**
+             * @description Artisan unique identifier (UUID)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            artisanId: string;
+            /**
+             * @description Artisan full name
+             * @example John Doe
+             */
+            fullName: string;
+            /**
+             * @description Distance in kilometers
+             * @example 5.2
+             */
+            distance: number;
+            /**
+             * @description Average rating (0-5)
+             * @example 4.5
+             */
+            averageRating: number;
+            /**
+             * @description Total number of reviews
+             * @example 25
+             */
+            totalReviews: number;
+        };
+        CreateOfferDto: {
+            /**
+             * @description Service request ID to make an offer on
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            serviceRequestId: string;
+            /**
+             * @description Offer amount in Naira
+             * @example 15000
+             */
+            amount: number;
+            /**
+             * @description Optional message/note with the offer
+             * @example I can complete this job within 2 hours. I have 5 years of experience.
+             */
+            message?: string;
+        };
+        OfferResponseDto: {
+            /**
+             * @description Offer unique identifier (UUID)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Service Request ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            serviceRequestId: string;
+            /** @description Service Request details */
+            serviceRequest?: components["schemas"]["ServiceRequestResponseDto"];
+            /**
+             * @description Artisan ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            artisanId: string;
+            /** @description Artisan details */
+            artisan?: components["schemas"]["UserResponseDto"];
+            /**
+             * @description Who made the offer
+             * @example artisan
+             * @enum {string}
+             */
+            offeredBy: "user" | "artisan";
+            /**
+             * @description Offer amount
+             * @example 7500.5
+             */
+            amount: number;
+            /**
+             * @description Message/Note
+             * @example I can fix this in 1 hour.
+             */
+            message?: string | null;
+            /**
+             * @description Offer status
+             * @example pending
+             * @enum {string}
+             */
+            status: "pending" | "accepted" | "rejected" | "countered" | "expired";
+            /**
+             * @description Parent Offer ID (for counter-offers)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            parentOfferId?: string | null;
+            /** @description Parent Offer */
+            parentOffer?: components["schemas"]["OfferResponseDto"];
+            /**
+             * Format: date-time
+             * @description Expiration date
+             * @example 2025-12-08T10:00:00.000Z
+             */
+            expiresAt: string;
+            /**
+             * Format: date-time
+             * @description Response timestamp
+             * @example 2025-12-07T11:00:00.000Z
+             */
+            respondedAt?: string | null;
+            /**
+             * Format: date-time
+             * @description Creation timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Last update timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            updatedAt: string;
+        };
+        CounterOfferDto: {
+            /**
+             * @description New counter-offer amount in Naira
+             * @example 12000
+             */
+            amount: number;
+            /**
+             * @description Optional message/note with the counter-offer
+             * @example I can agree to this price if you can start tomorrow.
+             */
+            message?: string;
+        };
+        RespondOfferDto: {
+            /**
+             * @description Action to take on the offer
+             * @example accept
+             * @enum {string}
+             */
+            action: "accept" | "reject";
+        };
+        JobResponseDto: {
+            /**
+             * @description Job unique identifier (UUID)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Service Request ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            serviceRequestId: string;
+            /** @description Service Request details */
+            serviceRequest: components["schemas"]["ServiceRequestResponseDto"];
+            /**
+             * @description User ID (Requester)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            userId: string;
+            /** @description User details */
+            user: components["schemas"]["UserResponseDto"];
+            /**
+             * @description Artisan ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            artisanId: string;
+            /** @description Artisan details */
+            artisan: components["schemas"]["UserResponseDto"];
+            /**
+             * @description Accepted Offer ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            acceptedOfferId: string;
+            /** @description Accepted Offer details */
+            acceptedOffer: components["schemas"]["OfferResponseDto"];
+            /**
+             * @description Category ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            categoryId: string;
+            /** @description Category details */
+            category: components["schemas"]["CategoryResponseDto"];
+            /**
+             * @description Agreed amount
+             * @example 7500
+             */
+            agreedAmount: number;
+            /**
+             * @description Discount amount
+             * @example 0
+             */
+            discountAmount: number;
+            /**
+             * @description Final amount
+             * @example 7500
+             */
+            finalAmount: number;
+            /**
+             * @description Promo code
+             * @example WELCOME5
+             */
+            promoCode?: string | null;
+            /**
+             * @description Job status
+             * @example pending
+             * @enum {string}
+             */
+            status: "pending" | "paid" | "in_progress" | "completed" | "approved" | "disputed" | "cancelled";
+            /**
+             * Format: date-time
+             * @description Scheduled date
+             * @example 2025-12-10T10:00:00.000Z
+             */
+            scheduledDate?: string | null;
+            /**
+             * Format: date-time
+             * @description Started at
+             * @example 2025-12-10T10:15:00.000Z
+             */
+            startedAt?: string | null;
+            /**
+             * Format: date-time
+             * @description Completed at
+             * @example 2025-12-10T12:00:00.000Z
+             */
+            completedAt?: string | null;
+            /**
+             * Format: date-time
+             * @description Approved at
+             * @example 2025-12-10T12:30:00.000Z
+             */
+            approvedAt?: string | null;
+            /**
+             * Format: date-time
+             * @description Cancelled at
+             */
+            cancelledAt?: string | null;
+            /** @description Cancellation reason */
+            cancellationReason?: string | null;
+            /**
+             * Format: date-time
+             * @description Creation timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Last update timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            updatedAt: string;
+        };
+        JobStatsResponseDto: {
+            /**
+             * @description Total number of jobs
+             * @example 25
+             */
+            total: number;
+            /**
+             * @description Number of pending jobs
+             * @example 5
+             */
+            pending: number;
+            /**
+             * @description Number of jobs in progress
+             * @example 3
+             */
+            inProgress: number;
+            /**
+             * @description Number of completed jobs
+             * @example 15
+             */
+            completed: number;
+            /**
+             * @description Number of cancelled jobs
+             * @example 2
+             */
+            cancelled: number;
+        };
+        CreatePinDto: {
+            /**
+             * @description New PIN (4-6 digits)
+             * @example 1234
+             */
+            pin: string;
+        };
+        VerifyPinDto: {
+            /**
+             * @description PIN to verify
+             * @example 1234
+             */
+            pin: string;
+        };
+        CreateWithdrawalDto: {
+            /**
+             * @description Bank account ID to withdraw to
+             * @example 123e4567-e89b-12d3-a456-426614174000
+             */
+            bankAccountId: string;
+            /**
+             * @description Amount to withdraw (Naira)
+             * @example 5000
+             */
+            amount: number;
+            /**
+             * @description Withdrawal PIN for verification
+             * @example 1234
+             */
+            pin: string;
+        };
+        CreateDisputeDto: {
+            /**
+             * @description ID of the job to dispute
+             * @example 123e4567-e89b-12d3-a456-426614174000
+             */
+            jobId: string;
+            /**
+             * @description Type of dispute
+             * @example service_quality
+             * @enum {string}
+             */
+            disputeType: "service_quality" | "payment" | "behavior" | "cancellation" | "other";
+            /**
+             * @description Detailed description of the dispute
+             * @example The artisan did not complete the work as agreed.
+             */
+            description: string;
+        };
+        DisputeEvidenceResponseDto: {
+            id: string;
+            /** @enum {string} */
+            mediaType: "image" | "video";
+            mediaUrl: string;
+            description?: string;
+            uploadedBy: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        DisputeResponseDto: {
+            id: string;
+            jobId: string;
+            raisedBy: string;
+            /** @enum {string} */
+            disputeType: "service_quality" | "payment" | "behavior" | "cancellation" | "other";
+            description: string;
+            /** @enum {string} */
+            status: "open" | "under_review" | "resolved" | "closed";
+            resolution?: string;
+            resolvedBy?: string;
+            /** @enum {string} */
+            resolutionType?: "full_refund" | "partial_refund" | "no_refund" | "full_payment" | "partial_payment";
+            refundAmount?: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            resolvedAt?: string;
+            evidence?: components["schemas"]["DisputeEvidenceResponseDto"][];
+        };
+        AddEvidenceDto: {
+            /**
+             * @description Type of media
+             * @example image
+             * @enum {string}
+             */
+            mediaType: "image" | "video";
+            /**
+             * @description URL to the uploaded media file
+             * @example https://storage.example.com/evidence/image.jpg
+             */
+            mediaUrl: string;
+            /**
+             * @description Description of the evidence
+             * @example Photo showing the unfinished work
+             */
+            description?: string;
+        };
+        CreateSupportTicketDto: {
+            /**
+             * @description Brief subject/title for the support ticket
+             * @example Payment not reflecting
+             */
+            subject: string;
+            /**
+             * @description Detailed description of your issue or question
+             * @example I made a payment yesterday but it is not showing in my wallet. Transaction reference: TXN123456
+             */
+            message: string;
+            /**
+             * @description Category of the support ticket
+             * @default general
+             * @example billing
+             * @enum {string}
+             */
+            category: "general" | "technical" | "billing" | "feedback" | "other";
+        };
+        UpdateSupportTicketDto: {
+            /**
+             * @description New status for the ticket
+             * @example in_progress
+             * @enum {string}
+             */
+            status?: "open" | "in_progress" | "resolved" | "closed";
+            /**
+             * @description Priority level for the ticket
+             * @example high
+             * @enum {string}
+             */
+            priority?: "low" | "normal" | "high" | "urgent";
+            /**
+             * @description UUID of the admin to assign this ticket to
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            assignedTo?: string;
+            /**
+             * @description Response message to the user
+             * @example We have investigated your issue and the payment has been credited to your wallet.
+             */
+            response?: string;
+        };
+        CreateAppRatingDto: {
+            /**
+             * @description Rating score from 1 to 5 stars
+             * @example 5
+             */
+            rating: number;
+            /**
+             * @description Optional feedback about the app
+             * @example Great app! Very easy to find artisans in my area.
+             */
+            feedback?: string;
+            /**
+             * @description Current app version
+             * @example 1.2.3
+             */
+            appVersion?: string;
+            /**
+             * @description Device information for analytics
+             * @example {
+             *       "os": "iOS",
+             *       "version": "17.0",
+             *       "model": "iPhone 15"
+             *     }
+             */
+            deviceInfo?: Record<string, never>;
+        };
     };
-    RegisterDto: {
-      /**
-       * Format: email
-       * @description User email address (will be lowercased)
-       * @example john@example.com
-       */
-      email: string;
-      /**
-       * @description Phone number in international format (e.g., +234...)
-       * @example +2348012345678
-       */
-      phoneNumber: string;
-      /**
-       * @description Password (min 8 chars, must contain uppercase, lowercase, number, and special character)
-       * @example Password123!
-       */
-      password: string;
-      /**
-       * @description User full name
-       * @example John Doe
-       */
-      fullName: string;
-      /**
-       * @description User role (user or artisan)
-       * @default user
-       * @example user
-       * @enum {string}
-       */
-      role: 'user' | 'artisan' | 'admin';
-    };
-    UserResponseDto: {
-      id: string;
-      email: string;
-      phoneNumber: string;
-      /** @enum {string} */
-      role: 'user' | 'artisan' | 'admin';
-      emailVerified: boolean;
-      phoneVerified: boolean;
-      isActive: boolean;
-      /** Format: date-time */
-      lastLoginAt?: string;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-      profile?: components['schemas']['UserProfileResponseDto'];
-      settings?: components['schemas']['UserSettingsResponseDto'];
-    };
-    TokensResponseDto: {
-      /**
-       * @description JWT access token for API authentication
-       * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-       */
-      accessToken: string;
-      /**
-       * @description Refresh token for obtaining new access tokens
-       * @example a1b2c3d4e5f6g7h8i9j0...
-       */
-      refreshToken: string;
-    };
-    AuthResponseDto: {
-      /** @description User information (without password) */
-      user: components['schemas']['UserResponseDto'];
-      /** @description Authentication tokens */
-      tokens: components['schemas']['TokensResponseDto'];
-    };
-    ValidationErrorResponseDto: {
-      /**
-       * @description HTTP status code
-       * @example 400
-       */
-      statusCode: number;
-      /**
-       * @description Validation error messages
-       * @example [
-       *       "email must be an email",
-       *       "password is too weak"
-       *     ]
-       */
-      message: string[];
-      /**
-       * @description Error type
-       * @example Bad Request
-       */
-      error: string;
-    };
-    ErrorResponseDto: {
-      /**
-       * @description HTTP status code
-       * @example 400
-       */
-      statusCode: number;
-      /**
-       * @description Error message
-       * @example Invalid credentials
-       */
-      message: string;
-      /**
-       * @description Error type
-       * @example BadRequestException
-       */
-      error?: string;
-    };
-    LoginDto: {
-      /**
-       * @description Email address or phone number
-       * @example john@example.com
-       */
-      emailOrPhone: string;
-      /**
-       * @description User password
-       * @example Password123!
-       */
-      password: string;
-    };
-    RefreshTokenDto: {
-      /**
-       * @description Refresh token obtained from login/register response
-       * @example a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6...
-       */
-      refreshToken: string;
-    };
-    MessageResponseDto: {
-      /** @example Operation successful */
-      message: string;
-    };
-    VerifyAccountDto: {
-      /**
-       * @description The 6-digit verification code sent to email and phone
-       * @example 123456
-       */
-      code: string;
-    };
-    ResendVerificationDto: {
-      /**
-       * @description Type of verification to resend. Use "email" to resend email verification or "phone" to resend SMS verification. The code will be sent to the email/phone associated with your account.
-       * @example email
-       * @enum {string}
-       */
-      type: 'email' | 'phone';
-    };
-    ForgotPasswordDto: {
-      /**
-       * @description Email address or phone number
-       * @example john@example.com
-       */
-      emailOrPhone: string;
-    };
-    ResetPasswordDto: {
-      /**
-       * @description Password reset token from email/SMS
-       * @example abc123def456
-       */
-      token: string;
-      /**
-       * @description New password (min 8 chars, must contain uppercase, lowercase, number, and special character)
-       * @example NewPassword123!
-       */
-      newPassword: string;
-    };
-    ChangePasswordDto: {
-      /**
-       * @description Current password for verification
-       * @example OldPassword123!
-       */
-      currentPassword: string;
-      /**
-       * @description New password (min 8 chars, must contain uppercase, lowercase, number, and special character)
-       * @example NewPassword123!
-       */
-      newPassword: string;
-    };
-    GoogleMobileLoginDto: {
-      /**
-       * @description Google ID token received from Google Sign-In SDK on mobile app
-       * @example eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
-       */
-      idToken: string;
-    };
-    PromotionsDashboardResponseDto: {
-      /** @description User ID */
-      userId: string;
-      /** @description Total referral earnings (Naira) */
-      totalReferralEarnings: number;
-      /** @description Available referral balance (Naira) */
-      availableReferralBalance: number;
-      /** @description Number of successful referrals */
-      referralCount: number;
-      /** @description Reward per referral (Naira) */
-      rewardPerReferral: number;
-      /** @description User's referral code */
-      referralCode: string;
-      /** @description Referral link */
-      referralLink: string;
-      /** @description Active discounts */
-      activeDiscounts: Record<string, never>[];
-    };
-    DiscountItemDto: {
-      /** @description Discount ID */
-      id: string;
-      /**
-       * @description Type of discount
-       * @enum {string}
-       */
-      discountType: 'first_time_user' | 'first_time_artisan' | 'referral_reward' | 'promo_code';
-      /** @description Discount percentage */
-      discountPercent: number;
-      /** @description Maximum uses allowed */
-      maxUses: number;
-      /** @description Number of times used */
-      usedCount: number;
-      /** @description Remaining uses */
-      remainingUses: number;
-      /**
-       * Format: date-time
-       * @description Valid until date
-       */
-      validUntil: string;
-      /** @description Description of the discount */
-      description: string;
-      /** @description Whether the discount is still active */
-      isActive: boolean;
-    };
-    ApplyDiscountDto: {
-      /**
-       * @description Job ID to apply discount to
-       * @example 123e4567-e89b-12d3-a456-426614174000
-       */
-      jobId: string;
-      /**
-       * @description Original amount before discount (Naira)
-       * @example 5000
-       */
-      originalAmount: number;
-    };
-    ApplyDiscountResponseDto: {
-      /** @description Success status */
-      success: boolean;
-      /** @description Amount discounted (Naira) */
-      discountAmount: number;
-      /**
-       * @description Discount type applied
-       * @enum {string}
-       */
-      discountType: 'first_time_user' | 'first_time_artisan' | 'referral_reward' | 'promo_code';
-      /** @description Message describing the discount */
-      message: string;
-    };
-    ReferralInfoResponseDto: {
-      /** @description User ID */
-      userId: string;
-      /**
-       * @description Unique referral code
-       * @example ALEX2025
-       */
-      referralCode: string;
-      /**
-       * @description Full referral link
-       * @example https://xervices.ng/referral/ALEX2025
-       */
-      referralLink: string;
-      /** @description Number of successful referrals */
-      referralCount: number;
-      /** @description Total earnings from referrals (Naira) */
-      totalEarned: number;
-      /** @description Available balance from referrals (Naira) */
-      availableBalance: number;
-      /** @description Reward amount per successful referral (Naira) */
-      rewardPerReferral: number;
-    };
-    ApplyReferralCodeDto: {
-      /**
-       * @description Referral code to apply
-       * @example ALEX2025
-       */
-      referralCode: string;
-    };
-    ApplyReferralResponseDto: {
-      /** @description Success status */
-      success: boolean;
-      /** @description Message describing the result */
-      message: string;
-      /** @description Name of the referrer (who referred this user) */
-      referrerName: string;
-    };
-    ReferralRewardResponseDto: {
-      /** @description Total rewards earned (Naira) */
-      totalEarned: number;
-      /** @description Available balance (Naira) */
-      availableBalance: number;
-      /** @description Used/redeemed amount (Naira) */
-      usedBalance: number;
-      /** @description Number of successful referrals */
-      referralCount: number;
-      /** @description List of referral history */
-      referralHistory: Record<string, never>[];
-    };
-    UseReferralRewardDto: {
-      /**
-       * @description Job ID to apply the reward to
-       * @example 123e4567-e89b-12d3-a456-426614174000
-       */
-      jobId: string;
-      /**
-       * @description Amount to use from referral rewards (in Naira)
-       * @example 1000
-       */
-      amount: number;
-    };
-    UserProfileResponseDto: {
-      fullName: string;
-      avatarUrl?: string;
-      bio?: string;
-      address?: string;
-      city?: string;
-      state?: string;
-      country: string;
-      postalCode?: string;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    UserSettingsResponseDto: {
-      notificationEnabled: boolean;
-      emailNotification: boolean;
-      smsNotification: boolean;
-      pushNotification: boolean;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    UpdateProfileDto: {
-      /**
-       * @description User full name
-       * @example John Doe
-       */
-      fullName?: string;
-      /**
-       * @description Profile avatar URL
-       * @example https://storage.example.com/avatars/user-123.jpg
-       */
-      avatarUrl?: string;
-      /**
-       * @description User bio/description
-       * @example I love hiring great artisans for home projects.
-       */
-      bio?: string;
-      /**
-       * @description Full street address
-       * @example 123 Main Street, Ikoyi
-       */
-      address?: string;
-      /**
-       * @description City name
-       * @example Lagos
-       */
-      city?: string;
-      /**
-       * @description State/Province name
-       * @example Lagos
-       */
-      state?: string;
-      /**
-       * @description Country
-       * @default Nigeria
-       * @example Nigeria
-       */
-      country: string;
-      /**
-       * @description Postal/ZIP code
-       * @example 100001
-       */
-      postalCode?: string;
-    };
-    UpdateLocationDto: {
-      /**
-       * @description Latitude coordinate
-       * @example 6.4541
-       */
-      latitude: number;
-      /**
-       * @description Longitude coordinate
-       * @example 3.3947
-       */
-      longitude: number;
-    };
-    UpdateSettingsDto: {
-      /**
-       * @description Master notification toggle
-       * @example true
-       */
-      notificationEnabled?: boolean;
-      /**
-       * @description Email notification preference
-       * @example true
-       */
-      emailNotification?: boolean;
-      /**
-       * @description SMS notification preference
-       * @example true
-       */
-      smsNotification?: boolean;
-      /**
-       * @description Push notification preference
-       * @example true
-       */
-      pushNotification?: boolean;
-    };
-    OnboardArtisanDto: {
-      /**
-       * @description Type of identification (BVN or NIN)
-       * @example NIN
-       * @enum {string}
-       */
-      identificationType: 'BVN' | 'NIN';
-      /**
-       * @description Identification number
-       * @example 12345567788
-       */
-      identificationNumber: string;
-      /**
-       * @description Years of professional experience
-       * @example 10
-       */
-      yearsOfExperience: number;
-      /**
-       * @description Professional license number
-       * @example 12345567788
-       */
-      professionalLicenseNumber?: string;
-      /**
-       * @description State where license was issued
-       * @example Rivers
-       */
-      licenseIssueState?: string;
-      /**
-       * @description License issue date (ISO format)
-       * @example 2025-11-27
-       */
-      licenseIssueDate?: string;
-      /**
-       * @description URLs to uploaded certification documents
-       * @example [
-       *       "https://storage.example.com/cert1.pdf"
-       *     ]
-       */
-      certificationUrls?: string[];
-      /**
-       * @description URLs to uploaded previous job photos
-       * @example [
-       *       "https://storage.example.com/job1.jpg",
-       *       "https://storage.example.com/job2.jpg"
-       *     ]
-       */
-      previousJobUrls?: string[];
-    };
-    CreatePinDto: {
-      /**
-       * @description New PIN (4-6 digits)
-       * @example 1234
-       */
-      pin: string;
-    };
-    VerifyPinDto: {
-      /**
-       * @description PIN to verify
-       * @example 1234
-       */
-      pin: string;
-    };
-    CreateWithdrawalDto: {
-      /**
-       * @description Bank account ID to withdraw to
-       * @example 123e4567-e89b-12d3-a456-426614174000
-       */
-      bankAccountId: string;
-      /**
-       * @description Amount to withdraw (Naira)
-       * @example 5000
-       */
-      amount: number;
-      /**
-       * @description Withdrawal PIN for verification
-       * @example 1234
-       */
-      pin: string;
-    };
-    CreateDisputeDto: {
-      /**
-       * @description ID of the job to dispute
-       * @example 123e4567-e89b-12d3-a456-426614174000
-       */
-      jobId: string;
-      /**
-       * @description Type of dispute
-       * @example service_quality
-       * @enum {string}
-       */
-      disputeType: 'service_quality' | 'payment' | 'behavior' | 'cancellation' | 'other';
-      /**
-       * @description Detailed description of the dispute
-       * @example The artisan did not complete the work as agreed.
-       */
-      description: string;
-    };
-    DisputeEvidenceResponseDto: {
-      id: string;
-      /** @enum {string} */
-      mediaType: 'image' | 'video';
-      mediaUrl: string;
-      description?: string;
-      uploadedBy: string;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    DisputeResponseDto: {
-      id: string;
-      jobId: string;
-      raisedBy: string;
-      /** @enum {string} */
-      disputeType: 'service_quality' | 'payment' | 'behavior' | 'cancellation' | 'other';
-      description: string;
-      /** @enum {string} */
-      status: 'open' | 'under_review' | 'resolved' | 'closed';
-      resolution?: string;
-      resolvedBy?: string;
-      /** @enum {string} */
-      resolutionType?:
-        | 'full_refund'
-        | 'partial_refund'
-        | 'no_refund'
-        | 'full_payment'
-        | 'partial_payment';
-      refundAmount?: number;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-      /** Format: date-time */
-      resolvedAt?: string;
-      evidence?: components['schemas']['DisputeEvidenceResponseDto'][];
-    };
-    AddEvidenceDto: {
-      /**
-       * @description Type of media
-       * @example image
-       * @enum {string}
-       */
-      mediaType: 'image' | 'video';
-      /**
-       * @description URL to the uploaded media file
-       * @example https://storage.example.com/evidence/image.jpg
-       */
-      mediaUrl: string;
-      /**
-       * @description Description of the evidence
-       * @example Photo showing the unfinished work
-       */
-      description?: string;
-    };
-    CreateSupportTicketDto: {
-      /**
-       * @description Brief subject/title for the support ticket
-       * @example Payment not reflecting
-       */
-      subject: string;
-      /**
-       * @description Detailed description of your issue or question
-       * @example I made a payment yesterday but it is not showing in my wallet. Transaction reference: TXN123456
-       */
-      message: string;
-      /**
-       * @description Category of the support ticket
-       * @default general
-       * @example billing
-       * @enum {string}
-       */
-      category: 'general' | 'technical' | 'billing' | 'feedback' | 'other';
-    };
-    UpdateSupportTicketDto: {
-      /**
-       * @description New status for the ticket
-       * @example in_progress
-       * @enum {string}
-       */
-      status?: 'open' | 'in_progress' | 'resolved' | 'closed';
-      /**
-       * @description Priority level for the ticket
-       * @example high
-       * @enum {string}
-       */
-      priority?: 'low' | 'normal' | 'high' | 'urgent';
-      /**
-       * @description UUID of the admin to assign this ticket to
-       * @example 550e8400-e29b-41d4-a716-446655440000
-       */
-      assignedTo?: string;
-      /**
-       * @description Response message to the user
-       * @example We have investigated your issue and the payment has been credited to your wallet.
-       */
-      response?: string;
-    };
-    CreateAppRatingDto: {
-      /**
-       * @description Rating score from 1 to 5 stars
-       * @example 5
-       */
-      rating: number;
-      /**
-       * @description Optional feedback about the app
-       * @example Great app! Very easy to find artisans in my area.
-       */
-      feedback?: string;
-      /**
-       * @description Current app version
-       * @example 1.2.3
-       */
-      appVersion?: string;
-      /**
-       * @description Device information for analytics
-       * @example {
-       *       "os": "iOS",
-       *       "version": "17.0",
-       *       "model": "iPhone 15"
-       *     }
-       */
-      deviceInfo?: Record<string, never>;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  HealthController_check: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The Health Check is successful */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    HealthController_check: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': {
-            /** @example ok */
-            status?: string;
-            /**
-             * @example {
-             *       "database": {
-             *         "status": "up"
-             *       }
-             *     }
-             */
-            info?: {
-              [key: string]: {
-                status: string;
-              } & {
-                [key: string]: unknown;
-              };
-            } | null;
-            /** @example {} */
-            error?: {
-              [key: string]: {
-                status: string;
-              } & {
-                [key: string]: unknown;
-              };
-            } | null;
-            /**
-             * @example {
-             *       "database": {
-             *         "status": "up"
-             *       }
-             *     }
-             */
-            details?: {
-              [key: string]: {
-                status: string;
-              } & {
-                [key: string]: unknown;
-              };
+        requestBody?: never;
+        responses: {
+            /** @description The Health Check is successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example ok */
+                        status?: string;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       }
+                         *     }
+                         */
+                        info?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /** @example {} */
+                        error?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       }
+                         *     }
+                         */
+                        details?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
             };
-          };
-        };
-      };
-      /** @description The Health Check is not successful */
-      503: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example error */
-            status?: string;
-            /**
-             * @example {
-             *       "database": {
-             *         "status": "up"
-             *       }
-             *     }
-             */
-            info?: {
-              [key: string]: {
-                status: string;
-              } & {
-                [key: string]: unknown;
-              };
-            } | null;
-            /**
-             * @example {
-             *       "redis": {
-             *         "status": "down",
-             *         "message": "Could not connect"
-             *       }
-             *     }
-             */
-            error?: {
-              [key: string]: {
-                status: string;
-              } & {
-                [key: string]: unknown;
-              };
-            } | null;
-            /**
-             * @example {
-             *       "database": {
-             *         "status": "up"
-             *       },
-             *       "redis": {
-             *         "status": "down",
-             *         "message": "Could not connect"
-             *       }
-             *     }
-             */
-            details?: {
-              [key: string]: {
-                status: string;
-              } & {
-                [key: string]: unknown;
-              };
+            /** @description The Health Check is not successful */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       }
+                         *     }
+                         */
+                        info?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "redis": {
+                         *         "status": "down",
+                         *         "message": "Could not connect"
+                         *       }
+                         *     }
+                         */
+                        error?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       },
+                         *       "redis": {
+                         *         "status": "down",
+                         *         "message": "Could not connect"
+                         *       }
+                         *     }
+                         */
+                        details?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
             };
-          };
-        };
-      };
-    };
-  };
-  HealthController_ping: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Pong response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PingResponseDto'];
-        };
-      };
-    };
-  };
-  AuthController_register: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RegisterDto'];
-      };
-    };
-    responses: {
-      /** @description User registered successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthResponseDto'];
-        };
-      };
-      /** @description Validation error */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ValidationErrorResponseDto'];
-        };
-      };
-      /** @description Email or phone already exists */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AuthController_login: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['LoginDto'];
-      };
-    };
-    responses: {
-      /** @description Login successful */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthResponseDto'];
-        };
-      };
-      /** @description Invalid credentials */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AuthController_refresh: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RefreshTokenDto'];
-      };
-    };
-    responses: {
-      /** @description Token refreshed successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['TokensResponseDto'];
-        };
-      };
-      /** @description Invalid or expired refresh token */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AuthController_logout: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RefreshTokenDto'];
-      };
-    };
-    responses: {
-      /** @description Logout successful */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MessageResponseDto'];
-        };
-      };
-    };
-  };
-  AuthController_verifyAccount: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['VerifyAccountDto'];
-      };
-    };
-    responses: {
-      /** @description Account verified successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MessageResponseDto'];
-        };
-      };
-      /** @description Invalid or expired verification code */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AuthController_resendVerification: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ResendVerificationDto'];
-      };
-    };
-    responses: {
-      /** @description Verification code sent successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MessageResponseDto'];
-        };
-      };
-      /** @description Already verified */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AuthController_forgotPassword: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ForgotPasswordDto'];
-      };
-    };
-    responses: {
-      /** @description Reset code sent if email/phone exists */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MessageResponseDto'];
-        };
-      };
-    };
-  };
-  AuthController_resetPassword: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ResetPasswordDto'];
-      };
-    };
-    responses: {
-      /** @description Password reset successful */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MessageResponseDto'];
-        };
-      };
-      /** @description Invalid or expired reset code */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AuthController_changePassword: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ChangePasswordDto'];
-      };
-    };
-    responses: {
-      /** @description Password changed successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MessageResponseDto'];
-        };
-      };
-      /** @description Current password incorrect or unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AuthController_googleMobileLogin: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['GoogleMobileLoginDto'];
-      };
-    };
-    responses: {
-      /** @description Authentication successful */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthResponseDto'];
-        };
-      };
-      /** @description Invalid Google ID token */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  PromotionsController_getPromotionsDashboard: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Promotions dashboard retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PromotionsDashboardResponseDto'];
-        };
-      };
-    };
-  };
-  PromotionsController_getMyDiscounts: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Active discounts retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DiscountItemDto'][];
-        };
-      };
-    };
-  };
-  PromotionsController_applyDiscount: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ApplyDiscountDto'];
-      };
-    };
-    responses: {
-      /** @description Discount applied successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApplyDiscountResponseDto'];
-        };
-      };
-      /** @description No active discounts available */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ReferralsController_getMyReferralInfo: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Referral info retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ReferralInfoResponseDto'];
-        };
-      };
-    };
-  };
-  ReferralsController_applyReferralCode: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ApplyReferralCodeDto'];
-      };
-    };
-    responses: {
-      /** @description Referral code applied successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApplyReferralResponseDto'];
-        };
-      };
-      /** @description Invalid referral code */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description User has already been referred */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ReferralsController_getMyReferralRewards: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Referral rewards retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ReferralRewardResponseDto'];
-        };
-      };
-    };
-  };
-  ReferralsController_useReferralReward: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UseReferralRewardDto'];
-      };
-    };
-    responses: {
-      /** @description Referral reward applied successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Insufficient referral reward balance */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_getCurrentUser: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description User retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['UserResponseDto'];
-        };
-      };
-    };
-  };
-  UsersController_deleteAccount: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Account deleted successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MessageResponseDto'];
-        };
-      };
-    };
-  };
-  UsersController_updateProfile: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateProfileDto'];
-      };
-    };
-    responses: {
-      /** @description Profile updated successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_updateLocation: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateLocationDto'];
-      };
-    };
-    responses: {
-      /** @description Location updated successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_updateSettings: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateSettingsDto'];
-      };
-    };
-    responses: {
-      /** @description Settings updated successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ArtisansController_completeOnboarding: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['OnboardArtisanDto'];
-      };
-    };
-    responses: {
-      /** @description Artisan profile created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Artisan profile already exists */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ArtisansController_getProfile: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Artisan profile retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Artisan profile not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ArtisansController_deleteAccount: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Account deleted successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ArtisansController_getLevel: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Level info retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ArtisansController_getCommissionRate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Commission rate retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ArtisansController_getAllLevels: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Levels retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ArtisansController_updateAvailability: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Availability updated successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  EarningsController_getEarningsOverview: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Earnings summary retrieved */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  EarningsController_getTransactionHistory: {
-    parameters: {
-      query?: {
-        /** @description Filter by period */
-        period?: 'today' | 'this_week' | 'this_month' | 'previous_month' | 'this_year';
-        /** @description Start date (ISO format) */
-        startDate?: string;
-        /** @description End date (ISO format) */
-        endDate?: string;
-        /** @description Transaction type filter */
-        type?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Transaction history retrieved */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SecurityController_createOrUpdatePin: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreatePinDto'];
-      };
-    };
-    responses: {
-      /** @description PIN created/updated successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Invalid PIN format */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SecurityController_verifyPin: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['VerifyPinDto'];
-      };
-    };
-    responses: {
-      /** @description PIN verified successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Invalid or incorrect PIN */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SecurityController_checkPinStatus: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description PIN status retrieved */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  WithdrawalsController_getWithdrawals: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Withdrawal history retrieved */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  WithdrawalsController_createWithdrawal: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateWithdrawalDto'];
-      };
-    };
-    responses: {
-      /** @description Withdrawal request created and transfer initiated */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Insufficient balance or invalid PIN */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  DisputesController_getDisputes: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description List of disputes */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DisputeResponseDto'][];
-        };
-      };
-    };
-  };
-  DisputesController_createDispute: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateDisputeDto'];
-      };
-    };
-    responses: {
-      /** @description Dispute created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DisputeResponseDto'];
-        };
-      };
-      /** @description Cannot dispute this job or dispute already exists */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Not authorized to dispute this job */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Job not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  DisputesController_getDisputeById: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Dispute details with evidence */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DisputeResponseDto'];
-        };
-      };
-      /** @description Not authorized to view this dispute */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Dispute not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  DisputesController_addEvidence: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['AddEvidenceDto'];
-      };
-    };
-    responses: {
-      /** @description Evidence added successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DisputeEvidenceResponseDto'];
-        };
-      };
-      /** @description Dispute is not accepting evidence */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Not authorized to add evidence */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Dispute not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SupportController_getMyTickets: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Tickets retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SupportController_createTicket: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateSupportTicketDto'];
-      };
-    };
-    responses: {
-      /** @description Support ticket created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      /** @description Validation error */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SupportController_getTicket: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Support ticket ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ticket retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Forbidden - not your ticket */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Ticket not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AdminSupportController_getAllTickets: {
-    parameters: {
-      query?: {
-        /** @description Filter by status */
-        status?: 'open' | 'in_progress' | 'resolved' | 'closed';
-        /** @description Page number (default: 1) */
-        page?: number;
-        /** @description Items per page (default: 20) */
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Tickets retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Forbidden - Admin only */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AdminSupportController_getTicket: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Support ticket ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ticket retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Forbidden - Admin only */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Ticket not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AdminSupportController_updateTicket: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Support ticket ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateSupportTicketDto'];
-      };
-    };
-    responses: {
-      /** @description Ticket updated successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      /** @description Validation error */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Forbidden - Admin only */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Ticket not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AdminSupportController_getStats: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Statistics retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Forbidden - Admin only */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AppRatingsController_submitRating: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateAppRatingDto'];
-      };
-    };
-    responses: {
-      /** @description Rating submitted successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      /** @description Validation error */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AppRatingsController_getMyRating: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Rating retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AdminAppRatingsController_getAllRatings: {
-    parameters: {
-      query?: {
-        /** @description Page number (default: 1) */
-        page?: number;
-        /** @description Items per page (default: 20) */
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ratings retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Forbidden - Admin only */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AdminAppRatingsController_getStats: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Statistics retrieved successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Forbidden - Admin only */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
+        };
+    };
+    HealthController_ping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Pong response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PingResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterDto"];
+            };
+        };
+        responses: {
+            /** @description User registered successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Email or phone already exists */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginDto"];
+            };
+        };
+        responses: {
+            /** @description Login successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponseDto"];
+                };
+            };
+            /** @description Invalid credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_refresh: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefreshTokenDto"];
+            };
+        };
+        responses: {
+            /** @description Token refreshed successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokensResponseDto"];
+                };
+            };
+            /** @description Invalid or expired refresh token */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_logout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefreshTokenDto"];
+            };
+        };
+        responses: {
+            /** @description Logout successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_verifyAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyAccountDto"];
+            };
+        };
+        responses: {
+            /** @description Account verified successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Invalid or expired verification code */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_resendVerification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResendVerificationDto"];
+            };
+        };
+        responses: {
+            /** @description Verification code sent successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Already verified */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_forgotPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ForgotPasswordDto"];
+            };
+        };
+        responses: {
+            /** @description Reset code sent if email/phone exists */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_resetPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResetPasswordDto"];
+            };
+        };
+        responses: {
+            /** @description Password reset successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Invalid or expired reset code */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_changePassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePasswordDto"];
+            };
+        };
+        responses: {
+            /** @description Password changed successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Current password incorrect or unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_googleMobileLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleMobileLoginDto"];
+            };
+        };
+        responses: {
+            /** @description Authentication successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponseDto"];
+                };
+            };
+            /** @description Invalid Google ID token */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    PromotionsController_getPromotionsDashboard: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Promotions dashboard retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromotionsDashboardResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    PromotionsController_getMyDiscounts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active discounts retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DiscountItemDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    PromotionsController_applyDiscount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApplyDiscountDto"];
+            };
+        };
+        responses: {
+            /** @description Discount applied successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplyDiscountResponseDto"];
+                };
+            };
+            /** @description No active discounts available */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReferralsController_getMyReferralInfo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Referral info retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferralInfoResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReferralsController_applyReferralCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApplyReferralCodeDto"];
+            };
+        };
+        responses: {
+            /** @description Referral code applied successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplyReferralResponseDto"];
+                };
+            };
+            /** @description Invalid referral code */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description User has already been referred */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReferralsController_getMyReferralRewards: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Referral rewards retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferralRewardResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReferralsController_useReferralReward: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UseReferralRewardDto"];
+            };
+        };
+        responses: {
+            /** @description Referral reward applied successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Insufficient referral reward balance */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UsersController_getCurrentUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description User retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UsersController_deleteAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Account deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UsersController_updateProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UpdateProfileDto"];
+            };
+        };
+        responses: {
+            /** @description Profile updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfileResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UsersController_updateLocation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateLocationDto"];
+            };
+        };
+        responses: {
+            /** @description Location updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UsersController_updateSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSettingsDto"];
+            };
+        };
+        responses: {
+            /** @description Settings updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserSettingsResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ArtisansController_completeOnboarding: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["OnboardArtisanDto"];
+            };
+        };
+        responses: {
+            /** @description Artisan profile created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtisanProfile"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Artisan profile already exists */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ArtisansController_getProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Artisan profile retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Artisan profile not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ArtisansController_deleteAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Account deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ArtisansController_updateSkills: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSkillsDto"];
+            };
+        };
+        responses: {
+            /** @description Skills updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid category IDs provided */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Artisan profile not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ArtisansController_getLevel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Level info retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ArtisansController_getCommissionRate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Commission rate retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ArtisansController_getAllLevels: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Levels retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ArtisansController_updateAvailability: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Availability updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    CategoriesController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of categories sorted by user preference */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    CategoriesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["CreateCategoryDto"];
+            };
+        };
+        responses: {
+            /** @description Category created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    CategoriesController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Category details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Category not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_findMine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Service requests retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceRequestResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateServiceRequestDto"];
+            };
+        };
+        responses: {
+            /** @description Service request created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateServiceRequestResponseDto"];
+                };
+            };
+            /** @description Validation error or invalid category */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - User access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Category not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Service request retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceRequestResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service request not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_getMatchingArtisans: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Matching artisans retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MatchingArtisanResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - User access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service request not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_cancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Service request cancelled successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceRequestResponseDto"];
+                };
+            };
+            /** @description Service request cannot be cancelled */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - User access required or not authorized to cancel */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service request not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOfferDto"];
+            };
+        };
+        responses: {
+            /** @description Offer created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Invalid data or already have pending offer */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service request not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_counterOffer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CounterOfferDto"];
+            };
+        };
+        responses: {
+            /** @description Counter-offer created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Validation error or cannot counter this offer */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Offer not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_respond: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RespondOfferDto"];
+            };
+        };
+        responses: {
+            /** @description Offer responded successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Cannot respond to this offer (expired or already responded) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to respond to this offer */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Offer not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_findByServiceRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Offers retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service request not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_findMyOffers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Offers retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Offer retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Offer not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_getNegotiationHistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Negotiation history retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Offer not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_findMine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Jobs retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_getStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Statistics retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobStatsResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Job retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_startJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Job started successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponseDto"];
+                };
+            };
+            /** @description Job cannot be started (invalid status) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_completeJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Job marked as completed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponseDto"];
+                };
+            };
+            /** @description Job cannot be completed (invalid status) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_approveJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Job approved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponseDto"];
+                };
+            };
+            /** @description Job cannot be approved (invalid status) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - User access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_cancelJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Job cancelled successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponseDto"];
+                };
+            };
+            /** @description Job cannot be cancelled (invalid status) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to cancel this job */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    EarningsController_getEarningsOverview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Earnings summary retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    EarningsController_getTransactionHistory: {
+        parameters: {
+            query?: {
+                /** @description Filter by period */
+                period?: "today" | "this_week" | "this_month" | "previous_month" | "this_year";
+                /** @description Start date (ISO format) */
+                startDate?: string;
+                /** @description End date (ISO format) */
+                endDate?: string;
+                /** @description Transaction type filter */
+                type?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Transaction history retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    SecurityController_createOrUpdatePin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePinDto"];
+            };
+        };
+        responses: {
+            /** @description PIN created/updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid PIN format */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    SecurityController_verifyPin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyPinDto"];
+            };
+        };
+        responses: {
+            /** @description PIN verified successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid or incorrect PIN */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    SecurityController_checkPinStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PIN status retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    WithdrawalsController_getWithdrawals: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Withdrawal history retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    WithdrawalsController_createWithdrawal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateWithdrawalDto"];
+            };
+        };
+        responses: {
+            /** @description Withdrawal request created and transfer initiated */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Insufficient balance or invalid PIN */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DisputesController_getDisputes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of disputes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisputeResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DisputesController_createDispute: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDisputeDto"];
+            };
+        };
+        responses: {
+            /** @description Dispute created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisputeResponseDto"];
+                };
+            };
+            /** @description Cannot dispute this job or dispute already exists */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to dispute this job */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DisputesController_getDisputeById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Dispute details with evidence */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisputeResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to view this dispute */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Dispute not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DisputesController_addEvidence: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddEvidenceDto"];
+            };
+        };
+        responses: {
+            /** @description Evidence added successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisputeEvidenceResponseDto"];
+                };
+            };
+            /** @description Dispute is not accepting evidence */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to add evidence */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Dispute not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    SupportController_getMyTickets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tickets retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SupportController_createTicket: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSupportTicketDto"];
+            };
+        };
+        responses: {
+            /** @description Support ticket created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SupportController_getTicket: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Support ticket ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ticket retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden - not your ticket */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ticket not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminSupportController_getAllTickets: {
+        parameters: {
+            query?: {
+                /** @description Filter by status */
+                status?: "open" | "in_progress" | "resolved" | "closed";
+                /** @description Page number (default: 1) */
+                page?: number;
+                /** @description Items per page (default: 20) */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tickets retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden - Admin only */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminSupportController_getTicket: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Support ticket ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ticket retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden - Admin only */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ticket not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminSupportController_updateTicket: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Support ticket ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSupportTicketDto"];
+            };
+        };
+        responses: {
+            /** @description Ticket updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden - Admin only */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ticket not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminSupportController_getStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Statistics retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden - Admin only */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AppRatingsController_submitRating: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAppRatingDto"];
+            };
+        };
+        responses: {
+            /** @description Rating submitted successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AppRatingsController_getMyRating: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rating retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminAppRatingsController_getAllRatings: {
+        parameters: {
+            query?: {
+                /** @description Page number (default: 1) */
+                page?: number;
+                /** @description Items per page (default: 20) */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ratings retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden - Admin only */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminAppRatingsController_getStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Statistics retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden - Admin only */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
 }

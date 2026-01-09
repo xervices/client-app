@@ -13,9 +13,10 @@ import { useTimer } from '@/hooks/use-timer';
 
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
+import { useAuthStore } from '@/store/auth-store';
 
 export default function Screen() {
-  const { email } = useLocalSearchParams();
+  const { email }: { email: string } = useLocalSearchParams();
 
   const [otpDisabled, setOTPDisabled] = React.useState(false);
   const [timer, setTimer] = React.useState(0);
@@ -33,6 +34,7 @@ export default function Screen() {
           subtitle:
             'You have successfully signed up to Xervices. You will be redirected to the home page shortly.',
           onRedirect: () => {
+            useAuthStore.getState().setLoginState(true);
             router.replace('/(tabs)/(home)');
           },
         },
@@ -47,7 +49,7 @@ export default function Screen() {
   const resendVerificationCode = useMutation({
     ...api.resendVerificationCode(),
     onSuccess: (data) => {
-      showSuccessMessage('Verification code  to your email successfully.');
+      showSuccessMessage('Verification code sent to your email successfully.');
     },
     onError: (err) => {
       showErrorMessage(err.message);
@@ -59,7 +61,7 @@ export default function Screen() {
 
     setTimer((prev) => prev + 30);
 
-    resendVerificationCode.mutate({ type: 'email' });
+    resendVerificationCode.mutate({ type: 'email', email });
   };
 
   return (
@@ -102,7 +104,7 @@ export default function Screen() {
             }}
             disabled={otpDisabled}
             onFilled={(value) => {
-              verifyAccount.mutate({ code: value });
+              verifyAccount.mutate({ code: value, email });
             }}
           />
         </View>

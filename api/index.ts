@@ -1,8 +1,12 @@
-import { queryOptions, mutationOptions } from '@tanstack/react-query';
+import { Platform } from 'react-native';
+import { queryOptions } from '@tanstack/react-query';
+
 import { apiClient, publicApiClient } from './client';
 import { tokenStorage } from './token-storage';
 import { getErrorMessage, RequestBody } from './helpers';
 import { useAuthStore } from '@/store/auth-store';
+
+const normalizePath = (uri: string) => (Platform.OS === 'ios' ? uri.replace('file://', '') : uri);
 
 export const api = {
   // Server Health endpoints
@@ -43,7 +47,6 @@ export const api = {
 
         if (data.user) {
           useAuthStore.getState().setUser(data.user);
-          useAuthStore.getState().setLoginState(true);
         }
 
         return data;
@@ -204,20 +207,81 @@ export const api = {
   },
 
   // User management endpoints
+  getCurrentUser: () =>
+    queryOptions({
+      queryKey: ['users', 'me'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/users/me');
+
+        if (data) {
+          useAuthStore.getState().setUser(data);
+        }
+
+        return data;
+      },
+    }),
   updateProfile: () => {
     return {
       mutationFn: async (credentials: RequestBody<'/api/users/me', 'patch'>) => {
+        const formData = new FormData();
+        const user = useAuthStore.getState().user;
+
+        // Define fields to append (excluding avatar which needs special handling)
+        const fields = ['fullName', 'address', 'bio', 'city', 'country', 'state', 'postalCode'];
+
+        // Append only non-empty fields
+        fields.forEach((field) => {
+          const value = credentials[field];
+
+          // @ts-ignore
+          const prevValue: string = user?.profile[field];
+
+          if (value !== undefined && value !== null && value !== '' && prevValue !== value) {
+            formData.append(field, String(value));
+          }
+        });
+
+        // Handle avatar file upload
+        // @ts-ignore
+        if (credentials.avatarUrl && credentials.avatarUrl !== user?.profile?.avatarUrl) {
+          const file = {
+            // @ts-ignore
+            uri: normalizePath(credentials.avatarUrl),
+            // @ts-ignore - avatarMimeType sent from form but not specified in api
+            type: credentials.avatarMimeType || 'image/jpeg',
+            name: `avatar_${Date.now()}}`,
+          };
+
+          // @ts-ignore - FormData typing issue in React Native
+          formData.append('avatar', file);
+        }
+
         const { data, error } = await apiClient.PATCH('/api/users/me', {
+          // @ts-ignore - FormData not properly typed in openapi-fetch
+          body: formData,
+          bodySerializer: () => formData, // Prevent body serialization
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Profile update failed'));
+        }
+
+        return data;
+      },
+    };
+  },
+
+  // Support tickets endpoint
+  createSupportTicket: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/support/tickets', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/support/tickets', {
           body: credentials,
         });
 
         if (error) {
           throw new Error(getErrorMessage(error, 'Login failed'));
         }
-
-        // if (data.user) {
-        //   useAuthStore.getState().setUser(data.user);
-        // }
 
         return data;
       },

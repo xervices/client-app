@@ -1,20 +1,23 @@
 import * as React from 'react';
-import { Platform, Pressable, View } from 'react-native';
-import { Text } from '@/components/ui/text';
-import { Layout } from '@/components/layout';
-import { AuthHeader } from '@/components/auth-header';
+import { Pressable, View } from 'react-native';
 import { Image } from 'expo-image';
 import * as z from 'zod';
 import { useForm } from '@tanstack/react-form';
 import { toast } from 'sonner-native';
+import { router } from 'expo-router';
+import { useMutation } from '@tanstack/react-query';
+
+import { Text } from '@/components/ui/text';
+import { Layout } from '@/components/layout';
+import { AuthHeader } from '@/components/auth-header';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { InputError } from '@/components/ui/input-error';
 import { Button } from '@/components/ui/button';
-import { router } from 'expo-router';
-import { useMutation } from '@tanstack/react-query';
+
 import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
+import { GoogleSigninButton } from '@/components/google-signin-button';
 
 const formSchema = z.object({
   emailOrPhone: z.string().min(1, 'Email/Phone number is required.'),
@@ -101,7 +104,7 @@ export default function Screen() {
               )}
             </form.Field>
 
-            <Button onPress={form.handleSubmit} isLoading={isPending}>
+            <Button onPress={form.handleSubmit} isLoading={isPending} disabled={isPending}>
               Send code
             </Button>
           </View>
@@ -114,15 +117,7 @@ export default function Screen() {
             <View className="h-0.5 flex-1 bg-[#FFDCC1]" />
           </View>
 
-          <Button className="border-[#B4B4BC] bg-background">
-            <Image
-              source={require('@/assets/icons/google.svg')}
-              style={{ width: 18, height: 18 }}
-              contentFit="contain"
-            />
-
-            <Text className="font-cabinet-extrabold text-[#737381]">Continue with Google</Text>
-          </Button>
+          <GoogleSigninButton />
 
           <View className="flex flex-row items-center justify-center gap-1.5">
             <Text className="text-[#737381]">Don’t have an account?</Text>

@@ -77,7 +77,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     android: {
       edgeToEdgeEnabled: true,
       adaptiveIcon: {
-        foregroundImage: './assets/images/adaptive-icon.png',
+        foregroundImage: './assets/images/splash.png',
         backgroundColor: '#ffffff',
       },
       package: packageName,
@@ -182,7 +182,7 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
       packageName: `${PACKAGE_NAME}.preview`,
       scheme: `${SCHEME}-prev`,
       googleServicesFile: './preview-google-services.json',
-      googleMapsApiKey: 'process.env.GOOGLE_MAPS_API_KEY',
+      googleMapsApiKey: 'AIzaSyDA7HnZnWADQ3h1AYCUgCLAccJGPJo67gU',
       iosUrlScheme: 'com.googleusercontent.apps._some_id_here_',
     };
   }

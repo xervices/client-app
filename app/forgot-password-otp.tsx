@@ -1,24 +1,54 @@
 import * as React from 'react';
-import { Platform, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { OtpInput } from 'react-native-otp-entry';
+import { useMutation } from '@tanstack/react-query';
+
 import { Text } from '@/components/ui/text';
 import { Layout } from '@/components/layout';
-import { router, useLocalSearchParams } from 'expo-router';
 import { AuthHeader } from '@/components/auth-header';
-import { OtpInput } from 'react-native-otp-entry';
 import { useTimer } from '@/hooks/use-timer';
-import { toast } from 'sonner-native';
+import { LoadingIndicator } from '@/components/ui/loading-indicator';
+
+import { api } from '@/api';
+import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 
 export default function Screen() {
-  const { email } = useLocalSearchParams();
+  const { email }: { email: string } = useLocalSearchParams();
 
   const [otpDisabled, setOTPDisabled] = React.useState(false);
   const [timer, setTimer] = React.useState(60);
   const { minute, seconds } = useTimer({ sec: timer });
 
+  const verifyCode = useMutation({
+    ...api.verifyAccount(),
+    onMutate: () => {
+      setOTPDisabled(true);
+    },
+    onError: (err) => {
+      showErrorMessage(err.message);
+    },
+    onSettled: () => {
+      setOTPDisabled(false);
+    },
+  });
+
+  const resendVerificationCode = useMutation({
+    ...api.resendVerificationCode(),
+    onSuccess: (data) => {
+      showSuccessMessage('OTP sent to your email successfully.');
+    },
+    onError: (err) => {
+      showErrorMessage(err.message);
+    },
+  });
+
   const handleOnResendOTP = () => {
     if (Number(seconds) > 0) return;
 
     setTimer((prev) => prev + 30);
+
+    resendVerificationCode.mutate({ type: 'email', email });
   };
 
   return (
@@ -35,10 +65,10 @@ export default function Screen() {
 
         <View className="mt-16">
           <OtpInput
-            numberOfDigits={4}
+            numberOfDigits={6}
             theme={{
               pinCodeContainerStyle: {
-                width: 60,
+                width: 45,
                 aspectRatio: 1 / 1,
                 borderRadius: 8,
                 borderWidth: 1,
@@ -58,15 +88,27 @@ export default function Screen() {
             }}
             disabled={otpDisabled}
             onFilled={(value) => {
-              setOTPDisabled(true);
-              toast.success('OTP verified successfully');
-              router.navigate('/new-password');
+              verifyCode.mutate(
+                { code: value, email },
+                {
+                  onSuccess: () => {
+                    router.navigate({
+                      pathname: '/new-password',
+                      params: {
+                        code: value,
+                      },
+                    });
+                  },
+                }
+              );
             }}
           />
         </View>
 
         <View className="flex flex-row items-center justify-center gap-1.5">
-          {Number(seconds) > 0 ? (
+          {verifyCode.isPending || resendVerificationCode.isPending ? (
+            <LoadingIndicator size={24} />
+          ) : Number(seconds) > 0 ? (
             <Text className="text-center text-[#737381]">
               Wait to request code in:{' '}
               <Text className="text-primary">
@@ -76,7 +118,7 @@ export default function Screen() {
           ) : (
             <Text className="text-center text-[#737381]">
               <Pressable>
-                <Text className="mx-1 leading-normal text-[#737381]">Didn't get a code?</Text>
+                <Text className="mx-1 leading-normal text-[#737381]">Haven’t gotten any code?</Text>
               </Pressable>
 
               <Pressable onPress={handleOnResendOTP}>

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useForm } from '@tanstack/react-form';
 import * as z from 'zod';
-import { toast } from 'sonner-native';
+import { useMutation } from '@tanstack/react-query';
 import { SheetManager } from 'react-native-actions-sheet';
 
 import { Text } from '@/components/ui/text';
@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { InputError } from '@/components/ui/input-error';
-import { useMutation } from '@tanstack/react-query';
+
 import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
 
@@ -29,13 +29,13 @@ const formSchema = z
   });
 
 export default function Screen() {
-  const { email } = useLocalSearchParams();
+  const { code }: { code: string } = useLocalSearchParams();
 
   const { mutate, isPending } = useMutation(api.resetPassword());
 
   const form = useForm({
     defaultValues: {
-      token: '',
+      token: code,
       newPassword: '',
       confirmPassword: '',
     },
@@ -76,23 +76,6 @@ export default function Screen() {
         </View>
 
         <View className="flex gap-4">
-          <form.Field name="token">
-            {(field) => (
-              <View>
-                <Label nativeID="token">OTP token</Label>
-                <Input
-                  id="token"
-                  value={field.state.value}
-                  onChangeText={field.handleChange}
-                  placeholder={`Enter the token sent to ${email}`}
-                  hasError={!field.state.meta.isValid}
-                  keyboardType="numeric"
-                />
-                {!field.state.meta.isValid ? <InputError errors={field.state.meta.errors} /> : null}
-              </View>
-            )}
-          </form.Field>
-
           <form.Field name="newPassword">
             {(field) => (
               <View>
@@ -127,7 +110,11 @@ export default function Screen() {
             )}
           </form.Field>
 
-          <Button className="mt-6" onPress={form.handleSubmit} isLoading={isPending}>
+          <Button
+            className="mt-6"
+            onPress={form.handleSubmit}
+            isLoading={isPending}
+            disabled={isPending}>
             Continue
           </Button>
         </View>

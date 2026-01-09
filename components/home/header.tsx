@@ -1,8 +1,9 @@
 import { View, Pressable } from 'react-native';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Bell } from 'lucide-react-native';
-import { Text } from '../ui/text';
 import { router } from 'expo-router';
+
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Text } from '../ui/text';
 import { useAuthStore } from '@/store/auth-store';
 
 export function Header() {
@@ -12,9 +13,11 @@ export function Header() {
     <View className="flex w-full flex-row items-end justify-between">
       <View className="flex flex-row items-center gap-2">
         <Avatar alt="User's Avatar">
-          <AvatarImage source={{ uri: 'https://github.com/mrzachnugent.png' }} />
+          <AvatarImage source={{ uri: user?.profile?.avatarUrl }} />
           <AvatarFallback className="bg-primary">
-            <Text className="font-cabinet-bold leading-none">ZN</Text>
+            <Text className="font-cabinet-bold text-sm uppercase leading-none">
+              {user?.profile?.fullName.substring(0, 2)}
+            </Text>
           </AvatarFallback>
         </Avatar>
 

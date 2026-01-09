@@ -18,6 +18,7 @@ import { GoogleSigninButton } from '@/components/google-signin-button';
 
 import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
+import { useAuthStore } from '@/store/auth-store';
 
 const formSchema = z.object({
   emailOrPhone: z.string().min(1, 'Email or Phone is required.'),
@@ -48,7 +49,20 @@ export default function Screen() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      mutate(value);
+      mutate(value, {
+        onSuccess: (res) => {
+          if (!res.user.emailVerified) {
+            router.navigate({
+              pathname: '/verify-email',
+              params: {
+                email: value.emailOrPhone,
+              },
+            });
+          } else {
+            useAuthStore.getState().setLoginState(true);
+          }
+        },
+      });
     },
   });
 
