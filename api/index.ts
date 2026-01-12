@@ -271,7 +271,47 @@ export const api = {
     };
   },
 
-  // Support tickets endpoint
+  // categories endpoints
+  getAllCategories: () =>
+    queryOptions({
+      queryKey: ['categories'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/categories');
+
+        return data;
+      },
+    }),
+
+  // promotions, referrals & discounts endpoints
+  getMyReferralInfo: () =>
+    queryOptions({
+      queryKey: ['referrals'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/referrals/me');
+
+        return data;
+      },
+    }),
+  getMyDiscounts: () =>
+    queryOptions({
+      queryKey: ['discounts'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/promotions/discounts');
+
+        return data;
+      },
+    }),
+  getMyPromotions: () =>
+    queryOptions({
+      queryKey: ['promotions'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/promotions/me');
+
+        return data;
+      },
+    }),
+
+  // Support tickets endpoints
   createSupportTicket: () => {
     return {
       mutationFn: async (credentials: RequestBody<'/api/support/tickets', 'post'>) => {

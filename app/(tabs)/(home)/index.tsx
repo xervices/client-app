@@ -1,9 +1,7 @@
 import { Layout } from '@/components/layout';
 import { Header } from '@/components/home/header';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { SearchInput } from '@/components/home/search-input';
-import { Text } from '@/components/ui/text';
-import { Image } from 'expo-image';
 import { Promotions } from '@/components/home/promotions';
 import { Services } from '@/components/home/services';
 import { UserOfWeek } from '@/components/home/user-of-week';
