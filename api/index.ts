@@ -327,4 +327,30 @@ export const api = {
       },
     };
   },
+
+  // app ratings endpoints
+  submitAppRating: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/app-ratings', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/app-ratings', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to submit rating'));
+        }
+
+        return data;
+      },
+    };
+  },
+  getMyAppRatings: () =>
+    queryOptions({
+      queryKey: ['app-ratings'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/app-ratings/me');
+
+        return data;
+      },
+    }),
 };
