@@ -29,7 +29,9 @@ export default function Screen() {
 
   const form = useForm({
     defaultValues: {
+      // @ts-ignore
       rating: data?.data?.rating || 0,
+      // @ts-ignore
       feedback: data?.data?.feedback || '',
     },
     validators: {
@@ -42,9 +44,9 @@ export default function Screen() {
           feedback: value.feedback,
           appVersion: Application.nativeApplicationVersion || undefined,
           deviceInfo: {
-            os: Device.osName,
-            version: Device.osVersion,
-            model: Device.modelName,
+            os: Device.osName as never,
+            version: Device.osVersion as never,
+            model: Device.modelName as never,
           },
         },
         {

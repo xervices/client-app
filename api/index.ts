@@ -270,6 +270,19 @@ export const api = {
       },
     };
   },
+  deleteAccount: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/users/me', 'delete'>) => {
+        const { data, error } = await apiClient.DELETE('/api/users/me');
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Delete account failed'));
+        }
+
+        return data;
+      },
+    };
+  },
 
   // categories endpoints
   getAllCategories: () =>
