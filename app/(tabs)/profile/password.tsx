@@ -7,8 +7,16 @@ import { Image } from 'expo-image';
 import { ChevronRight, Mail, MessageCircleMore } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { Button } from '@/components/ui/button';
+import { useAuthStore } from '@/store/auth-store';
+import { useMutation } from '@tanstack/react-query';
+import { api } from '@/api';
+import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 
 export default function Screen() {
+  const { user } = useAuthStore();
+
+  const { mutate, isPending } = useMutation(api.forgotPassword());
+
   const [selectedOption, setSelectedOption] = React.useState('');
 
   return (
@@ -27,53 +35,73 @@ export default function Screen() {
           </Text>
         </View>
 
-        <Pressable
-          onPress={() => setSelectedOption('phone')}
-          className={`flex w-full flex-row items-center gap-4 rounded-[8px] border p-4 ${selectedOption === 'phone' ? 'border-[#FE6A00]' : 'border-[#B4B4BC]'}`}>
-          <View
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${selectedOption === 'phone' ? 'bg-[#FFE6D6]' : 'bg-[#DFDFE1]'}`}>
-            <MessageCircleMore
-              size={16}
-              color={selectedOption === 'phone' ? '#FE6A00' : '#737381'}
-            />
-          </View>
+        {user?.phoneNumber && user?.phoneVerified && (
+          <Pressable
+            onPress={() => setSelectedOption(user.phoneNumber)}
+            className={`flex w-full flex-row items-center gap-4 rounded-[8px] border p-4 ${selectedOption === user?.phoneNumber ? 'border-[#FE6A00]' : 'border-[#B4B4BC]'}`}>
+            <View
+              className={`flex h-10 w-10 items-center justify-center rounded-full ${selectedOption === user?.phoneNumber ? 'bg-[#FFE6D6]' : 'bg-[#DFDFE1]'}`}>
+              <MessageCircleMore
+                size={16}
+                color={selectedOption === user?.phoneNumber ? '#FE6A00' : '#737381'}
+              />
+            </View>
 
-          <View>
-            <Text className="text-sm text-[#737381]">Via Sms</Text>
-            <Text
-              className={`text-lg ${selectedOption === 'phone' ? 'text-[#1B1B1E]' : 'text-[#737381]'} font-cabinet-bold`}>
-              +234******7657
-            </Text>
-          </View>
-        </Pressable>
+            <View className="flex-1">
+              <Text className="text-sm text-[#737381]">Via Sms</Text>
+              <Text
+                className={`text-lg ${selectedOption === user?.phoneNumber ? 'text-[#1B1B1E]' : 'text-[#737381]'} font-cabinet-bold`}>
+                {user?.phoneNumber}
+              </Text>
+            </View>
+          </Pressable>
+        )}
 
-        <Pressable
-          onPress={() => setSelectedOption('email')}
-          className={`flex w-full flex-row items-center gap-4 rounded-[8px] border p-4 ${selectedOption === 'email' ? 'border-[#FE6A00]' : 'border-[#B4B4BC]'}`}>
-          <View
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${selectedOption === 'email' ? 'bg-[#FFE6D6]' : 'bg-[#DFDFE1]'}`}>
-            <Mail size={16} color={selectedOption === 'email' ? '#FE6A00' : '#737381'} />
-          </View>
+        {user?.email && (
+          <Pressable
+            onPress={() => setSelectedOption(user?.email)}
+            className={`flex w-full flex-row items-center gap-4 rounded-[8px] border p-4 ${selectedOption === user?.email ? 'border-[#FE6A00]' : 'border-[#B4B4BC]'}`}>
+            <View
+              className={`flex h-10 w-10 items-center justify-center rounded-full ${selectedOption === user?.email ? 'bg-[#FFE6D6]' : 'bg-[#DFDFE1]'}`}>
+              <Mail size={16} color={selectedOption === user?.email ? '#FE6A00' : '#737381'} />
+            </View>
 
-          <View>
-            <Text className="text-sm text-[#737381]">Via Email</Text>
-            <Text
-              className={`text-lg ${selectedOption === 'email' ? 'text-[#1B1B1E]' : 'text-[#737381]'} font-cabinet-bold`}>
-              alex*******@gmail.com
-            </Text>
-          </View>
-        </Pressable>
+            <View className="flex-1">
+              <Text className="text-sm text-[#737381]">Via Email</Text>
+              <Text
+                className={`text-lg ${selectedOption === user?.email ? 'text-[#1B1B1E]' : 'text-[#737381]'} font-cabinet-bold`}>
+                {user?.email}
+              </Text>
+            </View>
+          </Pressable>
+        )}
 
         <Button
           onPress={() => {
-            router.navigate({
-              pathname: '/profile/password-otp',
-              params: {
-                email: 'alex*******@gmail.com',
-              },
-            });
+            if (selectedOption) {
+              mutate(
+                { emailOrPhone: selectedOption },
+                {
+                  onSuccess: (res) => {
+                    showSuccessMessage(res.message);
+
+                    router.navigate({
+                      pathname: '/profile/password-otp',
+                      params: {
+                        email: selectedOption,
+                      },
+                    });
+                  },
+                  onError: (err) => {
+                    showErrorMessage(err.message);
+                  },
+                }
+              );
+            }
           }}
-          className="mt-auto">
+          className="mt-auto"
+          isLoading={isPending}
+          disabled={!selectedOption || isPending}>
           Continue
         </Button>
       </View>

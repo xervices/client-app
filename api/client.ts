@@ -45,7 +45,7 @@ const authMiddleware: Middleware = {
 
   async onResponse({ response }) {
     // Handle 401 unauthorized responses
-    if (response.status === 401) {
+    if (response.status === 401 && response.statusText === 'Unauthorized') {
       await tokenStorage.clearTokens();
 
       useAuthStore.getState().setLoginState(false);

@@ -14,34 +14,40 @@ import { SheetManager } from 'react-native-actions-sheet';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { InputError } from '@/components/ui/input-error';
+import { useMutation } from '@tanstack/react-query';
+import { api } from '@/api';
+import { showErrorMessage } from '@/api/helpers';
 
-const formSchema = z
-  .object({
-    password: z.string().min(1, 'Password is required.'),
-    confirmPassword: z.string().min(1, 'Password confirmation is required.'),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  });
+const formSchema = z.object({
+  currentPassword: z.string().min(1, 'Current password is required.'),
+  newPassword: z.string().min(1, 'New Password is required.'),
+});
 
 export default function Screen() {
+  const { mutate, isPending } = useMutation(api.changePassword());
+
   const form = useForm({
     defaultValues: {
-      password: '',
-      confirmPassword: '',
+      currentPassword: '',
+      newPassword: '',
     },
     validators: {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      toast.success('Password reset successful');
-      SheetManager.show('success-sheet', {
-        payload: {
-          title: 'Password changed successfully',
-          subtitle:
-            'Your account is ready to use. You will be redirected to the home page shortly.',
-          hideBackButton: true,
+      mutate(value, {
+        onSuccess: () => {
+          SheetManager.show('success-sheet', {
+            payload: {
+              title: 'Password changed successfully',
+              subtitle:
+                'Your account is ready to use. You will be redirected to the home page shortly.',
+              onRedirect: () => router.replace('/profile'),
+            },
+          });
+        },
+        onError: (err) => {
+          showErrorMessage(err.message);
         },
       });
     },
@@ -63,15 +69,15 @@ export default function Screen() {
         </View>
 
         <View className="flex gap-4">
-          <form.Field name="password">
+          <form.Field name="currentPassword">
             {(field) => (
               <View>
-                <Label nativeID="password">Password</Label>
+                <Label nativeID="password">Current Password</Label>
                 <Input
                   id="password"
                   value={field.state.value}
                   onChangeText={field.handleChange}
-                  placeholder="Enter your password"
+                  placeholder="Enter your current password"
                   secureTextEntry
                   hasError={!field.state.meta.isValid}
                   className="bg-white"
@@ -81,15 +87,15 @@ export default function Screen() {
             )}
           </form.Field>
 
-          <form.Field name="confirmPassword">
+          <form.Field name="newPassword">
             {(field) => (
               <View>
-                <Label nativeID="confirmPassword">Confirm Password</Label>
+                <Label nativeID="confirmPassword">New Password</Label>
                 <Input
                   id="confirmPassword"
                   value={field.state.value}
                   onChangeText={field.handleChange}
-                  placeholder="Confirm your password"
+                  placeholder="Enter your new password"
                   secureTextEntry
                   hasError={!field.state.meta.isValid}
                   className="bg-white"
@@ -99,7 +105,11 @@ export default function Screen() {
             )}
           </form.Field>
 
-          <Button className="mt-6" onPress={form.handleSubmit}>
+          <Button
+            className="mt-6"
+            onPress={form.handleSubmit}
+            disabled={isPending}
+            isLoading={isPending}>
             Continue
           </Button>
         </View>

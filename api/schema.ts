@@ -575,6 +575,26 @@ export interface paths {
         patch: operations["ArtisansController_updateAvailability"];
         trace?: never;
     };
+    "/api/artisans/verify-nin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify NIN
+         * @description Verify National Identification Number (NIN) using Dojah API.
+         */
+        post: operations["ArtisansController_verifyNin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/categories": {
         parameters: {
             query?: never;
@@ -1374,8 +1394,8 @@ export interface components {
              */
             email: string;
             /**
-             * @description Phone number in international format (e.g., +234...)
-             * @example +2348012345678
+             * @description Phone number in international format (+2348012345678) or local format (08012345678)
+             * @example 08164593466
              */
             phoneNumber: string;
             /**
@@ -1889,34 +1909,6 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
-        UpdateSkillsDto: {
-            /**
-             * @description Category IDs representing artisan skills/services
-             * @example [
-             *       "550e8400-e29b-41d4-a716-446655440000"
-             *     ]
-             */
-            categoryIds: string[];
-        };
-        CreateCategoryDto: {
-            /** @example Plumbing */
-            name: string;
-            /** @example plumbing */
-            slug: string;
-            /** @example All plumbing services */
-            description?: string;
-            /** Format: binary */
-            icon?: string;
-            /**
-             * @description URL of the icon (if not uploading file)
-             * @example https://example.com/icon.png
-             */
-            iconUrl?: string;
-            /** @example 0 */
-            displayOrder?: number;
-            /** @example true */
-            isActive?: boolean;
-        };
         CategoryResponseDto: {
             /**
              * @description Category unique identifier (UUID)
@@ -1965,6 +1957,212 @@ export interface components {
              * @example 2025-12-07T10:00:00.000Z
              */
             updatedAt: string;
+        };
+        ArtisanProfileResponseDto: {
+            /**
+             * @description Artisan profile unique identifier
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description User ID associated with this artisan profile
+             * @example 550e8400-e29b-41d4-a716-446655440001
+             */
+            userId: string;
+            /**
+             * @description Type of identification document
+             * @example NIN
+             * @enum {string}
+             */
+            identificationType: "BVN" | "NIN";
+            /**
+             * @description Identification document number
+             * @example 12345678901
+             */
+            identificationNumber: string;
+            /**
+             * @description KYC verification status
+             * @example pending
+             * @enum {string}
+             */
+            verificationStatus: "pending" | "verified" | "rejected";
+            /**
+             * Format: date-time
+             * @description Timestamp when verification was completed
+             * @example 2025-12-07T12:00:00.000Z
+             */
+            verifiedAt?: string;
+            /**
+             * @description Name of verification service provider
+             * @example dojah
+             */
+            verificationProvider?: string;
+            /**
+             * @description Years of professional experience
+             * @example 5
+             */
+            yearsOfExperience?: number;
+            /**
+             * @description Professional license number
+             * @example PL-2024-12345
+             */
+            professionalLicenseNumber?: string;
+            /**
+             * Format: date-time
+             * @description License issue date
+             * @example 2024-01-15
+             */
+            licenseIssueDate?: string;
+            /**
+             * Format: date-time
+             * @description License expiry date
+             * @example 2027-01-15
+             */
+            licenseExpiryDate?: string;
+            /**
+             * @description URLs to certification documents
+             * @example [
+             *       "https://storage.example.com/certs/cert1.pdf"
+             *     ]
+             */
+            certificationUrls?: string[];
+            /**
+             * @description URLs to previous job photos
+             * @example [
+             *       "https://storage.example.com/portfolio/job1.jpg"
+             *     ]
+             */
+            previousJobUrls?: string[];
+            /**
+             * @description Service radius in kilometers
+             * @example 10
+             */
+            serviceRadiusKm: number;
+            /**
+             * @description Base hourly rate in local currency
+             * @example 5000
+             */
+            baseHourlyRate?: number;
+            /**
+             * @description Average rating from reviews (0-5)
+             * @example 4.5
+             */
+            averageRating: number;
+            /**
+             * @description Total number of reviews received
+             * @example 25
+             */
+            totalReviews: number;
+            /**
+             * @description Total number of jobs completed
+             * @example 50
+             */
+            totalJobsCompleted: number;
+            /**
+             * @description Current availability status
+             * @example true
+             */
+            isAvailable: boolean;
+            /**
+             * @description Overall verification status
+             * @example false
+             */
+            isVerified: boolean;
+            /**
+             * Format: date-time
+             * @description Profile creation timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Last update timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            updatedAt: string;
+            /** @description Service categories the artisan offers */
+            categories: components["schemas"]["CategoryResponseDto"][];
+        };
+        UpdateSkillsDto: {
+            /**
+             * @description Category IDs representing artisan skills/services
+             * @example [
+             *       "550e8400-e29b-41d4-a716-446655440000"
+             *     ]
+             */
+            categoryIds: string[];
+        };
+        VerifyNinDto: {
+            /**
+             * @description National Identification Number (NIN) to verify
+             * @example 12345678901
+             */
+            nin: string;
+        };
+        NinVerificationDataDto: {
+            /**
+             * @description First name from NIN record
+             * @example John
+             */
+            firstName?: string;
+            /**
+             * @description Last name from NIN record
+             * @example Doe
+             */
+            lastName?: string;
+            /**
+             * @description Middle name from NIN record
+             * @example Smith
+             */
+            middleName?: string;
+            /**
+             * @description Date of birth from NIN record
+             * @example 1990-01-15
+             */
+            dateOfBirth?: string;
+            /**
+             * @description Gender from NIN record
+             * @example Male
+             */
+            gender?: string;
+            /**
+             * @description Phone number from NIN record
+             * @example +2348012345678
+             */
+            phone?: string;
+        };
+        VerifyNinResponseDto: {
+            /**
+             * @description Indicates if the NIN verification was successful
+             * @example true
+             */
+            success: boolean;
+            /**
+             * @description Response message
+             * @example NIN verified successfully
+             */
+            message: string;
+            /** @description Verification details */
+            data?: components["schemas"]["NinVerificationDataDto"];
+        };
+        CreateCategoryDto: {
+            /** @example Plumbing */
+            name: string;
+            /** @example plumbing */
+            slug: string;
+            /** @example All plumbing services */
+            description?: string;
+            /** Format: binary */
+            icon?: string;
+            /**
+             * @description URL of the icon (if not uploading file)
+             * @example https://example.com/icon.png
+             */
+            iconUrl?: string;
+            /** @example 0 */
+            displayOrder?: number;
+            /** @example true */
+            isActive?: boolean;
         };
         CreateServiceRequestDto: {
             /**
@@ -3527,7 +3725,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ArtisanProfileResponseDto"];
+                };
             };
             /** @description Unauthorized */
             401: {
@@ -3777,6 +3977,57 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ArtisansController_verifyNin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyNinDto"];
+            };
+        };
+        responses: {
+            /** @description NIN verification result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerifyNinResponseDto"];
+                };
+            };
+            /** @description Invalid NIN format or verification failed */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
             };
             /** @description Unauthorized */
             401: {
