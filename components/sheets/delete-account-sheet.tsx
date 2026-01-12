@@ -104,7 +104,11 @@ export function DeleteAccountSheet() {
           )}
         </form.Field>
 
-        <Button onPress={form.handleSubmit} variant={'destructive'}>
+        <Button
+          onPress={form.handleSubmit}
+          isLoading={isPending}
+          disabled={isPending}
+          variant={'destructive'}>
           Delete my account
         </Button>
       </View>

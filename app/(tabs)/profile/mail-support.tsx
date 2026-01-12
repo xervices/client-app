@@ -163,7 +163,11 @@ export default function Screen() {
           </form.Field>
         </View>
 
-        <Button className="mt-auto" onPress={form.handleSubmit} isLoading={isPending}>
+        <Button
+          className="mt-auto"
+          onPress={form.handleSubmit}
+          isLoading={isPending}
+          disabled={isPending}>
           Submit
         </Button>
       </View>
