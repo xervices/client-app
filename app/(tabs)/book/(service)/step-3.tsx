@@ -77,7 +77,7 @@ export default function Screen() {
     mutate(data, {
       onSuccess: (res) => {
         showSuccessMessage('Service created successfully...');
-        router.navigate({
+        router.replace({
           pathname: '/book/searching',
           params: {
             id: res.serviceRequest.id,

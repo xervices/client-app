@@ -420,4 +420,71 @@ export const api = {
       },
     };
   },
+  getUserServiceRequests: () =>
+    queryOptions({
+      queryKey: ['service-request', 'user'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/service-requests');
+
+        return data;
+      },
+    }),
+  getMatchingArtisans: (id: string) =>
+    queryOptions({
+      queryKey: ['service-request', 'matching-artisans', id],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/service-requests/{id}/matching-artisans', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
+  getServiceRequest: (id: string) =>
+    queryOptions({
+      queryKey: ['service-request', id],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/service-requests/{id}', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
+
+  // jobs endpoints
+  getUserJobs: () =>
+    queryOptions({
+      queryKey: ['user', 'jobs'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/jobs');
+
+        return data;
+      },
+    }),
+
+  // offers endpoints
+  getOffers: (id: string) =>
+    queryOptions({
+      queryKey: ['service-request', 'offers', id],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/offers/service-request/{id}', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
 };
