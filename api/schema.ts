@@ -654,7 +654,7 @@ export interface paths {
         put?: never;
         /**
          * Create a service request
-         * @description Create a new service request for artisan services
+         * @description Create a new service request for artisan services. Supports multipart/form-data for file uploads.
          */
         post: operations["ServiceRequestsController_create"];
         delete?: never;
@@ -1004,6 +1004,126 @@ export interface paths {
          * @description Cancel a pending or in-progress job
          */
         post: operations["JobsController_cancelJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/rooms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all chat rooms for current user */
+        get: operations["ChatController_getRooms"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/rooms/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get chat room details */
+        get: operations["ChatController_getRoom"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/rooms/{id}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get messages in a chat room */
+        get: operations["ChatController_getMessages"];
+        put?: never;
+        /** Send a message in a chat room */
+        post: operations["ChatController_sendMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/rooms/{id}/messages/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Mark messages as read */
+        patch: operations["ChatController_markRead"];
+        trace?: never;
+    };
+    "/api/chat/rooms/{id}/messages/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Mark all messages in room as read */
+        patch: operations["ChatController_markAllRead"];
+        trace?: never;
+    };
+    "/api/chat/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get total unread message count */
+        get: operations["ChatController_getUnreadCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/jobs/{jobId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get chat room for a specific job */
+        get: operations["ChatController_getRoomByJob"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2092,6 +2212,110 @@ export interface components {
              */
             categoryIds: string[];
         };
+        ArtisanLevelResponseDto: {
+            /**
+             * @description Current artisan level
+             * @example STARTER
+             * @enum {string}
+             */
+            currentLevel: "STARTER" | "SKILLED" | "PRO" | "EXPERT" | "ELITE";
+            /**
+             * @description Human-readable display name of the level
+             * @example Starter
+             */
+            displayName: string;
+            /**
+             * @description Total number of jobs completed
+             * @example 5
+             */
+            totalJobsCompleted: number;
+            /**
+             * @description Next level to achieve (null if at max level)
+             * @example SKILLED
+             * @enum {string}
+             */
+            nextLevel?: "STARTER" | "SKILLED" | "PRO" | "EXPERT" | "ELITE";
+            /**
+             * @description Number of jobs remaining to reach next level
+             * @example 15
+             */
+            jobsToNextLevel: number;
+            /**
+             * @description Current commission rate percentage
+             * @example 5
+             */
+            commissionRate: number;
+            /**
+             * @description Number of discounted jobs remaining at current level
+             * @example 3
+             */
+            discountedJobsRemaining: number;
+            /**
+             * @description Number of first-time discount jobs remaining
+             * @example 2
+             */
+            firstTimeDiscountRemaining: number;
+            /**
+             * @description Whether artisan has priority matching
+             * @example false
+             */
+            hasPriorityMatching: boolean;
+        };
+        ArtisanLevelDefinitionDto: {
+            /**
+             * @description Unique identifier
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Level enum value
+             * @example STARTER
+             * @enum {string}
+             */
+            level: "STARTER" | "SKILLED" | "PRO" | "EXPERT" | "ELITE";
+            /**
+             * @description Human-readable display name
+             * @example Starter
+             */
+            displayName: string;
+            /**
+             * @description Minimum jobs required to reach this level
+             * @example 0
+             */
+            minJobsRequired: number;
+            /**
+             * @description Standard commission percentage
+             * @example 10
+             */
+            commissionPercent: number;
+            /**
+             * @description Discounted commission percentage for this level
+             * @example 5
+             */
+            discountedCommissionPercent: number;
+            /**
+             * @description Number of jobs at discounted rate
+             * @example 5
+             */
+            discountedJobsCount: number;
+            /**
+             * @description Whether artisans at this level get priority matching
+             * @example false
+             */
+            hasPriorityMatching: boolean;
+            /**
+             * @description Display order for UI
+             * @example 1
+             */
+            displayOrder: number;
+        };
+        UpdateAvailabilityDto: {
+            /**
+             * @description New availability status
+             * @example true
+             */
+            isAvailable: boolean;
+        };
         VerifyNinDto: {
             /**
              * @description National Identification Number (NIN) to verify
@@ -2164,78 +2388,12 @@ export interface components {
             /** @example true */
             isActive?: boolean;
         };
-        CreateServiceRequestDto: {
-            /**
-             * @description Category ID for the type of service needed
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            categoryId: string;
-            /**
-             * @description Brief title/summary of the service request
-             * @example Fix leaking pipe in bathroom
-             */
-            title: string;
-            /**
-             * @description Detailed description of the service needed
-             * @example There is a leaking pipe under the bathroom sink. Water is dripping constantly.
-             */
-            description: string;
-            /**
-             * @description Full address where service is needed
-             * @example 123 Main Street, Victoria Island, Lagos
-             */
-            serviceAddress: string;
-            /**
-             * @description Latitude of service location
-             * @example 6.4281
-             */
-            latitude: number;
-            /**
-             * @description Longitude of service location
-             * @example 3.4219
-             */
-            longitude: number;
-            /**
-             * @description Contact phone number for this service
-             * @example +2348012345678
-             */
-            contactPhone: string;
-            /**
-             * @description Minimum budget (in Naira)
-             * @example 5000
-             */
-            budgetMin?: number;
-            /**
-             * @description Maximum budget (in Naira)
-             * @example 20000
-             */
-            budgetMax?: number;
-            /**
-             * @description Preferred date/time for the service (ISO format)
-             * @example 2026-01-15T10:00:00.000Z
-             */
-            preferredDate?: string;
-        };
         ServiceRequestResponseDto: {
             /**
              * @description Service Request unique identifier (UUID)
              * @example 550e8400-e29b-41d4-a716-446655440000
              */
             id: string;
-            /**
-             * @description User ID of the requester
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            userId: string;
-            /** @description User details */
-            user: components["schemas"]["UserResponseDto"];
-            /**
-             * @description Category ID
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            categoryId: string;
-            /** @description Category details */
-            category: components["schemas"]["CategoryResponseDto"];
             /**
              * @description Title of the request
              * @example Need a plumber for leaking sink
@@ -2279,6 +2437,13 @@ export interface components {
              */
             preferredDate?: string | null;
             /**
+             * @description URLs of uploaded photos/videos
+             * @example [
+             *       "https://storage.example.com/service-requests/photo1.jpg"
+             *     ]
+             */
+            mediaUrls?: string[] | null;
+            /**
              * Format: date-time
              * @description Expiration date
              * @example 2025-12-14T10:00:00.000Z
@@ -2296,6 +2461,10 @@ export interface components {
              * @example 2025-12-07T10:00:00.000Z
              */
             updatedAt: string;
+            /** @description User who created the request */
+            user: components["schemas"]["UserResponseDto"];
+            /** @description Category details */
+            category: components["schemas"]["CategoryResponseDto"];
         };
         CreateServiceRequestResponseDto: {
             /** @description Created service request */
@@ -2581,6 +2750,23 @@ export interface components {
              * @example 2
              */
             cancelled: number;
+        };
+        SendMessageDto: {
+            /**
+             * @description The message content
+             * @example Hello, when can you start the work?
+             */
+            content: string;
+        };
+        MarkReadDto: {
+            /**
+             * @description Array of message IDs to mark as read
+             * @example [
+             *       "uuid-1",
+             *       "uuid-2"
+             *     ]
+             */
+            messageIds: string[];
         };
         CreatePinDto: {
             /**
@@ -3868,7 +4054,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ArtisanLevelResponseDto"];
+                };
             };
             /** @description Unauthorized */
             401: {
@@ -3940,7 +4128,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ArtisanLevelDefinitionDto"][];
+                };
             };
             /** @description Unauthorized */
             401: {
@@ -3969,14 +4159,20 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAvailabilityDto"];
+            };
+        };
         responses: {
             /** @description Availability updated successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ArtisanProfile"];
+                };
             };
             /** @description Unauthorized */
             401: {
@@ -4205,9 +4401,39 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
+        /** @description Service request data with optional media files */
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateServiceRequestDto"];
+                "multipart/form-data": {
+                    /**
+                     * Format: uuid
+                     * @description Category ID for the type of service needed
+                     */
+                    categoryId: string;
+                    /** @description Brief title/summary of the service request */
+                    title: string;
+                    /** @description Detailed description of the service needed */
+                    description: string;
+                    /** @description Full address where service is needed */
+                    serviceAddress: string;
+                    /** @description Latitude of service location */
+                    latitude: number;
+                    /** @description Longitude of service location */
+                    longitude: number;
+                    /** @description Contact phone number for this service */
+                    contactPhone: string;
+                    /** @description Minimum budget (in Naira) */
+                    budgetMin?: number;
+                    /** @description Maximum budget (in Naira) */
+                    budgetMax?: number;
+                    /**
+                     * Format: date-time
+                     * @description Preferred date/time for the service (ISO format)
+                     */
+                    preferredDate?: string;
+                    /** @description Photos/videos related to the service request (max 10 files) */
+                    media?: string[];
+                };
             };
         };
         responses: {
@@ -5065,6 +5291,269 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ErrorResponseDto"];
                 };
+            };
+        };
+    };
+    ChatController_getRooms: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of chat rooms with last message and unread count */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChatController_getRoom: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Chat room ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Chat room details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authorized to access this room */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Chat room not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChatController_getMessages: {
+        parameters: {
+            query?: {
+                /** @description Page number (1-based) */
+                page?: number;
+                /** @description Number of messages per page */
+                limit?: number;
+                /** @description Cursor for cursor-based pagination (message ID) */
+                cursor?: string;
+                /** @description Filter messages before this date */
+                before?: string;
+                /** @description Filter messages after this date */
+                after?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Chat room ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated messages with sender info */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authorized to access this room */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Chat room not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChatController_sendMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Chat room ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendMessageDto"];
+            };
+        };
+        responses: {
+            /** @description Message sent successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Chat room is not active */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authorized to send messages in this room */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Chat room not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChatController_markRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Chat room ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkReadDto"];
+            };
+        };
+        responses: {
+            /** @description Number of messages marked as read */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authorized to access this room */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Chat room not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChatController_markAllRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Chat room ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Number of messages marked as read */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChatController_getUnreadCount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Total unread message count */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example 5 */
+                        count?: number;
+                    };
+                };
+            };
+        };
+    };
+    ChatController_getRoomByJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Job ID */
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Chat room for the job */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authorized to access this chat */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Chat room not found for this job */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

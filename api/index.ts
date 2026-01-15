@@ -366,4 +366,58 @@ export const api = {
         return data;
       },
     }),
+
+  // service endpoints
+  createServiceRequest: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/service-requests', 'post'>) => {
+        const formData = new FormData();
+
+        const fields = [
+          'categoryId',
+          'title',
+          'description',
+          'serviceAddress',
+          'latitude',
+          'longitude',
+          'contactPhone',
+        ] as const;
+
+        // Append only non-empty fields
+        fields.forEach((field) => {
+          const value = credentials[field];
+
+          if (value !== undefined && value !== null && value !== '') {
+            formData.append(field, String(value));
+          }
+        });
+
+        // @ts-ignore
+        if (credentials.media && credentials.media.length > 0) {
+          // @ts-ignore
+          credentials.media.forEach((cert, index) => {
+            const file = {
+              uri: normalizePath(cert.url),
+              type: cert.mimeType || 'image/jpeg',
+              name: cert.name || `media_${index}_${Date.now()}`,
+            };
+            // @ts-ignore - FormData typing issue in React Native
+            formData.append('media', file);
+          });
+        }
+
+        const { data, error } = await apiClient.POST('/api/service-requests', {
+          // @ts-ignore - FormData not properly typed in openapi-fetch
+          body: formData,
+          bodySerializer: () => formData, // Prevent body serialization
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Service request failed'));
+        }
+
+        return data;
+      },
+    };
+  },
 };

@@ -1,4 +1,11 @@
-import { View, ViewStyle, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  ViewStyle,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  RefreshControl,
+} from 'react-native';
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -11,7 +18,9 @@ interface LayoutProps {
   paddingHorizontal?: number;
   keyboardAvoiding?: boolean;
   useBackground?: boolean;
-  stickyHeader?: React.ReactNode; // NEW
+  stickyHeader?: React.ReactNode;
+  isRefreshing?: boolean;
+  onRefresh?: () => void;
 }
 
 export function Layout({
@@ -23,7 +32,9 @@ export function Layout({
   scrollable = true,
   topPadding = 8,
   useBackground = false,
-  stickyHeader, // NEW
+  stickyHeader,
+  isRefreshing = false,
+  onRefresh,
 }: LayoutProps) {
   const insets = useSafeAreaInsets();
 
@@ -56,7 +67,15 @@ export function Layout({
           contentContainerStyle={contentContainerStyles}
           keyboardShouldPersistTaps="handled"
           nestedScrollEnabled={true}
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              tintColor={'#E15D02'}
+              colors={['#E15D02']}
+            />
+          }>
           {children}
         </ScrollView>
       );

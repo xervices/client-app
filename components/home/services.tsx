@@ -21,7 +21,17 @@ export function Services() {
           data={data}
           numColumns={3}
           renderItem={({ item }) => (
-            <Pressable className="flex aspect-square w-full items-center justify-center gap-[2px] rounded-[8px] border border-[#FFCFAD]">
+            <Pressable
+              onPress={() => {
+                router.navigate({
+                  pathname: '/book',
+                  params: {
+                    search: item.name,
+                    id: item.id,
+                  },
+                });
+              }}
+              className="flex aspect-square w-full items-center justify-center gap-[2px] rounded-[8px] border border-[#FFCFAD]">
               <Image source={item.iconUrl} style={{ width: 24, height: 24 }} contentFit="contain" />
 
               <Text className="text-center font-cabinet-bold text-xs text-[#737381]">
