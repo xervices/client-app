@@ -7,11 +7,19 @@ import { DeleteImageSheet } from './delete-image-sheet';
 import { CounterOfferSheet } from './counter-offer-sheet';
 import { AddPromoCodeSheet } from './add-promo-code-sheet';
 import { CameraSheet } from './camera-sheet';
+import { LocationSearchSheet } from './location-search-sheet';
 
 interface CameraSheetPayload {
   url: string;
   mimeType: string;
   isVideo?: boolean;
+}
+
+export interface LocationSearchSheetPayload {
+  address: string;
+  latitude: string;
+  longitude: string;
+  postal_code: string;
 }
 
 declare module 'react-native-actions-sheet' {
@@ -29,6 +37,11 @@ declare module 'react-native-actions-sheet' {
     'camera-sheet': SheetDefinition<{
       payload: {
         onSelect?: (media: CameraSheetPayload) => void;
+      };
+    }>;
+    'location-search-sheet': SheetDefinition<{
+      payload: {
+        onSelect?: (location: LocationSearchSheetPayload) => void;
       };
     }>;
     'delete-account-sheet': SheetDefinition;
@@ -63,6 +76,7 @@ export const Sheets = () => {
         'counter-offer-sheet': CounterOfferSheet,
         'add-promo-code-sheet': AddPromoCodeSheet,
         'camera-sheet': CameraSheet,
+        'location-search-sheet': LocationSearchSheet,
       }}
     />
   );

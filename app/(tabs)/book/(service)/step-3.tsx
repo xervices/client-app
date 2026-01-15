@@ -15,6 +15,7 @@ import EnableLocationDialog from '@/components/enable-location-dialog';
 import { useServiceStore } from '@/store/service-store';
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/api';
+import { SheetManager } from 'react-native-actions-sheet';
 
 export default function Screen() {
   const { user } = useAuthStore();
@@ -84,7 +85,6 @@ export default function Screen() {
         });
       },
       onError: (err) => {
-        console.log(err);
         showErrorMessage(err.message);
       },
     });
@@ -101,7 +101,19 @@ export default function Screen() {
           <Text className="text-sm leading-none text-[#737381]">Please confirm your Location.</Text>
 
           <View className="flex gap-2">
-            <Pressable className="flex h-[52px] flex-row items-center gap-2 rounded-sm border border-[#DFDFE1] px-4">
+            <Pressable
+              onPress={() =>
+                SheetManager.show('location-search-sheet', {
+                  payload: {
+                    onSelect: (location) => {
+                      setLatitude(Number(location.latitude));
+                      setLongitude(Number(location.longitude));
+                      setServiceAddress(location.address);
+                    },
+                  },
+                })
+              }
+              className="flex h-[52px] flex-row items-center gap-2 rounded-sm border border-[#DFDFE1] px-4">
               <View className="flex h-4 w-4 items-center justify-center rounded-full bg-[#FE6A00]">
                 <View className="h-2 w-2 rounded-full bg-white" />
               </View>
