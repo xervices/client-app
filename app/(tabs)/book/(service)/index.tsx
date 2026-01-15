@@ -1,5 +1,6 @@
 import { api } from '@/api';
 import EnableLocationDialog from '@/components/enable-location-dialog';
+import { SearchInput } from '@/components/home/search-input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
@@ -25,14 +26,16 @@ export default function Screen() {
         <View className="flex gap-2">
           <Text className="font-cabinet-bold leading-none text-[#737381]">Categories</Text>
 
-          <Input
+          <SearchInput defaultCategoryId={id} />
+
+          {/* <Input
             placeholder="Book a service"
             className="rounded-full bg-white font-cabinet-bold"
             icon={<Search size={20} color="#B4B4BC" />}
             // onChangeText={setSearchValue}
             value={search}
             editable={false}
-          />
+          /> */}
         </View>
 
         {data && (

@@ -21,7 +21,9 @@ export default function Screen() {
       <View className="flex-1 gap-4">
         <EnableLocationDialog />
 
-        <SearchInput />
+        <View className="px-6">
+          <SearchInput />
+        </View>
 
         <Promotions />
 
