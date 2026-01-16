@@ -459,6 +459,25 @@ export const api = {
         return data;
       },
     }),
+  cancelServiceRequest: (id: string) => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/service-requests/{id}/cancel', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/service-requests/{id}/cancel', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Cancel Service request failed'));
+        }
+
+        return data;
+      },
+    };
+  },
 
   // jobs endpoints
   getUserJobs: () =>

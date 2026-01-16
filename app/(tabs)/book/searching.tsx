@@ -8,10 +8,11 @@ import { ArrowUpRight, ChevronRight } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 import { api } from '@/api';
 import { LoadingState } from '@/components/loading-state';
 import { formatRelativeTime } from '@/lib/utils';
+import { useOffers } from '@/hooks/use-offers';
 
 export default function Screen() {
   const { id }: { id: string } = useLocalSearchParams();
@@ -19,6 +20,34 @@ export default function Screen() {
   const [artisans, offers, serviceRequest] = useQueries({
     queries: [api.getMatchingArtisans(id), api.getOffers(id), api.getServiceRequest(id)],
   });
+
+  const { views } = useOffers({
+    serviceRequestId: id,
+    onViewed: () => {
+      artisans?.refetch();
+    },
+  });
+
+  React.useEffect(() => {
+    if (offers?.data && offers?.data?.length > 1) {
+      router.replace('/book/offer');
+    }
+  }, [offers]);
+
+  React.useEffect(() => {
+    if (!artisans.isLoading && artisans.data !== undefined && artisans.data.length === 0) {
+      const redirectTimeout = setTimeout(() => {
+        router.replace({
+          pathname: '/book/no-result',
+          params: {
+            id,
+          },
+        });
+      }, 10000);
+
+      return () => clearTimeout(redirectTimeout);
+    }
+  }, [artisans.isLoading, artisans.data?.length, id]);
 
   return (
     <Layout
@@ -35,7 +64,7 @@ export default function Screen() {
         </View>
       }>
       {artisans?.isLoading || offers?.isLoading || serviceRequest?.isLoading ? (
-        <LoadingState title="Loading Maatching Artisans..." />
+        <LoadingState title="Loading Matching Artisans..." />
       ) : (
         <View className="flex-1 gap-2">
           <View className="flex flex-row items-center justify-between gap-2">
@@ -85,56 +114,58 @@ export default function Screen() {
             </Text>
           </View>
 
-          {/* {offers?.data && offers?.data.length > 0 && ( */}
-          <View
-            style={{
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 8,
-              elevation: 4,
-            }}
-            className="flex gap-4 rounded-[8px] bg-white p-4">
-            <View className="flex flex-row items-center justify-between">
-              <View>
-                <Text className="flex-1 font-cabinet-bold text-[#1B1B1E]">
-                  {serviceRequest?.data?.category?.name}
-                </Text>
-                <Text className="flex-1 text-xs text-[#FE6A00]">
-                  {formatRelativeTime(serviceRequest?.data?.createdAt)}
-                </Text>
+          {offers?.data && offers?.data.length > 0 && (
+            <View
+              style={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 8,
+                elevation: 4,
+              }}
+              className="flex gap-4 rounded-[8px] bg-white p-4">
+              <View className="flex flex-row items-center justify-between">
+                <View>
+                  <Text className="flex-1 font-cabinet-bold text-[#1B1B1E]">
+                    {serviceRequest?.data?.category?.name}
+                  </Text>
+                  <Text className="flex-1 text-xs text-[#FE6A00]">
+                    {formatRelativeTime(serviceRequest?.data?.createdAt)}
+                  </Text>
+                </View>
+
+                <View className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-sm border-2 border-[#FFAC70]">
+                  {serviceRequest?.data?.mediaUrls &&
+                    serviceRequest?.data?.mediaUrls?.length > 0 && (
+                      <Image
+                        source={serviceRequest?.data?.mediaUrls[0]}
+                        style={{ width: '100%', height: '100%' }}
+                        contentFit="cover"
+                      />
+                    )}
+                </View>
               </View>
 
-              <View className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-sm border-2 border-[#FFAC70]">
-                {serviceRequest?.data?.mediaUrls && serviceRequest?.data?.mediaUrls?.length > 0 && (
-                  <Image
-                    source={serviceRequest?.data?.mediaUrls[0]}
-                    style={{ width: '100%', height: '100%' }}
-                    contentFit="cover"
-                  />
-                )}
+              <Text className="text-sm text-[#737381]">{serviceRequest?.data?.description}</Text>
+
+              <View className="flex flex-row items-center justify-end">
+                <Pressable
+                  onPress={() =>
+                    router.navigate({
+                      pathname: '/jobs/ongoing',
+                      params: {
+                        id: '97575',
+                      },
+                    })
+                  }
+                  className="flex flex-row items-center gap-1">
+                  <Text className="font-cabinet-bold text-sm text-primary">View details</Text>
+
+                  <ArrowUpRight size={14} color={'#FE6A00'} />
+                </Pressable>
               </View>
             </View>
-
-            <Text className="text-sm text-[#737381]">{serviceRequest?.data?.description}</Text>
-
-            <View className="flex flex-row items-center justify-end">
-              <Pressable
-                onPress={() =>
-                  router.navigate({
-                    pathname: '/jobs/ongoing',
-                    params: {
-                      id: '97575',
-                    },
-                  })
-                }
-                className="flex flex-row items-center gap-1">
-                <Text className="font-cabinet-bold text-sm text-primary">View details</Text>
-
-                <ArrowUpRight size={14} color={'#FE6A00'} />
-              </Pressable>
-            </View>
-          </View>
+          )}
 
           <View className="mt-3 flex gap-2">
             <Text className="font-cabinet-bold text-[#737381]">What happens next?</Text>

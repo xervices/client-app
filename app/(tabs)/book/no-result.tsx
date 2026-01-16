@@ -5,12 +5,34 @@ import { Layout } from '@/components/layout';
 import { AuthHeader } from '@/components/auth-header';
 import { Image } from 'expo-image';
 import { ArrowUpRight, ChevronRight } from 'lucide-react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { Button } from '@/components/ui/button';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '@/api';
+import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 
 export default function Screen() {
+  const { id }: { id: string } = useLocalSearchParams();
+
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    ...api.cancelServiceRequest(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: api.getUserServiceRequests().queryKey,
+      });
+
+      showSuccessMessage('Service Request canceled successfully!');
+      router.replace('/(tabs)/(home)');
+    },
+    onError: (err) => {
+      showErrorMessage(err.message);
+    },
+  });
+
   return (
     <Layout
       useBackground
@@ -35,7 +57,27 @@ export default function Screen() {
           </Text>
         </View>
 
-        <Button className="mt-auto">Resubmit</Button>
+        <View className="mt-auto flex gap-2">
+          <Button
+            onPress={() => {
+              router.navigate({
+                pathname: '/book/searching',
+                params: {
+                  id,
+                },
+              });
+            }}>
+            Resubmit
+          </Button>
+
+          <Button
+            onPress={mutate}
+            isLoading={isPending}
+            disabled={isPending}
+            variant={'destructive'}>
+            Cancel Request
+          </Button>
+        </View>
       </View>
     </Layout>
   );
