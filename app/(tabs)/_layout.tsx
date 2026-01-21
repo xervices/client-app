@@ -1,4 +1,5 @@
 import { Text } from '@/components/ui/text';
+import { OffersProvider } from '@/providers/offers-context';
 import { Image } from 'expo-image';
 import { Tabs } from 'expo-router';
 import { Key } from 'react';
@@ -6,32 +7,34 @@ import { Pressable, View } from 'react-native';
 
 export default function TabsLayout() {
   return (
-    <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <MyTabBar {...props} />}>
-      <Tabs.Screen
-        name="(home)"
-        options={{
-          title: 'Home',
-        }}
-      />
-      <Tabs.Screen
-        name="jobs"
-        options={{
-          title: 'My Jobs',
-        }}
-      />
-      <Tabs.Screen
-        name="book"
-        options={{
-          title: 'Book a service',
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-        }}
-      />
-    </Tabs>
+    <OffersProvider>
+      <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <MyTabBar {...props} />}>
+        <Tabs.Screen
+          name="(home)"
+          options={{
+            title: 'Home',
+          }}
+        />
+        <Tabs.Screen
+          name="jobs"
+          options={{
+            title: 'My Jobs',
+          }}
+        />
+        <Tabs.Screen
+          name="book"
+          options={{
+            title: 'Book a service',
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: 'Profile',
+          }}
+        />
+      </Tabs>
+    </OffersProvider>
   );
 }
 
@@ -63,7 +66,7 @@ function MyTabBar({ state, descriptors, navigation }: MyTabBarProps) {
 
   return (
     <View className="bg-white">
-      <View className="mb-5 flex h-20 w-full flex-row items-center justify-between gap-6 bg-white px-[28px]">
+      <View className="mb-5 flex h-20 w-full flex-row items-center justify-center gap-[8%] bg-white">
         {state.routes.map(
           (route: { key: string | number; name: any }, index: Key | null | undefined) => {
             const { options } = descriptors[route.key];

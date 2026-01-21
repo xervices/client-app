@@ -6,51 +6,167 @@ import dayjs from 'dayjs';
 import { useAuthStore } from '@/store/auth-store';
 import { showErrorMessage } from './helpers';
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://server-api-bibv.onrender.com';
+export const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://server-api-bibv.onrender.com';
+
+// Track ongoing refresh to prevent multiple simultaneous refresh requests
+let isRefreshing = false;
+let refreshPromise: Promise<string | null> | null = null;
+
+/**
+ * Refresh the access token using the refresh token
+ * Prevents multiple simultaneous refresh requests
+ */
+async function refreshAccessToken(): Promise<string | null> {
+  // If already refreshing, wait for that request to complete
+  if (isRefreshing && refreshPromise) {
+    console.log('⏳ Waiting for ongoing token refresh...');
+    return refreshPromise;
+  }
+
+  isRefreshing = true;
+
+  refreshPromise = (async () => {
+    try {
+      const refreshToken = await tokenStorage.getRefreshToken();
+
+      if (!refreshToken) {
+        console.error('❌ No refresh token available');
+        throw new Error('No refresh token');
+      }
+
+      console.log('🔄 Refreshing access token...');
+
+      // Create a separate client without auth middleware to avoid infinite loop
+      const refreshClient = createClient<paths>({ baseUrl: BASE_URL });
+      const { data, error } = await refreshClient.POST('/api/auth/refresh', {
+        body: { refreshToken },
+      });
+
+      if (error || !data) {
+        console.error('❌ Token refresh failed:', error);
+        throw new Error('Failed to refresh token');
+      }
+
+      // Store new tokens
+      await tokenStorage.setTokens(data.accessToken, data.refreshToken || refreshToken);
+      console.log('✅ Access token refreshed successfully');
+
+      return data.accessToken;
+    } catch (error) {
+      console.error('❌ Token refresh error:', error);
+
+      // Clear tokens and logout on refresh failure
+      await tokenStorage.clearTokens();
+      useAuthStore.getState().setLoginState(false);
+      showErrorMessage('Session expired, please login again');
+
+      return null;
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
+/**
+ * Check if token is expired or about to expire (within 5 minutes)
+ */
+function isTokenExpired(token: string, bufferSeconds = 300): boolean {
+  try {
+    const decoded = jwtDecode<{ exp?: number }>(token);
+
+    if (!decoded.exp) {
+      return true;
+    }
+
+    const expirationTime = dayjs.unix(decoded.exp);
+    const currentTime = dayjs();
+    const secondsUntilExpiry = expirationTime.diff(currentTime, 'second');
+
+    // Consider token expired if it expires within the buffer period
+    return secondsUntilExpiry < bufferSeconds;
+  } catch (error) {
+    console.error('❌ Token decode error:', error);
+    return true;
+  }
+}
 
 // Auth middleware that adds the access token to requests
 const authMiddleware: Middleware = {
   async onRequest({ request }) {
-    const token = await tokenStorage.getAccessToken();
-    const refreshToken = await tokenStorage.getRefreshToken();
+    try {
+      let token = await tokenStorage.getAccessToken();
 
-    if (token) {
-      const decodedAccessToken = jwtDecode(token);
-
-      const isAccessTokenExpired = decodedAccessToken.exp
-        ? dayjs.unix(decodedAccessToken.exp).diff(dayjs()) < 1
-        : true;
-
-      if (isAccessTokenExpired) {
-        if (refreshToken) {
-          const refreshClient = createClient<paths>({ baseUrl: BASE_URL });
-
-          const { data } = await refreshClient.POST('/api/auth/refresh', {
-            body: { refreshToken },
-          });
-
-          if (data) {
-            await tokenStorage.setTokens(data.accessToken, data.refreshToken || refreshToken);
-
-            request.headers.set('Authorization', `Bearer ${data.accessToken}`);
-          }
-        }
-      } else {
-        request.headers.set('Authorization', `Bearer ${token}`);
+      if (!token) {
+        console.log('ℹ️ No access token available');
+        return request;
       }
+
+      // Check if token is expired or about to expire (within 5 minutes)
+      if (isTokenExpired(token, 300)) {
+        console.log('⚠️ Access token expired or expiring soon, refreshing...');
+
+        // Refresh the token
+        const newToken = await refreshAccessToken();
+
+        if (newToken) {
+          token = newToken;
+        } else {
+          // Refresh failed, don't add auth header
+          console.error('❌ Could not refresh token, request will be unauthenticated');
+          return request;
+        }
+      }
+
+      // Add valid token to request
+      request.headers.set('Authorization', `Bearer ${token}`);
+    } catch (error) {
+      console.error('❌ Auth middleware error:', error);
     }
 
     return request;
   },
 
-  async onResponse({ response }) {
+  async onResponse({ request, response }) {
     // Handle 401 unauthorized responses
-    if (response.status === 401 && response.statusText === 'Unauthorized') {
-      await tokenStorage.clearTokens();
+    if (response.status === 401) {
+      console.log('🔒 Received 401, attempting token refresh and retry...');
 
-      useAuthStore.getState().setLoginState(false);
+      try {
+        // Try to refresh the token
+        const newToken = await refreshAccessToken();
 
-      showErrorMessage('Session expired, login to continue using the app!');
+        if (newToken) {
+          // Clone the original request
+          const clonedRequest = request.clone();
+
+          // Update the Authorization header
+          clonedRequest.headers.set('Authorization', `Bearer ${newToken}`);
+
+          // Retry the request with new token
+          console.log('🔄 Retrying request with new token...');
+          const retryResponse = await fetch(clonedRequest);
+
+          // If retry succeeds, return the new response
+          if (retryResponse.ok || retryResponse.status !== 401) {
+            console.log('✅ Retry successful');
+            return retryResponse;
+          }
+        }
+
+        // If refresh failed or retry still got 401, logout
+        console.error('❌ Token refresh failed or retry still unauthorized');
+        await tokenStorage.clearTokens();
+        useAuthStore.getState().setLoginState(false);
+        showErrorMessage('Session expired, please login again');
+      } catch (error) {
+        console.error('❌ Error handling 401:', error);
+        await tokenStorage.clearTokens();
+        useAuthStore.getState().setLoginState(false);
+        showErrorMessage('Session expired, please login again');
+      }
     }
 
     return response;

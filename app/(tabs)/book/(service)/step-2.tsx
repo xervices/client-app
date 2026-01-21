@@ -86,7 +86,7 @@ export default function Screen() {
         </View>
 
         <Button
-          disabled={!description || media?.length === 0}
+          disabled={!description}
           onPress={() => {
             setStep2({
               title: description.substring(0, 243),

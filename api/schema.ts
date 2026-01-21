@@ -639,6 +639,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/categories/{id}/artisans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisans by service/category ID
+         * @description Retrieve a list of verified and available artisans who provide a specific service. Optionally filter by location (latitude/longitude) to find nearby artisans sorted by distance.
+         */
+        get: operations["CategoriesController_findArtisansByService"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/service-requests": {
         parameters: {
             query?: never;
@@ -1164,6 +1184,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/earnings/breakdown": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get earnings breakdown
+         * @description Get detailed earnings breakdown by period (today, this week, this month, all time)
+         */
+        get: operations["EarningsController_getEarningsBreakdown"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/security/pin": {
         parameters: {
             query?: never;
@@ -1291,6 +1331,66 @@ export interface paths {
          * @description Upload evidence for an open or under-review dispute. Only job participants can add evidence.
          */
         post: operations["DisputesController_addEvidence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/artisans/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify an artisan
+         * @description Admin can manually verify or unverify an artisan. Sets the isVerified flag and updates verification status.
+         */
+        post: operations["AdminController_verifyArtisan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/artisans/pending": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get pending artisans
+         * @description Get list of artisans pending verification
+         */
+        get: operations["AdminController_getPendingArtisans"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/artisans/{artisanId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan profile
+         * @description Get detailed artisan profile for admin review
+         */
+        get: operations["AdminController_getArtisanProfile"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2388,6 +2488,64 @@ export interface components {
             /** @example true */
             isActive?: boolean;
         };
+        ArtisanByServiceResponseDto: {
+            /**
+             * @description Artisan user ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            artisanId: string;
+            /**
+             * @description Artisan full name
+             * @example John Doe
+             */
+            fullName: string;
+            /**
+             * @description Artisan avatar URL
+             * @example https://storage.example.com/avatars/artisan1.jpg
+             */
+            avatarUrl?: Record<string, never> | null;
+            /**
+             * @description Average rating (0-5)
+             * @example 4.5
+             */
+            averageRating: number;
+            /**
+             * @description Total number of reviews
+             * @example 25
+             */
+            totalReviews: number;
+            /**
+             * @description Total number of jobs completed
+             * @example 50
+             */
+            totalJobsCompleted: number;
+            /**
+             * @description Years of professional experience
+             * @example 5
+             */
+            yearsOfExperience?: Record<string, never> | null;
+            /**
+             * @description Distance in kilometers (only when location is provided)
+             * @example 5.2
+             */
+            distance?: Record<string, never> | null;
+            /**
+             * @description City where the artisan is located
+             * @example Lagos
+             */
+            city: Record<string, never> | null;
+            /**
+             * @description State where the artisan is located
+             * @example Lagos State
+             */
+            state: Record<string, never> | null;
+        };
+        FindArtisansByServiceResponseDto: {
+            /** @description List of artisans */
+            data: components["schemas"]["ArtisanByServiceResponseDto"][];
+            /** @description Pagination information */
+            pagination: Record<string, never>;
+        };
         ServiceRequestResponseDto: {
             /**
              * @description Service Request unique identifier (UUID)
@@ -2487,7 +2645,12 @@ export interface components {
              */
             fullName: string;
             /**
-             * @description Distance in kilometers
+             * @description Artisan avatar URL
+             * @example https://storage.example.com/avatars/artisan1.jpg
+             */
+            avatarUrl?: Record<string, never> | null;
+            /**
+             * @description Distance in kilometers from service location
              * @example 5.2
              */
             distance: number;
@@ -2501,6 +2664,16 @@ export interface components {
              * @example 25
              */
             totalReviews: number;
+            /**
+             * @description Total number of jobs completed
+             * @example 50
+             */
+            totalJobsCompleted: number;
+            /**
+             * @description Years of professional experience
+             * @example 5
+             */
+            yearsOfExperience?: Record<string, never> | null;
         };
         CreateOfferDto: {
             /**
@@ -2866,6 +3039,31 @@ export interface components {
              * @example Photo showing the unfinished work
              */
             description?: string;
+        };
+        VerifyArtisanDto: {
+            /**
+             * @description The ID of the artisan to verify
+             * @example 123e4567-e89b-12d3-a456-426614174000
+             */
+            artisanId: string;
+            /**
+             * @description Verification status to set
+             * @default true
+             * @example true
+             */
+            isVerified: boolean;
+            /**
+             * @description Optional note about the verification
+             * @example Verified via manual document review
+             */
+            note?: string;
+        };
+        VerifyArtisanResponseDto: {
+            message: string;
+            artisanId: string;
+            isVerified: boolean;
+            /** Format: date-time */
+            verifiedAt: string;
         };
         CreateSupportTicketDto: {
             /**
@@ -4365,6 +4563,58 @@ export interface operations {
             };
         };
     };
+    CategoriesController_findArtisansByService: {
+        parameters: {
+            query?: {
+                /** @description Latitude of the user location for proximity filtering */
+                latitude?: number;
+                /** @description Longitude of the user location for proximity filtering */
+                longitude?: number;
+                /** @description Search radius in kilometers (default: 50km) */
+                radiusKm?: number;
+                /** @description Page number for pagination (default: 1) */
+                page?: number;
+                /** @description Number of results per page (default: 20, max: 100) */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                /** @description Service/Category ID (UUID) */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of artisans for the service */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FindArtisansByServiceResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service/Category not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     ServiceRequestsController_findMine: {
         parameters: {
             query?: never;
@@ -5638,6 +5888,42 @@ export interface operations {
             };
         };
     };
+    EarningsController_getEarningsBreakdown: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Earnings breakdown retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     SecurityController_createOrUpdatePin: {
         parameters: {
             query?: never;
@@ -6020,6 +6306,155 @@ export interface operations {
                 };
             };
             /** @description Dispute not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_verifyArtisan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyArtisanDto"];
+            };
+        };
+        responses: {
+            /** @description Artisan verification status updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerifyArtisanResponseDto"];
+                };
+            };
+            /** @description Bad request - User is not an artisan */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Artisan not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_getPendingArtisans: {
+        parameters: {
+            query?: {
+                /** @description Page number (default: 1) */
+                page?: number;
+                /** @description Items per page (default: 20) */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of pending artisans */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_getArtisanProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Artisan user ID */
+                artisanId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Artisan profile details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Artisan not found */
             404: {
                 headers: {
                     [name: string]: unknown;

@@ -244,12 +244,15 @@ export const api = {
         // Handle avatar file upload
         // @ts-ignore
         if (credentials.avatarUrl && credentials.avatarUrl !== user?.profile?.avatarUrl) {
+          // @ts-ignore
+          const extension = credentials.avatarMimeType === 'image/png' ? 'png' : 'jpg';
+
           const file = {
             // @ts-ignore
             uri: normalizePath(credentials.avatarUrl),
             // @ts-ignore - avatarMimeType sent from form but not specified in api
             type: credentials.avatarMimeType || 'image/jpeg',
-            name: `avatar_${Date.now()}}`,
+            name: `avatar_${Date.now()}.${extension}`,
           };
 
           // @ts-ignore - FormData typing issue in React Native
@@ -395,11 +398,14 @@ export const api = {
         // @ts-ignore
         if (credentials.media && credentials.media.length > 0) {
           // @ts-ignore
+          const extension = credentials.avatarMimeType === 'image/png' ? 'png' : 'jpg';
+
+          // @ts-ignore
           credentials.media.forEach((cert, index) => {
             const file = {
               uri: normalizePath(cert.url),
               type: cert.mimeType || 'image/jpeg',
-              name: cert.name || `media_${index}_${Date.now()}`,
+              name: cert.name || `media_${index}_${Date.now()}.${extension}`,
             };
             // @ts-ignore - FormData typing issue in React Native
             formData.append('media', file);

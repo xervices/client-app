@@ -5,13 +5,15 @@ import { Layout } from '@/components/layout';
 import { AuthHeader } from '@/components/auth-header';
 import { Image } from 'expo-image';
 import { ArrowUpRight, BadgeCheck, ChevronRight, Map, MapPin } from 'lucide-react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { Button } from '@/components/ui/button';
 import { SheetManager } from 'react-native-actions-sheet';
 
 export default function Screen() {
+  const { id }: { id: string } = useLocalSearchParams();
+
   return (
     <Layout
       useBackground

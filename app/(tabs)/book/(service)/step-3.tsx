@@ -73,6 +73,8 @@ export default function Screen() {
 
     const data = getFormData();
 
+    console.log(data);
+
     // @ts-ignore
     mutate(data, {
       onSuccess: (res) => {
@@ -85,6 +87,7 @@ export default function Screen() {
         });
       },
       onError: (err) => {
+        console.log(err);
         showErrorMessage(err.message);
       },
     });

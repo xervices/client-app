@@ -12,7 +12,7 @@ import * as React from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 
 export default function Screen() {
-  const { search, id }: { search: string; id: string } = useLocalSearchParams();
+  const { id }: { search: string; id: string } = useLocalSearchParams();
 
   const { data } = useQuery(api.getAllCategories());
 

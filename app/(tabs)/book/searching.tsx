@@ -12,50 +12,51 @@ import { useQueries } from '@tanstack/react-query';
 import { api } from '@/api';
 import { LoadingState } from '@/components/loading-state';
 import { formatRelativeTime } from '@/lib/utils';
-import { useOffers } from '@/hooks/use-offers';
+import { useOffersSocket } from '@/hooks/use-offers-socket';
+import { useOffersContext } from '@/providers/offers-context';
 
 export default function Screen() {
   const { id }: { id: string } = useLocalSearchParams();
 
-  const [artisans, offers, serviceRequest] = useQueries({
-    queries: [api.getMatchingArtisans(id), api.getOffers(id), api.getServiceRequest(id)],
+  const [artisans, serviceRequest] = useQueries({
+    queries: [api.getMatchingArtisans(id), api.getServiceRequest(id)],
   });
 
-  const { views } = useOffers({
-    serviceRequestId: id,
-    onViewed: () => {
-      artisans?.refetch();
-    },
-  });
+  const { joinServiceRequest, views, offers, isConnected } = useOffersContext();
 
   React.useEffect(() => {
-    if (offers?.data && offers?.data?.length > 1) {
+    if (offers && offers?.length > 1) {
       router.replace('/book/offer');
     }
   }, [offers]);
 
   React.useEffect(() => {
-    if (!artisans.isLoading && artisans.data !== undefined && artisans.data.length === 0) {
-      const redirectTimeout = setTimeout(() => {
-        router.replace({
-          pathname: '/book/no-result',
-          params: {
-            id,
-          },
-        });
-      }, 10000);
-
-      return () => clearTimeout(redirectTimeout);
+    if (isConnected) {
+      joinServiceRequest(id);
     }
+  }, [isConnected]);
+
+  React.useEffect(() => {
+    // if (!artisans.isLoading && artisans.data !== undefined && artisans.data.length === 0) {
+    const redirectTimeout = setTimeout(() => {
+      router.replace({
+        pathname: '/book/no-result',
+        params: {
+          id,
+        },
+      });
+    }, 10000);
+
+    return () => clearTimeout(redirectTimeout);
+    // }
   }, [artisans.isLoading, artisans.data?.length, id]);
 
   return (
     <Layout
       useBackground
-      isRefreshing={artisans?.isRefetching || offers?.isRefetching || serviceRequest?.isRefetching}
+      isRefreshing={artisans?.isRefetching || serviceRequest?.isRefetching}
       onRefresh={() => {
         artisans?.refetch();
-        offers?.refetch();
         serviceRequest?.refetch();
       }}
       stickyHeader={
@@ -63,35 +64,37 @@ export default function Screen() {
           <AuthHeader />
         </View>
       }>
-      {artisans?.isLoading || offers?.isLoading || serviceRequest?.isLoading ? (
+      {artisans?.isLoading || serviceRequest?.isLoading ? (
         <LoadingState title="Loading Matching Artisans..." />
       ) : (
         <View className="flex-1 gap-2">
           <View className="flex flex-row items-center justify-between gap-2">
             <Text className="flex-1 text-sm text-[#737381]">
-              {artisans?.data && artisans?.data?.length > 0 ? artisans?.data.length : 0} artisans
-              viewed your request
+              {views && views?.length > 0 ? views.length : 0} artisans viewed your request
             </Text>
 
             <View className="flex-row">
-              {artisans?.data?.slice(0, 6)?.map((profile) => (
+              {views?.slice(0, 6)?.map((profile) => (
                 <Avatar
-                  alt="@mrzachnugent"
+                  key={profile?.artisanId}
+                  alt={profile?.artisanName}
                   className="-mr-2 h-6 w-6 border-2 border-background web:border-0 web:ring-2 web:ring-background">
-                  <AvatarImage source={{ uri: 'https://github.com/mrzachnugent.png' }} />
-                  <AvatarFallback>
-                    <Text>{profile.fullName.substring(0, 2)}</Text>
+                  {/* <AvatarImage source={{ uri: (profile?.artisanName || '') as string }} /> */}
+                  <AvatarFallback className="bg-primary">
+                    <Text className="font-cabinet-bold text-xs uppercase">
+                      {profile?.artisanName?.substring(0, 2)}
+                    </Text>
                   </AvatarFallback>
                 </Avatar>
               ))}
 
-              {artisans?.data && Math.max(0, artisans?.data?.length - 6) > 0 && (
+              {views && Math.max(0, views?.length - 6) > 0 && (
                 <Avatar
                   alt="@evilrabbit"
                   className="-mr-2 h-6 w-6 border-2 border-background bg-[#F4F4F5] web:border-0 web:ring-2 web:ring-background">
                   <AvatarFallback>
                     <Text className="font-cabinet-bold text-xs">
-                      +{Math.max(0, artisans?.data?.length - 6)}
+                      +{Math.max(0, views?.length - 6)}
                     </Text>
                   </AvatarFallback>
                 </Avatar>
@@ -114,7 +117,7 @@ export default function Screen() {
             </Text>
           </View>
 
-          {offers?.data && offers?.data.length > 0 && (
+          {offers && offers?.length > 0 && (
             <View
               style={{
                 shadowColor: '#000',
@@ -152,9 +155,9 @@ export default function Screen() {
                 <Pressable
                   onPress={() =>
                     router.navigate({
-                      pathname: '/jobs/ongoing',
+                      pathname: '/book/offer',
                       params: {
-                        id: '97575',
+                        id: serviceRequest?.data?.id,
                       },
                     })
                   }
