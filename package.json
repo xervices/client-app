@@ -1,7 +1,7 @@
 {
   "name": "expo-sample",
   "main": "expo-router/entry",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "scripts": {
     "dev": "expo start",
     "generate:schema": "npx openapi-typescript https://server-api-bibv.onrender.com/api/docs-json -o ./api/schema.ts",
