@@ -18,6 +18,7 @@ export default function BookServiceLayout() {
   return (
     <Layout
       useBackground
+      scrollable={false}
       stickyHeader={
         <View className="pb-4">
           <AuthHeader title="Book a service" showBackButton={currentStep > 1} />

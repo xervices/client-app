@@ -32,6 +32,16 @@ export default function Screen() {
     joinServiceRequest(id);
   }, []);
 
+  const uniqueOffersByArtisan = React.useMemo(() => {
+    if (!allOffers?.data) return [];
+    const seen = new Set();
+    return allOffers.data.filter((offer) => {
+      if (seen.has(offer.artisanId)) return false;
+      seen.add(offer.artisanId);
+      return true;
+    });
+  }, [allOffers?.data]);
+
   return (
     <Layout
       useBackground
@@ -48,18 +58,18 @@ export default function Screen() {
         <View className="flex-1 gap-2">
           <View>
             <Text className="font-cabinet-bold text-xl text-[#1B1B1E]">
-              {allOffers?.data?.length} Offer
-              {allOffers?.data && allOffers?.data?.length > 1 ? 's' : null} Received
+              {uniqueOffersByArtisan?.length} Offer
+              {uniqueOffersByArtisan && uniqueOffersByArtisan?.length > 1 ? 's' : null} Received
             </Text>
             <Text className="text-sm text-[#B4B4BC]">
-              {allOffers?.data && allOffers?.data?.length > 1
-                ? allOffers?.data[0].serviceRequest?.category?.name
+              {uniqueOffersByArtisan && uniqueOffersByArtisan?.length > 1
+                ? uniqueOffersByArtisan[0].serviceRequest?.category?.name
                 : null}
             </Text>
           </View>
 
           <View className="flex gap-4">
-            {allOffers?.data?.map((offer) => (
+            {uniqueOffersByArtisan?.map((offer) => (
               <View
                 key={offer?.id}
                 style={{

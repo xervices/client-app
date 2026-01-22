@@ -5,6 +5,7 @@ import { apiClient, publicApiClient } from './client';
 import { tokenStorage } from './token-storage';
 import { getErrorMessage, RequestBody } from './helpers';
 import { useAuthStore } from '@/store/auth-store';
+import { getFileExtension } from '@/lib/utils';
 
 const normalizePath = (uri: string) => (Platform.OS === 'ios' ? uri.replace('file://', '') : uri);
 
@@ -171,6 +172,11 @@ export const api = {
       mutationFn: async (credentials: RequestBody<'/api/auth/logout', 'post'>) => {
         const { data, error } = await apiClient.POST('/api/auth/logout', {
           body: credentials,
+          params: {
+            header: {
+              authorization: '',
+            },
+          },
         });
 
         if (error) {
@@ -245,7 +251,7 @@ export const api = {
         // @ts-ignore
         if (credentials.avatarUrl && credentials.avatarUrl !== user?.profile?.avatarUrl) {
           // @ts-ignore
-          const extension = credentials.avatarMimeType === 'image/png' ? 'png' : 'jpg';
+          const extension = getFileExtension(credentials.avatarUrl, credentials.avatarMimeType);
 
           const file = {
             // @ts-ignore
@@ -398,10 +404,9 @@ export const api = {
         // @ts-ignore
         if (credentials.media && credentials.media.length > 0) {
           // @ts-ignore
-          const extension = credentials.avatarMimeType === 'image/png' ? 'png' : 'jpg';
-
-          // @ts-ignore
           credentials.media.forEach((cert, index) => {
+            const extension = getFileExtension(cert.url, cert.mimeType);
+
             const file = {
               uri: normalizePath(cert.url),
               type: cert.mimeType || 'image/jpeg',
@@ -568,4 +573,66 @@ export const api = {
       },
     };
   },
+
+  // payment endpoints
+  initializePayment: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/payments/initialize', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/payments/initialize', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to initialize payment.'));
+        }
+
+        return data;
+      },
+    };
+  },
+  verifyPayment: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/payments/verify', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/payments/verify', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to verify payment'));
+        }
+
+        return data;
+      },
+    };
+  },
+  getPaymentDetail: (id: string) =>
+    queryOptions({
+      queryKey: ['payment', id],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/payments/{id}', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
+  getJobPayment: (jobId: string) =>
+    queryOptions({
+      queryKey: ['payment', 'job', jobId],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/payments/job/{jobId}', {
+          params: {
+            path: {
+              jobId,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
 };

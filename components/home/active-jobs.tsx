@@ -6,13 +6,17 @@ import { ArrowUpRight, BadgeCheck, X } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
+import { SheetManager } from 'react-native-actions-sheet';
 
 export function ActiveJobs() {
   const { data } = useQuery(api.getUserServiceRequests());
 
+  const jobs = useQuery(api.getUserJobs());
+
   const inCompleteSearch = data?.filter((i) => i.status === 'open');
-  const activeJobs = data?.filter((i) => i.status === 'accepted');
   const negotiatingJobs = data?.filter((i) => i.status === 'in_negotiation');
+
+  const activeJobs = jobs?.data?.filter((i) => i.status === 'in_progress');
 
   return (
     <View className="flex gap-2 px-6">
@@ -65,55 +69,67 @@ export function ActiveJobs() {
         ))}
 
       {activeJobs && activeJobs?.length > 0 ? (
-        <View
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 8,
-            elevation: 4,
-          }}
-          className="flex gap-4 rounded-[8px] bg-white p-4">
-          <View className="flex flex-row items-center justify-between">
-            <Text className="flex-1 font-cabinet-bold text-[#1B1B1E]">Plumber</Text>
+        <>
+          {activeJobs?.map((job) => (
+            <View
+              key={job.id}
+              style={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 8,
+                elevation: 4,
+              }}
+              className="flex gap-4 rounded-[8px] bg-white p-4">
+              <View className="flex flex-row items-center justify-between">
+                <Text className="flex-1 font-cabinet-bold text-[#1B1B1E]">
+                  {job?.category?.name}
+                </Text>
 
-            <View className="flex h-[26px] items-center justify-center rounded-full bg-[#FFF4EA] px-3">
-              <Text className="text-sm text-primary">In Progress</Text>
-            </View>
-          </View>
+                <View className="flex h-[26px] items-center justify-center rounded-full bg-[#FFF4EA] px-4">
+                  <Text className="text-sm capitalize text-primary">{job?.status}</Text>
+                </View>
+              </View>
 
-          <Text className="text-sm text-[#737381]">
-            Leaky kitchen faucet needs immediate repair. Water dripping constantly.
-          </Text>
+              <Text className="text-sm text-[#737381]">{job?.serviceRequest?.description}</Text>
 
-          <View className="flex flex-row items-center justify-between">
-            <View className="flex flex-row items-center gap-1">
-              <Avatar alt="User's Avatar" className="h-6 w-6">
-                <AvatarImage source={{ uri: 'https://github.com/mrzachnugent.png' }} />
-                <AvatarFallback className="bg-primary">
-                  <Text className="font-cabinet-bold leading-none">ZN</Text>
-                </AvatarFallback>
-              </Avatar>
+              <View className="flex flex-row items-center justify-between">
+                <View className="flex flex-row items-center gap-1">
+                  <Avatar alt="User's Avatar" className="h-6 w-6">
+                    <AvatarImage source={{ uri: job?.artisan?.profile?.avatarUrl }} />
+                    <AvatarFallback className="bg-primary">
+                      <Text className="font-cabinet-bold text-xs leading-none">
+                        {job?.artisan?.profile?.fullName?.charAt(0).toUpperCase()}
+                      </Text>
+                    </AvatarFallback>
+                  </Avatar>
 
-              <View className="flex flex-row items-center">
-                <Text className="font-cabinet-bold text-sm text-[#737381]">Sarah Rodri</Text>
+                  <View className="flex flex-row items-center">
+                    <Text className="font-cabinet-bold text-sm text-[#737381]">
+                      {job?.artisan?.profile?.fullName}
+                    </Text>
 
-                <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                    <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                  </View>
+                </View>
+
+                <Pressable className="flex flex-row items-center gap-1">
+                  <Text className="font-cabinet-bold text-sm text-primary">Track activities</Text>
+
+                  <ArrowUpRight size={14} color={'#FE6A00'} />
+                </Pressable>
               </View>
             </View>
-
-            <Pressable className="flex flex-row items-center gap-1">
-              <Text className="font-cabinet-bold text-sm text-primary">Track activities</Text>
-
-              <ArrowUpRight size={14} color={'#FE6A00'} />
-            </Pressable>
-          </View>
-        </View>
+          ))}
+        </>
       ) : (
         <View className="flex w-full items-center justify-center gap-5 rounded-[8px] border border-[#D4D4D8] p-4">
           <Text className="text-sm text-[#B4B4BC]">No active job</Text>
 
-          <Button onPress={() => router.navigate('/book')} className="w-full">
+          <Button
+            // onPress={() => router.navigate('/book')}
+            onPress={() => SheetManager.show('paystack-webview-sheet')}
+            className="w-full">
             Book a service
           </Button>
         </View>

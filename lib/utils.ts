@@ -88,3 +88,83 @@ export function formatRelativeTime(isoDateString?: string | null): string {
 
   return date.fromNow();
 }
+
+/**
+ * Extract file extension from URI or derive from MIME type
+ * Works for images, videos, and other file types
+ *
+ * @param uri - File URI (e.g., 'file:///path/to/video.mp4' or 'content://...')
+ * @param mimeType - File MIME type (e.g., 'video/mp4', 'image/jpeg')
+ * @returns File extension without dot (e.g., 'mp4', 'jpg')
+ */
+export function getFileExtension(uri: string, mimeType?: string): string {
+  // Try to extract extension from URI first
+  const uriMatch = uri.match(/\.([a-zA-Z0-9]+)(?:\?|$)/);
+
+  if (uriMatch) {
+    return uriMatch[1].toLowerCase();
+  }
+
+  // Fallback: derive extension from MIME type
+  if (mimeType) {
+    const mimeToExt: Record<string, string> = {
+      // Images
+      'image/jpeg': 'jpg',
+      'image/jpg': 'jpg',
+      'image/png': 'png',
+      'image/gif': 'gif',
+      'image/webp': 'webp',
+      'image/svg+xml': 'svg',
+      'image/bmp': 'bmp',
+      'image/tiff': 'tiff',
+      'image/heic': 'heic',
+      'image/heif': 'heif',
+
+      // Videos
+      'video/mp4': 'mp4',
+      'video/mpeg': 'mpeg',
+      'video/quicktime': 'mov',
+      'video/x-msvideo': 'avi',
+      'video/x-matroska': 'mkv',
+      'video/webm': 'webm',
+      'video/3gpp': '3gp',
+      'video/x-flv': 'flv',
+      'video/x-ms-wmv': 'wmv',
+
+      // Audio
+      'audio/mpeg': 'mp3',
+      'audio/wav': 'wav',
+      'audio/ogg': 'ogg',
+      'audio/aac': 'aac',
+      'audio/flac': 'flac',
+      'audio/mp4': 'm4a',
+
+      // Documents
+      'application/pdf': 'pdf',
+      'application/msword': 'doc',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+      'application/vnd.ms-excel': 'xls',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+      'text/plain': 'txt',
+      'application/json': 'json',
+      'application/zip': 'zip',
+      'application/x-rar-compressed': 'rar',
+    };
+
+    const ext = mimeToExt[mimeType.toLowerCase()];
+    if (ext) {
+      return ext;
+    }
+  }
+
+  // Last resort: return generic extension based on MIME type category
+  if (mimeType) {
+    if (mimeType.startsWith('image/')) return 'jpg';
+    if (mimeType.startsWith('video/')) return 'mp4';
+    if (mimeType.startsWith('audio/')) return 'mp3';
+    if (mimeType.startsWith('application/')) return 'bin';
+  }
+
+  // Ultimate fallback
+  return 'bin';
+}
