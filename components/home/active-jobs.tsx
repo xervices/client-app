@@ -120,88 +120,83 @@ export function ActiveJobs() {
       )}
 
       {negotiatingJobs && negotiatingJobs?.length > 0 && (
-        <View
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 8,
-            elevation: 4,
-          }}
-          className="flex gap-4 rounded-[8px] bg-white p-4">
-          <View className="flex flex-row items-center justify-between">
-            <Text className="text-sm text-[#737381]">8 artisans sent offers</Text>
-          </View>
-
-          <View className="flex flex-row items-center justify-between">
-            <View className="flex-row">
-              <Avatar
-                alt="@mrzachnugent"
-                className="-mr-2 h-6 w-6 border-2 border-background web:border-0 web:ring-2 web:ring-background">
-                <AvatarImage source={{ uri: 'https://github.com/mrzachnugent.png' }} />
-                <AvatarFallback>
-                  <Text>ZN</Text>
-                </AvatarFallback>
-              </Avatar>
-              <Avatar
-                alt="@leerob"
-                className="-mr-2 h-6 w-6 border-2 border-background web:border-0 web:ring-2 web:ring-background">
-                <AvatarImage source={{ uri: 'https://github.com/leerob.png' }} />
-                <AvatarFallback>
-                  <Text>LR</Text>
-                </AvatarFallback>
-              </Avatar>
-              <Avatar
-                alt="@evilrabbit"
-                className="-mr-2 h-6 w-6 border-2 border-background web:border-0 web:ring-2 web:ring-background">
-                <AvatarImage source={{ uri: 'https://github.com/evilrabbit.png' }} />
-                <AvatarFallback>
-                  <Text>ER</Text>
-                </AvatarFallback>
-              </Avatar>
-              <Avatar
-                alt="@mrzachnugent"
-                className="-mr-2 h-6 w-6 border-2 border-background web:border-0 web:ring-2 web:ring-background">
-                <AvatarImage source={{ uri: 'https://github.com/mrzachnugent.png' }} />
-                <AvatarFallback>
-                  <Text>ZN</Text>
-                </AvatarFallback>
-              </Avatar>
-              <Avatar
-                alt="@leerob"
-                className="-mr-2 h-6 w-6 border-2 border-background web:border-0 web:ring-2 web:ring-background">
-                <AvatarImage source={{ uri: 'https://github.com/leerob.png' }} />
-                <AvatarFallback>
-                  <Text>LR</Text>
-                </AvatarFallback>
-              </Avatar>
-              <Avatar
-                alt="@evilrabbit"
-                className="-mr-2 h-6 w-6 border-2 border-background web:border-0 web:ring-2 web:ring-background">
-                <AvatarImage source={{ uri: 'https://github.com/evilrabbit.png' }} />
-                <AvatarFallback>
-                  <Text>ER</Text>
-                </AvatarFallback>
-              </Avatar>
-              <Avatar
-                alt="@evilrabbit"
-                className="-mr-2 h-6 w-6 border-2 border-background bg-[#F4F4F5] web:border-0 web:ring-2 web:ring-background">
-                <AvatarFallback>
-                  <Text className="font-cabinet-bold text-xs">+2</Text>
-                </AvatarFallback>
-              </Avatar>
-            </View>
-
-            <Pressable
-              onPress={() => router.navigate('/book/offer')}
-              className="flex flex-row items-center gap-1">
-              <Text className="font-cabinet-bold text-sm text-primary">See offers</Text>
-
-              <ArrowUpRight size={14} color={'#FE6A00'} />
-            </Pressable>
-          </View>
-        </View>
+        <>
+          {negotiatingJobs?.map((job) => (
+            <NegotiatingJobCard key={job.id} jobId={job.id} />
+          ))}
+        </>
       )}
+    </View>
+  );
+}
+
+interface NegotiatingJobCardProp {
+  jobId: string;
+}
+
+function NegotiatingJobCard({ jobId }: NegotiatingJobCardProp) {
+  const { isLoading, data } = useQuery(api.getOffers(jobId));
+
+  if (isLoading || !data || data?.length === 0) return null;
+
+  return (
+    <View
+      style={{
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 4,
+      }}
+      className="flex gap-4 rounded-[8px] bg-white p-4">
+      <View className="flex flex-row items-center justify-between">
+        <Text className="text-sm text-[#737381]">{data?.length} artisans sent offers</Text>
+      </View>
+
+      <View className="flex flex-row items-center justify-between">
+        <View className="flex-row">
+          {data?.slice(0, 6)?.map((profile) => (
+            <Avatar
+              key={profile?.artisanId}
+              alt={profile?.artisan?.profile?.fullName || ''}
+              className="-mr-2 h-6 w-6 border-2 border-background web:border-0 web:ring-2 web:ring-background">
+              <AvatarImage
+                source={{ uri: (profile?.artisan?.profile?.avatarUrl || '') as string }}
+              />
+              <AvatarFallback className="bg-primary">
+                <Text className="font-cabinet-bold text-xs uppercase">
+                  {profile?.artisan?.profile?.fullName?.substring(0, 2)}
+                </Text>
+              </AvatarFallback>
+            </Avatar>
+          ))}
+
+          {data && Math.max(0, data?.length - 6) > 0 && (
+            <Avatar
+              alt="@evilrabbit"
+              className="-mr-2 h-6 w-6 border-2 border-background bg-[#F4F4F5] web:border-0 web:ring-2 web:ring-background">
+              <AvatarFallback>
+                <Text className="font-cabinet-bold text-xs">+{Math.max(0, data?.length - 6)}</Text>
+              </AvatarFallback>
+            </Avatar>
+          )}
+        </View>
+
+        <Pressable
+          onPress={() =>
+            router.navigate({
+              pathname: '/book/offer',
+              params: {
+                id: jobId,
+              },
+            })
+          }
+          className="flex flex-row items-center gap-1">
+          <Text className="font-cabinet-bold text-sm text-primary">See offers</Text>
+
+          <ArrowUpRight size={14} color={'#FE6A00'} />
+        </Pressable>
+      </View>
     </View>
   );
 }

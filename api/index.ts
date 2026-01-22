@@ -512,4 +512,60 @@ export const api = {
         return data;
       },
     }),
+  getOfferDetails: (id: string) =>
+    queryOptions({
+      queryKey: ['offers', id],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/offers/{id}', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
+  createCounterOffer: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/offers/{id}/counter', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/offers/{id}/counter', {
+          body: { amount: credentials.amount, message: credentials.message },
+          params: {
+            path: {
+              // @ts-ignore
+              id: credentials?.id,
+            },
+          },
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'counter offer failed to send.'));
+        }
+
+        return data;
+      },
+    };
+  },
+  respondToOffer: (id: string) => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/offers/{id}/respond', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/offers/{id}/respond', {
+          body: credentials,
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'response to offer failed to send.'));
+        }
+
+        return data;
+      },
+    };
+  },
 };

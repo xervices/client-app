@@ -73,8 +73,6 @@ export default function Screen() {
 
     const data = getFormData();
 
-    console.log(data);
-
     // @ts-ignore
     mutate(data, {
       onSuccess: (res) => {

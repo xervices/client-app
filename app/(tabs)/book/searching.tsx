@@ -18,8 +18,8 @@ import { useOffersContext } from '@/providers/offers-context';
 export default function Screen() {
   const { id }: { id: string } = useLocalSearchParams();
 
-  const [artisans, serviceRequest] = useQueries({
-    queries: [api.getMatchingArtisans(id), api.getServiceRequest(id)],
+  const [artisans, serviceRequest, allOffers] = useQueries({
+    queries: [api.getMatchingArtisans(id), api.getServiceRequest(id), api.getOffers(id)],
   });
 
   const { joinServiceRequest, views, offers, isConnected } = useOffersContext();
@@ -37,27 +37,30 @@ export default function Screen() {
   }, [isConnected]);
 
   React.useEffect(() => {
-    // if (!artisans.isLoading && artisans.data !== undefined && artisans.data.length === 0) {
-    const redirectTimeout = setTimeout(() => {
-      router.replace({
-        pathname: '/book/no-result',
-        params: {
-          id,
-        },
-      });
-    }, 10000);
+    if (!artisans.isLoading && artisans.data !== undefined && artisans.data.length === 0) {
+      const redirectTimeout = setTimeout(() => {
+        router.replace({
+          pathname: '/book/no-result',
+          params: {
+            id,
+          },
+        });
+      }, 10000);
 
-    return () => clearTimeout(redirectTimeout);
-    // }
+      return () => clearTimeout(redirectTimeout);
+    }
   }, [artisans.isLoading, artisans.data?.length, id]);
 
   return (
     <Layout
       useBackground
-      isRefreshing={artisans?.isRefetching || serviceRequest?.isRefetching}
+      isRefreshing={
+        artisans?.isRefetching || serviceRequest?.isRefetching || allOffers?.isRefetching
+      }
       onRefresh={() => {
         artisans?.refetch();
         serviceRequest?.refetch();
+        allOffers?.refetch();
       }}
       stickyHeader={
         <View className="pb-4">
@@ -117,7 +120,7 @@ export default function Screen() {
             </Text>
           </View>
 
-          {offers && offers?.length > 0 && (
+          {allOffers?.data && allOffers?.data?.length > 0 && (
             <View
               style={{
                 shadowColor: '#000',
@@ -133,7 +136,7 @@ export default function Screen() {
                     {serviceRequest?.data?.category?.name}
                   </Text>
                   <Text className="flex-1 text-xs text-[#FE6A00]">
-                    {formatRelativeTime(serviceRequest?.data?.createdAt)}
+                    {formatRelativeTime(allOffers?.data[0]?.createdAt)}
                   </Text>
                 </View>
 
