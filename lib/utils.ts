@@ -3,6 +3,8 @@ import { twMerge } from 'tailwind-merge';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import updateLocale from 'dayjs/plugin/updateLocale';
+import isToday from 'dayjs/plugin/isToday';
+import isYesterday from 'dayjs/plugin/isYesterday';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -47,6 +49,8 @@ export function formatCurrency(
 // Extend dayjs with relativeTime plugin
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
+dayjs.extend(isToday);
+dayjs.extend(isYesterday);
 
 // Customize the relative time strings to match your desired format
 dayjs.updateLocale('en', {
@@ -167,4 +171,35 @@ export function getFileExtension(uri: string, mimeType?: string): string {
 
   // Ultimate fallback
   return 'bin';
+}
+
+/**
+ * Formats an ISO date string as "Today, Oct 11, 2025" or "Oct 11, 2025"
+ * @param isoDateString - ISO 8601 date string (e.g., "2025-10-11T14:30:00Z")
+ * @returns Formatted date string or undefined if input is invalid/undefined
+ */
+export function formatDate(isoDateString: string | undefined | null): string | undefined {
+  // Handle undefined, null, or empty string
+  if (!isoDateString) {
+    return undefined;
+  }
+
+  const date = dayjs(isoDateString);
+
+  // Check if the date is valid
+  if (!date.isValid()) {
+    return undefined;
+  }
+
+  // Format the date part (e.g., "Oct 11, 2025")
+  const formattedDate = date.format('MMM D, YYYY');
+
+  // Add "Today" or "Yesterday" prefix if applicable
+  if (date.isToday()) {
+    return `Today, ${formattedDate}`;
+  } else if (date.isYesterday()) {
+    return `Yesterday, ${formattedDate}`;
+  }
+
+  return formattedDate;
 }

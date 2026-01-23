@@ -1,14 +1,20 @@
 import { Pressable, View } from 'react-native';
 import React from 'react';
 import { Text } from '../ui/text';
-import ActionSheet, { ScrollView, SheetManager } from 'react-native-actions-sheet';
+import ActionSheet, { ScrollView, SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { router } from 'expo-router';
 import { ArrowLeft, BadgeCheck, PhoneCall } from 'lucide-react-native';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { Image } from 'expo-image';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/api';
 
-export function OngoingJobSheet() {
+export function OngoingJobSheet(props: SheetProps<'ongoing-job-sheet'>) {
+  const jobId = props.payload?.id || '';
+
+  const { isLoading, data, refetch, isRefetching } = useQuery(api.getJobDetail(jobId));
+
   const snapPoints = [100];
 
   return (
@@ -45,35 +51,41 @@ export function OngoingJobSheet() {
           </View>
 
           <View>
-            <Text className="font-cabinet-bold text-[#1B1B1E]">Sarah is 7 mins away</Text>
+            <Text className="font-cabinet-bold text-[#1B1B1E]">
+              {data?.artisan?.profile?.fullName} is 7 mins away
+            </Text>
 
-            <Text className="text-xs text-[#737381]">She'll check in when he arrives</Text>
+            <Text className="text-xs text-[#737381]">They'll check in when they arrive</Text>
           </View>
 
           <View className="flex w-full flex-row">
             <View className="flex w-1/2 flex-row items-center gap-2">
               <Avatar alt="User's Avatar" className="h-14 w-14">
-                <AvatarImage source={{ uri: 'https://github.com/mrzachnugent.png' }} />
+                <AvatarImage source={{ uri: data?.artisan?.profile?.avatarUrl }} />
                 <AvatarFallback className="bg-primary">
-                  <Text className="font-cabinet-bold leading-none">ZN</Text>
+                  <Text className="font-cabinet-bold text-xs uppercase leading-none">
+                    {data?.artisan?.profile?.fullName?.substring(0, 2)}
+                  </Text>
                 </AvatarFallback>
               </Avatar>
 
               <View>
                 <View className="flex flex-row items-center">
-                  <Text className="font-cabinet-bold text-[18px] text-[#1B1B1E]">Sarah Rodri</Text>
+                  <Text className="font-cabinet-bold text-[18px] text-[#1B1B1E]">
+                    {data?.artisan?.profile?.fullName}
+                  </Text>
 
                   <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
                 </View>
 
-                <Text className="text-xs text-[#1B1B1E]">Plumbing Specialist</Text>
+                <Text className="text-xs text-[#1B1B1E]">{data?.category?.name} Specialist</Text>
 
-                <Text className="text-xs text-[#FF6A00]">4.9 ★ (145)</Text>
+                <Text className="text-xs text-[#FF6A00]">4.8 ★ (145)</Text>
               </View>
             </View>
 
             <View className="flex w-1/2 justify-between">
-              <Text className="text-right text-xs text-[#FF6A00]">JOB ID ● #25667</Text>
+              <Text className="text-right text-xs text-[#FF6A00]">JOB ID ● {jobId}</Text>
             </View>
           </View>
 
@@ -90,7 +102,7 @@ export function OngoingJobSheet() {
                 router.navigate({
                   pathname: '/chat',
                   params: {
-                    id: '1234',
+                    id: jobId,
                   },
                 });
               }}

@@ -7,6 +7,7 @@ import { Services } from '@/components/home/services';
 import { UserOfWeek } from '@/components/home/user-of-week';
 import { ActiveJobs } from '@/components/home/active-jobs';
 import EnableLocationDialog from '@/components/enable-location-dialog';
+import Storage from 'expo-sqlite/kv-store';
 
 export default function Screen() {
   return (

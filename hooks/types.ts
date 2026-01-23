@@ -59,6 +59,7 @@ export interface ServiceRequestsClientToServerEvents {
 export interface RequestViewedEvent {
   type: 'REQUEST_VIEWED';
   data: {
+    artisanAvatarUrl: string;
     artisanId: string;
     artisanName: string;
   };
@@ -67,10 +68,12 @@ export interface RequestViewedEvent {
 export interface NewOfferEvent {
   type: 'NEW_OFFER';
   data: {
-    id: string;
     amount: number;
-    message: string;
     artisanId: string;
+    createdAt: string;
+    id: string;
+    message: string | null;
+    offeredBy: string;
   };
   timestamp: string;
 }

@@ -8,7 +8,7 @@ import { CounterOfferSheet } from './counter-offer-sheet';
 import { AddPromoCodeSheet } from './add-promo-code-sheet';
 import { CameraSheet } from './camera-sheet';
 import { LocationSearchSheet } from './location-search-sheet';
-import { PaystackWebviewSheet } from './paystack-webview-sheet';
+import { PaystackWebviewSheet, PaystackWebviewPayload } from './paystack-webview-sheet';
 
 interface CameraSheetPayload {
   url: string;
@@ -51,7 +51,11 @@ declare module 'react-native-actions-sheet' {
         onDelete?: () => void;
       };
     }>;
-    'ongoing-job-sheet': SheetDefinition;
+    'ongoing-job-sheet': SheetDefinition<{
+      payload: {
+        id: string;
+      };
+    }>;
     'counter-offer-sheet': SheetDefinition<{
       payload: {
         onConfirm?: (amount: number) => void;
@@ -63,9 +67,7 @@ declare module 'react-native-actions-sheet' {
       };
     }>;
     'paystack-webview-sheet': SheetDefinition<{
-      payload: {
-        onConfirm?: (paymentRef: string) => void;
-      };
+      payload: PaystackWebviewPayload;
     }>;
     'success-sheet': SheetDefinition<{
       payload: {

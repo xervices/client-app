@@ -6,7 +6,6 @@ import { ArrowUpRight, BadgeCheck, X } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
-import { SheetManager } from 'react-native-actions-sheet';
 
 export function ActiveJobs() {
   const { data } = useQuery(api.getUserServiceRequests());
@@ -93,8 +92,8 @@ export function ActiveJobs() {
 
               <Text className="text-sm text-[#737381]">{job?.serviceRequest?.description}</Text>
 
-              <View className="flex flex-row items-center justify-between">
-                <View className="flex flex-row items-center gap-1">
+              <View className="flex flex-row items-center justify-between gap-4">
+                <View className="flex flex-1 flex-row items-center gap-1">
                   <Avatar alt="User's Avatar" className="h-6 w-6">
                     <AvatarImage source={{ uri: job?.artisan?.profile?.avatarUrl }} />
                     <AvatarFallback className="bg-primary">
@@ -104,7 +103,7 @@ export function ActiveJobs() {
                     </AvatarFallback>
                   </Avatar>
 
-                  <View className="flex flex-row items-center">
+                  <View className="flex flex-1 flex-row items-center">
                     <Text className="font-cabinet-bold text-sm text-[#737381]">
                       {job?.artisan?.profile?.fullName}
                     </Text>
@@ -126,10 +125,7 @@ export function ActiveJobs() {
         <View className="flex w-full items-center justify-center gap-5 rounded-[8px] border border-[#D4D4D8] p-4">
           <Text className="text-sm text-[#B4B4BC]">No active job</Text>
 
-          <Button
-            // onPress={() => router.navigate('/book')}
-            onPress={() => SheetManager.show('paystack-webview-sheet')}
-            className="w-full">
+          <Button onPress={() => router.navigate('/book')} className="w-full">
             Book a service
           </Button>
         </View>

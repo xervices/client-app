@@ -500,6 +500,21 @@ export const api = {
         return data;
       },
     }),
+  getJobDetail: (id: string) =>
+    queryOptions({
+      queryKey: ['job', id],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/jobs/{id}', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
 
   // offers endpoints
   getOffers: (id: string) =>
@@ -581,6 +596,8 @@ export const api = {
         const { data, error } = await apiClient.POST('/api/payments/initialize', {
           body: credentials,
         });
+
+        console.log(error);
 
         if (error) {
           throw new Error(getErrorMessage(error, 'Failed to initialize payment.'));

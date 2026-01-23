@@ -82,7 +82,7 @@ export default function Screen() {
                   key={profile?.artisanId}
                   alt={profile?.artisanName}
                   className="-mr-2 h-6 w-6 border-2 border-background web:border-0 web:ring-2 web:ring-background">
-                  {/* <AvatarImage source={{ uri: (profile?.artisanName || '') as string }} /> */}
+                  <AvatarImage source={{ uri: profile?.artisanAvatarUrl as string }} />
                   <AvatarFallback className="bg-primary">
                     <Text className="font-cabinet-bold text-xs uppercase">
                       {profile?.artisanName?.substring(0, 2)}
@@ -120,7 +120,7 @@ export default function Screen() {
             </Text>
           </View>
 
-          {allOffers?.data && allOffers?.data?.length > 0 && (
+          {offers && offers?.length > 0 && (
             <View
               style={{
                 shadowColor: '#000',
@@ -136,7 +136,7 @@ export default function Screen() {
                     {serviceRequest?.data?.category?.name}
                   </Text>
                   <Text className="flex-1 text-xs text-[#FE6A00]">
-                    {formatRelativeTime(allOffers?.data[0]?.createdAt)}
+                    {formatRelativeTime(offers[0]?.createdAt)}
                   </Text>
                 </View>
 

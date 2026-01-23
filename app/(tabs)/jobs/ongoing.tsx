@@ -2,10 +2,12 @@ import { Text } from '@/components/ui/text';
 import * as React from 'react';
 import { View } from 'react-native';
 import { Layout } from '@/components/layout';
-import { useNavigation, usePathname } from 'expo-router';
+import { useLocalSearchParams, useNavigation, usePathname } from 'expo-router';
 import { SheetManager } from 'react-native-actions-sheet';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Image } from 'expo-image';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/api';
 
 const routeCoordinates = [
   { latitude: 37.78825, longitude: -122.4324 }, // Start point
@@ -18,6 +20,10 @@ const routeCoordinates = [
 ];
 
 export default function Screen() {
+  const { id }: { id: string } = useLocalSearchParams();
+
+  const { isLoading, data, refetch, isRefetching } = useQuery(api.getJobDetail(id));
+
   const pathname = usePathname();
   const navigation = useNavigation();
 
@@ -25,7 +31,11 @@ export default function Screen() {
 
   React.useEffect(() => {
     if (pathname === '/jobs/ongoing') {
-      SheetManager.show('ongoing-job-sheet');
+      SheetManager.show('ongoing-job-sheet', {
+        payload: {
+          id,
+        },
+      });
     } else {
       SheetManager.hide('ongoing-job-sheet');
     }
@@ -49,15 +59,14 @@ export default function Screen() {
   }, []);
 
   return (
-    <Layout useBackground scrollable={false} horizontalPadding={false} bottomPadding={0}>
+    <Layout
+      useBackground
+      isRefreshing={isRefetching}
+      onRefresh={refetch}
+      horizontalPadding={false}
+      bottomPadding={0}>
       <View className="flex-1">
         <View className="relative flex flex-1 items-center justify-center">
-          {/* <Image
-            source={require('@/assets/images/map-view.svg')}
-            style={{ width: '100%', height: '100%' }}
-            contentFit="cover"
-          /> */}
-
           <MapView
             ref={mapRef}
             provider={PROVIDER_GOOGLE}
@@ -129,10 +138,10 @@ export default function Screen() {
 
           <View className="absolute top-7 flex h-[76px] w-[250px] items-center justify-center rounded-full border border-[#DFDFE1] bg-white">
             <Text className="text-center font-cabinet-bold text-xl text-[#1B1B1E]">
-              Tracking Sarah
+              Tracking {data?.artisan?.profile?.fullName}
             </Text>
 
-            <Text className="text-center text-xs text-[#1B1B1E]">Plumber</Text>
+            <Text className="text-center text-xs text-[#1B1B1E]">{data?.category?.name}</Text>
           </View>
         </View>
         {/* <View className="h-[25%] w-full bg-white"></View> */}

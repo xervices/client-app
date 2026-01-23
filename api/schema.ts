@@ -244,6 +244,138 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get my notifications
+         * @description Get all notifications for the current user with pagination and filters
+         */
+        get: operations["NotificationsController_findAll"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete all notifications
+         * @description Delete all notifications for the current user
+         */
+        delete: operations["NotificationsController_removeAll"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get unread count
+         * @description Get the number of unread notifications for badge display
+         */
+        get: operations["NotificationsController_getUnreadCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/mark-read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark notifications as read
+         * @description Mark specific notifications as read by their IDs
+         */
+        post: operations["NotificationsController_markAsRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/mark-all-read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark all as read
+         * @description Mark all notifications as read for the current user
+         */
+        post: operations["NotificationsController_markAllAsRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Register device for push notifications
+         * @description Register a mobile device for push notifications using Expo push token. Call this on app startup and when push token refreshes.
+         */
+        post: operations["NotificationsController_registerDevice"];
+        /**
+         * Unregister device
+         * @description Unregister a device from push notifications. Call this on logout.
+         */
+        delete: operations["NotificationsController_unregisterDevice"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a notification
+         * @description Get a single notification by ID
+         */
+        get: operations["NotificationsController_findOne"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete a notification
+         * @description Delete a single notification
+         */
+        delete: operations["NotificationsController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/promotions/me": {
         parameters: {
             query?: never;
@@ -814,6 +946,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/offers/{id}/withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Withdraw an offer
+         * @description Artisan withdraws/cancels their own pending offer.
+         *
+         *     **WebSocket Notification:**
+         *     Emits an `offer:withdrawn` event to the `/offers` namespace in the `service_request:{id}` room.
+         */
+        post: operations["OffersController_withdraw"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/offers/service-request/{id}": {
         parameters: {
             query?: never;
@@ -823,7 +978,7 @@ export interface paths {
         };
         /**
          * Get offers for a service request
-         * @description Get all offers for a specific service request
+         * @description Get all offers for a specific service request. Returns offers with artisan profile, user profile, artisan ratings, and service location coordinates.
          */
         get: operations["OffersController_findByServiceRequest"];
         put?: never;
@@ -1421,6 +1576,154 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a review
+         * @description Create a new review for a completed and approved job. Only the job owner can leave a review.
+         */
+        post: operations["ReviewsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/artisan/{artisanId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan reviews
+         * @description Get all reviews for a specific artisan with pagination
+         */
+        get: operations["ReviewsController_findByArtisan"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/my-reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get my reviews
+         * @description Get all reviews created by the current user
+         */
+        get: operations["ReviewsController_findMyReviews"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/artisan/{artisanId}/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan rating stats
+         * @description Get rating statistics for an artisan including average rating and distribution
+         */
+        get: operations["ReviewsController_getArtisanRatingStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/can-review/{jobId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Check if can review
+         * @description Check if the current user can create a review for a specific job
+         */
+        get: operations["ReviewsController_canReview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/job/{jobId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get review by job
+         * @description Get the review for a specific job if it exists
+         */
+        get: operations["ReviewsController_findByJobId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a review
+         * @description Get a single review by its ID
+         */
+        get: operations["ReviewsController_findOne"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete a review
+         * @description Delete a review (soft delete). Only the reviewer or admin can delete.
+         */
+        delete: operations["ReviewsController_remove"];
+        options?: never;
+        head?: never;
+        /**
+         * Update a review
+         * @description Update an existing review. Only the original reviewer can update.
+         */
+        patch: operations["ReviewsController_update"];
+        trace?: never;
+    };
     "/api/admin/artisans/verify": {
         parameters: {
             query?: never;
@@ -1720,6 +2023,20 @@ export interface components {
              */
             role: "user" | "artisan" | "admin";
         };
+        UserProfileResponseDto: {
+            fullName: string;
+            avatarUrl?: string;
+            bio?: string;
+            address?: string;
+            city?: string;
+            state?: string;
+            country: string;
+            postalCode?: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
         UserResponseDto: {
             id: string;
             email: string;
@@ -1887,6 +2204,172 @@ export interface components {
              */
             idToken: string;
         };
+        NotificationResponseDto: {
+            /**
+             * @description Notification unique identifier (UUID)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description User ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            userId: string;
+            /**
+             * @description Notification type/category
+             * @example new_offer
+             */
+            type: string;
+            /**
+             * @description Notification title
+             * @example New Offer Received
+             */
+            title: string;
+            /**
+             * @description Notification message
+             * @example You have received a new offer of N15,000 for your plumbing request.
+             */
+            message: string;
+            /**
+             * @description Reference entity type for deep linking
+             * @example offer
+             */
+            referenceType?: string | null;
+            /**
+             * @description Reference entity ID for deep linking
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            referenceId?: string | null;
+            /**
+             * @description Whether notification has been read
+             * @example false
+             */
+            isRead: boolean;
+            /**
+             * Format: date-time
+             * @description Timestamp when notification was read
+             * @example 2025-12-07T12:00:00.000Z
+             */
+            readAt?: string | null;
+            /**
+             * @description Delivery channels used
+             * @example [
+             *       "in_app",
+             *       "push"
+             *     ]
+             */
+            deliveryChannels: unknown[][];
+            /**
+             * Format: date-time
+             * @description Timestamp when notification was sent
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            sentAt: string;
+            /**
+             * Format: date-time
+             * @description Notification creation timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            createdAt: string;
+        };
+        PaginatedNotificationsResponseDto: {
+            /** @description List of notifications */
+            notifications: components["schemas"]["NotificationResponseDto"][];
+            /**
+             * @description Total number of notifications
+             * @example 50
+             */
+            total: number;
+            /**
+             * @description Number of unread notifications
+             * @example 10
+             */
+            unreadCount: number;
+            /**
+             * @description Current page number
+             * @example 1
+             */
+            page: number;
+            /**
+             * @description Number of items per page
+             * @example 20
+             */
+            limit: number;
+            /**
+             * @description Total number of pages
+             * @example 3
+             */
+            totalPages: number;
+            /**
+             * @description Whether there is a next page
+             * @example true
+             */
+            hasNext: boolean;
+            /**
+             * @description Whether there is a previous page
+             * @example false
+             */
+            hasPrev: boolean;
+        };
+        UnreadCountResponseDto: {
+            /**
+             * @description Number of unread notifications
+             * @example 5
+             */
+            unreadCount: number;
+        };
+        MarkNotificationsAsReadDto: {
+            /**
+             * @description Notification IDs to mark as read
+             * @example [
+             *       "550e8400-e29b-41d4-a716-446655440000",
+             *       "660e8400-e29b-41d4-a716-446655440001"
+             *     ]
+             */
+            notificationIds: unknown[][];
+        };
+        MarkAsReadResponseDto: {
+            /**
+             * @description Number of notifications marked as read
+             * @example 5
+             */
+            markedCount: number;
+            /**
+             * @description Success message
+             * @example Notifications marked as read successfully
+             */
+            message: string;
+        };
+        RegisterDeviceDto: {
+            /**
+             * @description Expo Push Token from expo-notifications
+             * @example ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
+             */
+            pushToken: string;
+            /**
+             * @description Device platform
+             * @example android
+             * @enum {string}
+             */
+            platform: "ios" | "android" | "web";
+            /**
+             * @description Device model/name
+             * @example Samsung Galaxy S21
+             */
+            deviceModel?: string;
+            /**
+             * @description App version
+             * @example 1.0.0
+             */
+            appVersion?: string;
+        };
+        UnregisterDeviceDto: {
+            /**
+             * @description Expo Push Token to unregister
+             * @example ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
+             */
+            pushToken: string;
+        };
         PromotionsDashboardResponseDto: {
             /** @description User ID */
             userId: string;
@@ -2016,20 +2499,6 @@ export interface components {
              * @example 1000
              */
             amount: number;
-        };
-        UserProfileResponseDto: {
-            fullName: string;
-            avatarUrl?: string;
-            bio?: string;
-            address?: string;
-            city?: string;
-            state?: string;
-            country: string;
-            postalCode?: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
         };
         UserSettingsResponseDto: {
             notificationEnabled: boolean;
@@ -2756,6 +3225,16 @@ export interface components {
              */
             serviceAddress: string;
             /**
+             * @description Service location latitude
+             * @example 6.5244
+             */
+            serviceLatitude?: number | null;
+            /**
+             * @description Service location longitude
+             * @example 3.3792
+             */
+            serviceLongitude?: number | null;
+            /**
              * @description Contact phone number
              * @example +2348012345678
              */
@@ -2807,7 +3286,7 @@ export interface components {
              * @example 2025-12-07T10:00:00.000Z
              */
             updatedAt: string;
-            /** @description User who created the request */
+            /** @description User who created the request (includes profile) */
             user: components["schemas"]["UserResponseDto"];
             /** @description Category details */
             category: components["schemas"]["CategoryResponseDto"];
@@ -2898,8 +3377,18 @@ export interface components {
              * @example 550e8400-e29b-41d4-a716-446655440000
              */
             artisanId: string;
-            /** @description Artisan details */
+            /** @description Artisan details (includes profile) */
             artisan?: components["schemas"]["UserResponseDto"];
+            /**
+             * @description Artisan average rating (0-5)
+             * @example 4.5
+             */
+            artisanRating?: number;
+            /**
+             * @description Artisan total number of reviews
+             * @example 25
+             */
+            artisanReviewCount?: number;
             /**
              * @description Who made the offer
              * @example artisan
@@ -2921,7 +3410,7 @@ export interface components {
              * @example pending
              * @enum {string}
              */
-            status: "pending" | "accepted" | "rejected" | "countered" | "expired";
+            status: "pending" | "accepted" | "rejected" | "withdrawn" | "countered" | "expired";
             /**
              * @description Parent Offer ID (for counter-offers)
              * @example 550e8400-e29b-41d4-a716-446655440000
@@ -2929,6 +3418,11 @@ export interface components {
             parentOfferId?: string | null;
             /** @description Parent Offer */
             parentOffer?: components["schemas"]["OfferResponseDto"];
+            /**
+             * @description Job ID created when offer is accepted (null until accepted)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            jobId?: string | null;
             /**
              * Format: date-time
              * @description Expiration date
@@ -3493,6 +3987,182 @@ export interface components {
              */
             description?: string;
         };
+        CreateReviewDto: {
+            /**
+             * @description Job ID to review
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            jobId: string;
+            /**
+             * @description Rating from 1 to 5 stars
+             * @example 5
+             */
+            rating: number;
+            /**
+             * @description Optional review comment
+             * @example Excellent work! Very professional and completed on time.
+             */
+            comment?: string;
+        };
+        ReviewJobResponseDto: {
+            /**
+             * @description Job unique identifier (UUID)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Category ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            categoryId: string;
+            /**
+             * @description Final job amount
+             * @example 15000
+             */
+            finalAmount: number;
+            /**
+             * Format: date-time
+             * @description Job completion timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            completedAt: string;
+        };
+        ReviewResponseDto: {
+            /**
+             * @description Review unique identifier (UUID)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Job ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            jobId: string;
+            /** @description Job details */
+            job?: components["schemas"]["ReviewJobResponseDto"];
+            /**
+             * @description Reviewer user ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            reviewerId: string;
+            /** @description Reviewer details */
+            reviewer?: components["schemas"]["UserResponseDto"];
+            /**
+             * @description Reviewee (artisan) user ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            revieweeId: string;
+            /** @description Reviewee (artisan) details */
+            reviewee?: components["schemas"]["UserResponseDto"];
+            /**
+             * @description Rating (1-5 stars)
+             * @example 5
+             */
+            rating: number;
+            /**
+             * @description Review comment
+             * @example Excellent work! Very professional and completed on time.
+             */
+            comment?: string | null;
+            /**
+             * Format: date-time
+             * @description Review creation timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Review last update timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            updatedAt: string;
+        };
+        PaginatedReviewsResponseDto: {
+            /** @description List of reviews */
+            reviews: components["schemas"]["ReviewResponseDto"][];
+            /**
+             * @description Total number of reviews
+             * @example 50
+             */
+            total: number;
+            /**
+             * @description Current page number
+             * @example 1
+             */
+            page: number;
+            /**
+             * @description Number of items per page
+             * @example 10
+             */
+            limit: number;
+            /**
+             * @description Total number of pages
+             * @example 5
+             */
+            totalPages: number;
+            /**
+             * @description Whether there is a next page
+             * @example true
+             */
+            hasNext: boolean;
+            /**
+             * @description Whether there is a previous page
+             * @example false
+             */
+            hasPrev: boolean;
+        };
+        ArtisanRatingStatsDto: {
+            /**
+             * @description Artisan user ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            artisanId: string;
+            /**
+             * @description Average rating (0-5)
+             * @example 4.5
+             */
+            averageRating: number;
+            /**
+             * @description Total number of reviews
+             * @example 25
+             */
+            totalReviews: number;
+            /**
+             * @description Rating distribution (1-5 stars)
+             * @example {
+             *       "1": 1,
+             *       "2": 2,
+             *       "3": 5,
+             *       "4": 7,
+             *       "5": 10
+             *     }
+             */
+            ratingDistribution: Record<string, never>;
+        };
+        CanReviewResponseDto: {
+            /**
+             * @description Whether the user can create a review for this job
+             * @example true
+             */
+            canReview: boolean;
+            /**
+             * @description Reason why the user cannot review (only present when canReview is false)
+             * @example Job must be completed and approved before reviewing
+             */
+            reason?: string | null;
+        };
+        UpdateReviewDto: {
+            /**
+             * @description Updated rating from 1 to 5 stars
+             * @example 4
+             */
+            rating?: number;
+            /**
+             * @description Updated review comment
+             * @example Good work overall, but could improve on communication.
+             */
+            comment?: string;
+        };
         VerifyArtisanDto: {
             /**
              * @description The ID of the artisan to verify
@@ -4048,6 +4718,241 @@ export interface operations {
             };
             /** @description Invalid Google ID token */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_findAll: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: number;
+                /** @description Items per page (max 50) */
+                limit?: number;
+                /** @description Filter by read status */
+                isRead?: boolean;
+                /** @description Filter by notification type */
+                type?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Notifications retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedNotificationsResponseDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_removeAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All notifications deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example 25 */
+                        deletedCount?: number;
+                        /** @example All notifications deleted successfully */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    NotificationsController_getUnreadCount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unread count retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnreadCountResponseDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_markAsRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkNotificationsAsReadDto"];
+            };
+        };
+        responses: {
+            /** @description Notifications marked as read */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarkAsReadResponseDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_markAllAsRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All notifications marked as read */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarkAsReadResponseDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_registerDevice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterDeviceDto"];
+            };
+        };
+        responses: {
+            /** @description Device registered successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example 550e8400-e29b-41d4-a716-446655440000 */
+                        id?: string;
+                        /** @example Device registered successfully */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    NotificationsController_unregisterDevice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UnregisterDeviceDto"];
+            };
+        };
+        responses: {
+            /** @description Device unregistered successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Notification UUID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Notification retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationResponseDto"];
+                };
+            };
+            /** @description Notification not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Notification UUID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Notification deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Notification not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5580,6 +6485,64 @@ export interface operations {
             };
         };
     };
+    OffersController_withdraw: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Offer withdrawn successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Cannot withdraw this offer (not pending) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Can only withdraw your own offers */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Offer not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     OffersController_findByServiceRequest: {
         parameters: {
             query?: never;
@@ -7033,6 +7996,333 @@ export interface operations {
                 };
             };
             /** @description Dispute not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReviewDto"];
+            };
+        };
+        responses: {
+            /** @description Review created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponseDto"];
+                };
+            };
+            /** @description Bad request - Job not in approved status */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - User is not the job owner */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Review already exists for this job */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_findByArtisan: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: number;
+                /** @description Items per page */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                /** @description Artisan UUID */
+                artisanId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reviews retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedReviewsResponseDto"];
+                };
+            };
+            /** @description Artisan not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_findMyReviews: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: number;
+                /** @description Items per page */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reviews retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedReviewsResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_getArtisanRatingStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Artisan UUID */
+                artisanId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rating statistics retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtisanRatingStatsDto"];
+                };
+            };
+            /** @description Artisan not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_canReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Job UUID */
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Check completed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CanReviewResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_findByJobId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Job UUID */
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Review retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponseDto"];
+                };
+            };
+            /** @description No review found for this job */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Review UUID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Review retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponseDto"];
+                };
+            };
+            /** @description Review not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Review UUID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Review deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Forbidden - User is not the reviewer */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Review not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Review UUID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateReviewDto"];
+            };
+        };
+        responses: {
+            /** @description Review updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponseDto"];
+                };
+            };
+            /** @description Forbidden - User is not the reviewer */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Review not found */
             404: {
                 headers: {
                     [name: string]: unknown;

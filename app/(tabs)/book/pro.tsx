@@ -176,28 +176,44 @@ export default function Screen() {
             isLoading={acceptOffer?.isPending}
             disabled={acceptOffer?.isPending}
             onPress={() => {
-              acceptOffer.mutate(
-                {
-                  action: 'accept',
-                },
-                {
-                  onSuccess: (res) => {
-                    console.log(res);
-                    router.navigate({
-                      pathname: '/book/confirm',
-                      params: {
-                        id: res.id,
-                        serviceRequestId: res.serviceRequestId,
-                      },
-                    });
+              if (offer?.data?.offeredBy === 'user')
+                return showErrorMessage(
+                  'You cannot accept your own offer. Wait for the artisan to send a counter offer'
+                );
+              if (offer?.data?.status === 'accepted') {
+                router.navigate({
+                  pathname: '/book/confirm',
+                  params: {
+                    id: offer?.data?.jobId,
+                    serviceRequestId: serviceId,
+                    artisanId,
+                    offerId,
                   },
-                  onError: (err) => {
-                    showErrorMessage(err.message);
+                });
+              } else {
+                acceptOffer.mutate(
+                  {
+                    action: 'accept',
                   },
-                }
-              );
-
-              router.navigate('/book/confirm');
+                  {
+                    onSuccess: (res) => {
+                      console.log(res);
+                      router.navigate({
+                        pathname: '/book/confirm',
+                        params: {
+                          id: res.jobId,
+                          serviceRequestId: res.serviceRequestId,
+                          artisanId,
+                          offerId,
+                        },
+                      });
+                    },
+                    onError: (err) => {
+                      showErrorMessage(err.message);
+                    },
+                  }
+                );
+              }
             }}>
             <Text>Accept offer - {formatCurrency(offer?.data?.amount)}</Text>
           </Button>

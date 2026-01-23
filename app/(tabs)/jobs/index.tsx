@@ -11,6 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import { LoadingState } from '@/components/loading-state';
 import EmptyState from '@/components/empty-state';
+import { formatRelativeTime } from '@/lib/utils';
 
 export default function Screen() {
   const [value, setValue] = React.useState('progress');
@@ -73,8 +74,8 @@ export default function Screen() {
                     style={{ gap: 16, flexGrow: 1 }}
                     showsVerticalScrollIndicator={false}
                     // ItemSeparatorComponent={<View className='w-full h-' />}
-                    data={new Array(1).fill(0)}
-                    renderItem={() => (
+                    data={inProgressJobs}
+                    renderItem={({ item }) => (
                       <View
                         style={{
                           shadowColor: '#000',
@@ -86,8 +87,13 @@ export default function Screen() {
                         className="flex gap-4 rounded-[8px] bg-white p-4">
                         <View className="flex flex-row items-center justify-between">
                           <View>
-                            <Text className="flex-1 font-cabinet-bold text-[#1B1B1E]">Plumber</Text>
-                            <Text className="flex-1 text-xs text-[#FE6A00]">Posted 2 sec ago</Text>
+                            <Text className="flex-1 font-cabinet-bold text-[#1B1B1E]">
+                              {item?.category?.name}
+                            </Text>
+                            <Text className="flex-1 text-xs text-[#FE6A00]">
+                              Posted
+                              {formatRelativeTime(item?.createdAt)}
+                            </Text>
                           </View>
 
                           <View className="flex h-[26px] items-center justify-center rounded-full bg-[#FFF4EA] px-3">
@@ -96,23 +102,23 @@ export default function Screen() {
                         </View>
 
                         <Text className="text-sm text-[#737381]">
-                          Leaky kitchen faucet needs immediate repair. Water dripping constantly.
+                          {item?.serviceRequest?.description}
                         </Text>
 
-                        <View className="flex flex-row items-center justify-between">
-                          <View className="flex flex-row items-center gap-1">
+                        <View className="flex flex-row items-center justify-between gap-4">
+                          <View className="flex flex-1 flex-row items-center gap-1">
                             <Avatar alt="User's Avatar" className="h-6 w-6">
-                              <AvatarImage
-                                source={{ uri: 'https://github.com/mrzachnugent.png' }}
-                              />
+                              <AvatarImage source={{ uri: item?.artisan?.profile?.avatarUrl }} />
                               <AvatarFallback className="bg-primary">
-                                <Text className="font-cabinet-bold leading-none">ZN</Text>
+                                <Text className="font-cabinet-bold text-xs uppercase leading-none">
+                                  {item?.artisan?.profile?.fullName?.substring(0, 2)}
+                                </Text>
                               </AvatarFallback>
                             </Avatar>
 
-                            <View className="flex flex-row items-center">
+                            <View className="flex flex-1 flex-row items-center">
                               <Text className="font-cabinet-bold text-sm text-[#737381]">
-                                Sarah Rodri
+                                {item?.artisan?.profile?.fullName}
                               </Text>
 
                               <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
@@ -124,7 +130,7 @@ export default function Screen() {
                               router.navigate({
                                 pathname: '/jobs/ongoing',
                                 params: {
-                                  id: '97575',
+                                  id: item?.id,
                                 },
                               })
                             }
@@ -176,8 +182,8 @@ export default function Screen() {
                     }
                     style={{ gap: 16, flexGrow: 1 }}
                     showsVerticalScrollIndicator={false}
-                    data={new Array(5).fill(0)}
-                    renderItem={() => (
+                    data={completedJobs}
+                    renderItem={({ item }) => (
                       <View
                         style={{
                           shadowColor: '#000',
@@ -189,7 +195,9 @@ export default function Screen() {
                         className="flex gap-4 rounded-[8px] bg-white p-4">
                         <View className="flex flex-row items-center justify-between">
                           <View>
-                            <Text className="flex-1 font-cabinet-bold text-[#1B1B1E]">Plumber</Text>
+                            <Text className="flex-1 font-cabinet-bold text-[#1B1B1E]">
+                              {item?.category?.name}
+                            </Text>
                           </View>
 
                           <View className="flex h-[26px] items-center justify-center rounded-full bg-[#EFFBF1] px-3">
@@ -198,23 +206,23 @@ export default function Screen() {
                         </View>
 
                         <Text className="text-sm text-[#737381]">
-                          Leaky kitchen faucet needs immediate repair. Water dripping constantly.
+                          {item?.serviceRequest?.description}
                         </Text>
 
                         <View className="flex flex-row items-center justify-between">
                           <View className="flex flex-row items-center gap-1">
                             <Avatar alt="User's Avatar" className="h-6 w-6">
-                              <AvatarImage
-                                source={{ uri: 'https://github.com/mrzachnugent.png' }}
-                              />
+                              <AvatarImage source={{ uri: item?.artisan?.profile?.avatarUrl }} />
                               <AvatarFallback className="bg-primary">
-                                <Text className="font-cabinet-bold leading-none">ZN</Text>
+                                <Text className="font-cabinet-bold text-xs uppercase leading-none">
+                                  {item?.artisan?.profile?.fullName?.substring(0, 2)}
+                                </Text>
                               </AvatarFallback>
                             </Avatar>
 
                             <View className="flex flex-row items-center">
                               <Text className="font-cabinet-bold text-sm text-[#737381]">
-                                Sarah Rodri
+                                {item?.artisan?.profile?.fullName}
                               </Text>
 
                               <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
@@ -226,7 +234,7 @@ export default function Screen() {
                               router.navigate({
                                 pathname: '/jobs/completed',
                                 params: {
-                                  id: '97575',
+                                  id: item?.id,
                                 },
                               })
                             }

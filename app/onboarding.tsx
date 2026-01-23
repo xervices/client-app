@@ -154,7 +154,7 @@ export default function Screen() {
           <Animated.View
             key={`image-${data[currentIndex].id}`}
             style={imageAnimatedStyle}
-            className="z-10 h-[50%] w-[90%]">
+            className="z-10 w-[90%] flex-1">
             <Image source={data[currentIndex].imageSrc} className="h-full w-full object-contain" />
           </Animated.View>
 
