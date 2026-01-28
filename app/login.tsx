@@ -112,7 +112,7 @@ export default function Screen() {
             )}
           </form.Field>
 
-          <Button onPress={form.handleSubmit} isLoading={isPending}>
+          <Button onPress={form.handleSubmit} disabled={isPending} isLoading={isPending}>
             Log In
           </Button>
         </View>

@@ -19,14 +19,14 @@ export default function Layout() {
         }}
       />
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name="ongoing"
         options={{
           headerShown: false,
           title: 'Ongoing Job',
           gestureEnabled: false,
         }}
-      />
+      /> */}
 
       <Stack.Screen
         name="photo-preview"

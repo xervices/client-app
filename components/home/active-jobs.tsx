@@ -6,6 +6,7 @@ import { ArrowUpRight, BadgeCheck, X } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
+import React from 'react';
 
 export function ActiveJobs() {
   const { data } = useQuery(api.getUserServiceRequests());
@@ -16,6 +17,7 @@ export function ActiveJobs() {
   const negotiatingJobs = data?.filter((i) => i.status === 'in_negotiation');
 
   const activeJobs = jobs?.data?.filter((i) => i.status === 'in_progress');
+  const pendingJobs = jobs?.data?.filter((i) => i.status === 'pending');
 
   return (
     <View className="flex gap-2 px-6">
@@ -44,7 +46,7 @@ export function ActiveJobs() {
             </View>
 
             <Text className="text-sm text-[#737381]">
-              Your previous search for {search.category.name} was not complete. Click "continue
+              Your previous search for {search?.category?.name} was not complete. Click "continue
               search" to continue your search.
             </Text>
 
@@ -60,6 +62,54 @@ export function ActiveJobs() {
                 }}
                 className="flex flex-row items-center gap-1">
                 <Text className="font-cabinet-bold text-sm text-primary">Continue search</Text>
+
+                <ArrowUpRight size={14} color={'#FE6A00'} />
+              </Pressable>
+            </View>
+          </View>
+        ))}
+
+      {/* Pending jobs */}
+      {pendingJobs &&
+        pendingJobs?.length > 0 &&
+        pendingJobs?.map((search) => (
+          <View
+            key={search.id}
+            style={{
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 8,
+              elevation: 4,
+            }}
+            className="flex gap-4 rounded-[8px] bg-white p-4">
+            <View className="flex flex-row items-center justify-between">
+              <Text className="flex-1 font-cabinet-bold text-primary">Pending request</Text>
+
+              <Pressable className="flex h-4 w-4 items-center justify-center">
+                <X size={14} color={'#737381'} />
+              </Pressable>
+            </View>
+
+            <Text className="text-sm text-[#737381]">
+              Your previous search for {search?.category?.name} was not complete. Click "continue to
+              payment" to complete your request.
+            </Text>
+
+            <View className="flex flex-row items-center justify-end">
+              <Pressable
+                onPress={() => {
+                  router.navigate({
+                    pathname: '/book/pro',
+                    params: {
+                      serviceId: search?.serviceRequestId,
+                      artisanId: search?.artisanId,
+                      offerId: search?.acceptedOfferId,
+                    },
+                  });
+                }}
+                className="flex flex-row items-center gap-1">
+                <Text className="font-cabinet-bold text-sm text-primary">Continue to Payment</Text>
 
                 <ArrowUpRight size={14} color={'#FE6A00'} />
               </Pressable>
@@ -149,6 +199,16 @@ interface NegotiatingJobCardProp {
 function NegotiatingJobCard({ jobId }: NegotiatingJobCardProp) {
   const { isLoading, data } = useQuery(api.getOffers(jobId));
 
+  const uniqueOffersByArtisan = React.useMemo(() => {
+    if (!data) return [];
+    const seen = new Set();
+    return data.filter((offer) => {
+      if (seen.has(offer.artisanId)) return false;
+      seen.add(offer.artisanId);
+      return true;
+    });
+  }, [data]);
+
   if (isLoading || !data || data?.length === 0) return null;
 
   return (
@@ -162,12 +222,14 @@ function NegotiatingJobCard({ jobId }: NegotiatingJobCardProp) {
       }}
       className="flex gap-4 rounded-[8px] bg-white p-4">
       <View className="flex flex-row items-center justify-between">
-        <Text className="text-sm text-[#737381]">{data?.length} artisans sent offers</Text>
+        <Text className="text-sm text-[#737381]">
+          {uniqueOffersByArtisan?.length} artisans sent offers
+        </Text>
       </View>
 
       <View className="flex flex-row items-center justify-between">
         <View className="flex-row">
-          {data?.slice(0, 6)?.map((profile) => (
+          {uniqueOffersByArtisan?.slice(0, 6)?.map((profile) => (
             <Avatar
               key={profile?.artisanId}
               alt={profile?.artisan?.profile?.fullName || ''}
@@ -183,12 +245,14 @@ function NegotiatingJobCard({ jobId }: NegotiatingJobCardProp) {
             </Avatar>
           ))}
 
-          {data && Math.max(0, data?.length - 6) > 0 && (
+          {uniqueOffersByArtisan && Math.max(0, uniqueOffersByArtisan?.length - 6) > 0 && (
             <Avatar
               alt="@evilrabbit"
               className="-mr-2 h-6 w-6 border-2 border-background bg-[#F4F4F5] web:border-0 web:ring-2 web:ring-background">
               <AvatarFallback>
-                <Text className="font-cabinet-bold text-xs">+{Math.max(0, data?.length - 6)}</Text>
+                <Text className="font-cabinet-bold text-xs">
+                  +{Math.max(0, uniqueOffersByArtisan?.length - 6)}
+                </Text>
               </AvatarFallback>
             </Avatar>
           )}

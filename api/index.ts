@@ -515,6 +515,25 @@ export const api = {
         return data;
       },
     }),
+  approveJob: (id: string) => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/jobs/{id}/approve', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/jobs/{id}/approve', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Approve job request failed'));
+        }
+
+        return data;
+      },
+    };
+  },
 
   // offers endpoints
   getOffers: (id: string) =>
@@ -652,4 +671,214 @@ export const api = {
         return data;
       },
     }),
+
+  // reviews endpoint
+  getArtisanReviews: (artisanId: string) =>
+    queryOptions({
+      queryKey: ['reviews', 'artisan', artisanId],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/reviews/artisan/{artisanId}', {
+          params: {
+            path: {
+              artisanId,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
+  getArtisanStata: (artisanId: string) =>
+    queryOptions({
+      queryKey: ['reviews', 'stats', 'artisan', artisanId],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/reviews/artisan/{artisanId}/stats', {
+          params: {
+            path: {
+              artisanId,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
+  createReview: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/reviews', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/reviews', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to submit review'));
+        }
+
+        return data;
+      },
+    };
+  },
+
+  // notification endpoints
+  getNotifications: () =>
+    queryOptions({
+      queryKey: ['user', 'notifications'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/notifications');
+
+        return data;
+      },
+    }),
+  getUnreadNotificationCount: () =>
+    queryOptions({
+      queryKey: ['user', 'notifications', 'unread'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/notifications/unread-count');
+
+        return data;
+      },
+    }),
+  markAllNotificationAsRead: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/notifications/mark-all-read', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/notifications/mark-all-read');
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to mark all notifications as read.'));
+        }
+
+        return data;
+      },
+    };
+  },
+  registerDeviceForPushNotification: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/notifications/devices', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/notifications/devices', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(
+            getErrorMessage(error, 'Failed to register device for push notification')
+          );
+        }
+
+        return data;
+      },
+    };
+  },
+
+  // chat  endpoints
+  getChatRoom: (jobId: string) =>
+    queryOptions({
+      queryKey: ['job', 'chat', 'room', jobId],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/chat/jobs/{jobId}', {
+          params: {
+            path: {
+              jobId,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
+  getMessagesChatRoom: (id: string) =>
+    queryOptions({
+      queryKey: ['chat', 'room', id, 'messages'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/chat/rooms/{id}/messages', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
+  sendMessage: (id: string) => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/chat/rooms/{id}/messages', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/chat/rooms/{id}/messages', {
+          body: credentials,
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to send message.'));
+        }
+
+        return data;
+      },
+    };
+  },
+
+  // disputes endpoints
+  createDispute: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/disputes', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/disputes', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to create dispute.'));
+        }
+
+        return data;
+      },
+    };
+  },
+  getMyDisputes: () =>
+    queryOptions({
+      queryKey: ['disputes'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/disputes');
+
+        return data;
+      },
+    }),
+  getDisputeDetail: (id: string) =>
+    queryOptions({
+      queryKey: ['disputes', id],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/disputes/{id}', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
+  addDisputeEvidence: (id: string) => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/disputes/{id}/evidence', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/disputes/{id}/evidence', {
+          body: credentials,
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to add dispute evidence.'));
+        }
+
+        return data;
+      },
+    };
+  },
 };

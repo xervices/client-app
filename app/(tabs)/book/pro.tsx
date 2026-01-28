@@ -14,7 +14,7 @@ import { LegendList } from '@legendapp/list';
 import { useMutation, useQueries } from '@tanstack/react-query';
 import { api } from '@/api';
 import { LoadingState } from '@/components/loading-state';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, formatRelativeTime } from '@/lib/utils';
 import { showErrorMessage } from '@/api/helpers';
 
 const data = [
@@ -51,8 +51,8 @@ export default function Screen() {
     offerId,
   }: { serviceId: string; artisanId: string; offerId: string } = useLocalSearchParams();
 
-  const [offer] = useQueries({
-    queries: [api.getOfferDetails(offerId)],
+  const [offer, reviews] = useQueries({
+    queries: [api.getOfferDetails(offerId), api.getArtisanReviews(artisanId)],
   });
 
   const acceptOffer = useMutation(api.respondToOffer(offerId));
@@ -95,7 +95,9 @@ export default function Screen() {
                   {offer?.data?.serviceRequest?.category?.name}
                 </Text>
 
-                <Text className="text-xs text-[#FF6A00]">4.9 ★ (145)</Text>
+                <Text className="text-xs text-[#FF6A00]">
+                  {offer?.data?.artisanRating} ★ ({offer?.data?.artisanReviewCount})
+                </Text>
               </View>
             </View>
 
@@ -124,17 +126,23 @@ export default function Screen() {
 
           <View className="flex flex-row gap-4">
             <View className="flex aspect-[98/60] flex-1 items-center justify-center rounded-[8px] bg-[#F4F4F5]">
-              <Text className="text-center font-cabinet-bold text-lg text-[#1B1B1E]">156</Text>
+              <Text className="text-center font-cabinet-bold text-lg text-[#1B1B1E]">
+                {offer?.data?.artisanStats?.totalJobsCompleted}
+              </Text>
               <Text className="text-center text-xs text-[#737381]">Jobs</Text>
             </View>
 
             <View className="flex aspect-[98/60] flex-1 items-center justify-center rounded-[8px] bg-[#F4F4F5]">
-              <Text className="text-center font-cabinet-bold text-lg text-[#1C752E]">98%</Text>
+              <Text className="text-center font-cabinet-bold text-lg text-[#1C752E]">
+                {offer?.data?.artisanStats?.averagePunctualityRating}
+              </Text>
               <Text className="text-center text-xs text-[#737381]">On-time</Text>
             </View>
 
             <View className="flex aspect-[98/60] flex-1 items-center justify-center rounded-[8px] bg-[#F4F4F5]">
-              <Text className="text-center font-cabinet-bold text-lg text-[#FE6A00]">3 min</Text>
+              <Text className="text-center font-cabinet-bold text-lg text-[#FE6A00]">
+                {offer?.data?.artisanStats?.averageCommunicationRating} min
+              </Text>
               <Text className="text-center text-xs text-[#737381]">Response</Text>
             </View>
           </View>
@@ -143,20 +151,20 @@ export default function Screen() {
             <Text className="font-cabinet-bold text-[#737381]">Recent Work</Text>
 
             <LegendList
-              data={data}
+              data={offer?.data?.artisanStats?.recentWorkPhotos || []}
               numColumns={3}
               renderItem={({ item }) => (
                 <Pressable
                   onPress={() =>
                     SheetManager.show('image-preview-sheet', {
                       payload: {
-                        imgSource: item.icon,
+                        imgSource: item,
                       },
                     })
                   }
                   className="flex aspect-square w-full">
                   <Image
-                    source={item.icon}
+                    source={item}
                     style={{ width: '100%', height: '100%', borderRadius: 8 }}
                     contentFit="cover"
                   />
@@ -176,7 +184,7 @@ export default function Screen() {
             isLoading={acceptOffer?.isPending}
             disabled={acceptOffer?.isPending}
             onPress={() => {
-              if (offer?.data?.offeredBy === 'user')
+              if (offer?.data?.offeredBy === 'user' && offer?.data?.status !== 'accepted')
                 return showErrorMessage(
                   'You cannot accept your own offer. Wait for the artisan to send a counter offer'
                 );
@@ -197,7 +205,7 @@ export default function Screen() {
                   },
                   {
                     onSuccess: (res) => {
-                      console.log(res);
+                      offer?.refetch();
                       router.navigate({
                         pathname: '/book/confirm',
                         params: {
@@ -221,34 +229,37 @@ export default function Screen() {
           <View className="flex gap-2">
             <Text className="font-cabinet-bold text-[#737381]">Recent Reviews</Text>
 
-            <View className="flex gap-1">
-              <View className="flex flex-row items-center gap-2">
-                <Avatar
-                  alt="User's Avatar"
-                  className="h-10 w-10 rounded-sm border border-[#FFE6D6]">
-                  <AvatarImage source={{ uri: 'https://github.com/mrzachnugent.png' }} />
-                  <AvatarFallback className="bg-primary">
-                    <Text className="font-cabinet-bold leading-none">ZN</Text>
-                  </AvatarFallback>
-                </Avatar>
+            {reviews?.data?.reviews?.map((review) => (
+              <View key={review?.id} className="flex gap-1">
+                <View className="flex flex-row items-center gap-2">
+                  <Avatar
+                    alt="User's Avatar"
+                    className="h-10 w-10 rounded-sm border border-[#FFE6D6]">
+                    <AvatarImage source={{ uri: review?.reviewer?.profile?.avatarUrl }} />
+                    <AvatarFallback className="bg-primary">
+                      <Text className="font-cabinet-bold text-xs uppercase leading-none">
+                        {review?.reviewer?.profile?.fullName?.substring(0, 2)}
+                      </Text>
+                    </AvatarFallback>
+                  </Avatar>
 
-                <View>
-                  <Text className="font-cabinet-bold leading-none text-[#737381]">
-                    Michael Chen
-                  </Text>
+                  <View>
+                    <Text className="font-cabinet-bold leading-none text-[#737381]">
+                      {review?.reviewer?.profile?.fullName}
+                    </Text>
 
-                  <Text className="text-xs text-[#FE6A00]">
-                    ★★★★★ <Text className="text-xs text-[#B4B4BC]">2 days ago</Text>
-                  </Text>
+                    <Text className="text-xs text-[#FE6A00]">
+                      {new Array(review?.rating).fill(0)?.map((_, index) => '★')}{' '}
+                      <Text className="text-xs text-[#B4B4BC]">
+                        {formatRelativeTime(review?.createdAt)}
+                      </Text>
+                    </Text>
+                  </View>
                 </View>
-              </View>
 
-              <Text className="text-[#737381]">
-                Sarah was fantastic! Fixed my kitchen sink leak quickly and explained everything she
-                was doing. Very professional and cleaned up after herself. Will definitely call her
-                again.
-              </Text>
-            </View>
+                <Text className="text-[#737381]">{review?.comment}</Text>
+              </View>
+            ))}
           </View>
         </View>
       )}

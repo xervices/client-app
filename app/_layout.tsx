@@ -44,6 +44,9 @@ export default function RootLayout() {
                 <Stack.Protected guard={isLoggedIn}>
                   <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                   <Stack.Screen name="chat" options={{ headerShown: false }} />
+                  <Stack.Screen name="ongoing" options={{ headerShown: false }} />
+                  <Stack.Screen name="photo-preview" options={{ headerShown: false }} />
+                  <Stack.Screen name="rate" options={{ headerShown: false }} />
                 </Stack.Protected>
 
                 <Stack.Protected guard={!isLoggedIn && hasCompletedOnboarding}>

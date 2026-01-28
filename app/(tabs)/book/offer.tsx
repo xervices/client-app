@@ -26,7 +26,11 @@ export default function Screen() {
 
   const sendCounterOffer = useMutation(api.createCounterOffer());
 
-  const { joinServiceRequest, offers } = useOffersContext();
+  const { joinServiceRequest, offers } = useOffersContext({
+    onOfferEvent(eventType, data) {
+      allOffers?.refetch();
+    },
+  });
 
   React.useEffect(() => {
     joinServiceRequest(id);
@@ -145,6 +149,7 @@ export default function Screen() {
                               { amount, id: offer.id },
                               {
                                 onSuccess: () => {
+                                  allOffers?.refetch();
                                   showSuccessMessage('Counter offer sent successfully.');
                                 },
                                 onError: (err) => {

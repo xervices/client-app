@@ -203,3 +203,223 @@ export function formatDate(isoDateString: string | undefined | null): string | u
 
   return formattedDate;
 }
+
+/**
+ * Formats an ISO date string to 'YYYY-MM-DD HH:mm:ss' format
+ * @param isoString - ISO 8601 date string (e.g., '2025-11-27T17:47:27.000Z')
+ * @returns Formatted date string (e.g., '2025-11-27 17:47:27') or null if invalid
+ */
+export function formatDateTime(isoString?: string | null): string | null {
+  if (!isoString) {
+    return null;
+  }
+
+  try {
+    const date = new Date(isoString);
+
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return null;
+    }
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  } catch (error) {
+    return null;
+  }
+}
+
+export function formatTime12HourIntl(isoString?: string | null): string | null {
+  if (!isoString) {
+    return null;
+  }
+
+  try {
+    const date = new Date(isoString);
+
+    if (isNaN(date.getTime())) {
+      return null;
+    }
+
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+
+    return formatter.format(date).toLowerCase();
+  } catch (error) {
+    return null;
+  }
+}
+
+interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
+
+interface Address {
+  formattedAddress: string;
+  street?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+  neighborhood?: string;
+  district?: string;
+}
+
+/**
+ * Get address from coordinates using Google Geocoding API
+ * Reverse geocoding - converts lat/lng to address
+ */
+export async function getAddressFromCoordinatesGoogle(coordinates: Coordinates): Promise<Address> {
+  const apiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('Google Maps API key not found');
+  }
+
+  const { latitude, longitude } = coordinates;
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.status !== 'OK') {
+      throw new Error(`Geocoding failed: ${data.status}`);
+    }
+
+    if (!data.results || data.results.length === 0) {
+      throw new Error('No address found for these coordinates');
+    }
+
+    const result = data.results[0];
+    const components = result.address_components;
+
+    // Extract address components
+    const address: Address = {
+      formattedAddress: result.formatted_address,
+    };
+
+    components.forEach((component: any) => {
+      const types = component.types;
+
+      if (types.includes('street_number') || types.includes('route')) {
+        address.street = (address.street || '') + ' ' + component.long_name;
+      }
+      if (types.includes('locality')) {
+        address.city = component.long_name;
+      }
+      if (types.includes('administrative_area_level_1')) {
+        address.state = component.long_name;
+      }
+      if (types.includes('country')) {
+        address.country = component.long_name;
+      }
+      if (types.includes('postal_code')) {
+        address.postalCode = component.long_name;
+      }
+      if (types.includes('neighborhood')) {
+        address.neighborhood = component.long_name;
+      }
+      if (types.includes('sublocality')) {
+        address.district = component.long_name;
+      }
+    });
+
+    // Clean up street
+    if (address.street) {
+      address.street = address.street.trim();
+    }
+
+    return address;
+  } catch (error) {
+    console.error('Error getting address:', error);
+    throw error;
+  }
+}
+
+interface TravelTimeResult {
+  distanceKm: number;
+  distanceMiles: number;
+  durationMinutes: number;
+  durationFormatted: string;
+  mode: 'driving' | 'walking' | 'cycling';
+}
+
+/**
+ * Calculate travel time using Google Distance Matrix API
+ * Provides real-time traffic and actual road distances
+ */
+export async function getTravelTimeGoogle(
+  origin: Coordinates,
+  destination: Coordinates,
+  mode: 'driving' | 'walking' | 'bicycling' | 'transit' = 'driving'
+): Promise<TravelTimeResult> {
+  // const apiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const apiKey = 'AIzaSyDkT-0SiaW_dZq_ydeOTZAsKT6IvSgLp5Q';
+
+  if (!apiKey) {
+    throw new Error('Google Maps API key not found');
+  }
+
+  const originStr = `${origin.latitude},${origin.longitude}`;
+  const destinationStr = `${destination.latitude},${destination.longitude}`;
+
+  const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${originStr}&destinations=${destinationStr}&mode=${mode}&key=${apiKey}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.status !== 'OK') {
+      throw new Error(`Google API error: ${data.status}`);
+    }
+
+    const element = data.rows[0].elements[0];
+
+    if (element.status !== 'OK') {
+      throw new Error(`No route found: ${element.status}`);
+    }
+
+    const distanceMeters = element.distance.value;
+    const durationSeconds = element.duration.value;
+
+    const distanceKm = distanceMeters / 1000;
+    const distanceMiles = distanceKm * 0.621371;
+    const durationMinutes = Math.round(durationSeconds / 60);
+
+    return {
+      distanceKm: Number(distanceKm.toFixed(2)),
+      distanceMiles: Number(distanceMiles.toFixed(2)),
+      durationMinutes,
+      durationFormatted: formatDuration(durationMinutes),
+      mode: mode === 'bicycling' ? 'cycling' : (mode as any),
+    };
+  } catch (error) {
+    console.error('Error fetching travel time:', error);
+    throw error;
+  }
+}
+
+/**
+ * Format duration in minutes to human-readable string
+ */
+function formatDuration(minutes: number): string {
+  if (minutes < 1) return 'Less than 1 min';
+  if (minutes < 60) return `${minutes} min`;
+
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+
+  if (mins === 0) return `${hours} hr`;
+  return `${hours} hr ${mins} min`;
+}

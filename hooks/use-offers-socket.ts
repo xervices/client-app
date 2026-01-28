@@ -16,24 +16,34 @@ interface UseOffersOptions {
   autoConnect?: boolean;
   onViewed?: (data: RequestViewedEvent['data']) => void;
   onOffered?: (data: NewOfferEvent['data']) => void;
+  onCounterOffer?: (data: CounterOfferEvent['data']) => void;
+  onOfferAccepted?: (data: OfferAcceptedEvent['data']) => void;
 }
 export const useOffersSocket = ({
   serviceRequestId,
   autoConnect = true,
   onViewed,
   onOffered,
+  onCounterOffer,
+  onOfferAccepted,
 }: UseOffersOptions = {}) => {
   const socketRef = useRef<OffersSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [offers, setOffers] = useState<NewOfferEvent['data'][]>([]);
   const [views, setViews] = useState<RequestViewedEvent['data'][]>([]);
+  const [counterOffers, setCounterOffers] = useState<CounterOfferEvent['data'][]>([]);
+  const [acceptedOffers, setAcceptedOffers] = useState<OfferAcceptedEvent['data'][]>([]);
   const onViewedRef = useRef(onViewed);
   const onOfferedRef = useRef(onOffered);
+  const onCounterOfferRef = useRef(onCounterOffer);
+  const onOfferAcceptedRef = useRef(onOfferAccepted);
   // Update refs when props change to avoid re-connecting socket
   useEffect(() => {
     onViewedRef.current = onViewed;
     onOfferedRef.current = onOffered;
-  }, [onViewed, onOffered]);
+    onCounterOfferRef.current = onCounterOffer;
+    onOfferAcceptedRef.current = onOfferAccepted;
+  }, [onViewed, onOffered, onCounterOffer, onOfferAccepted]);
   useEffect(() => {
     if (!autoConnect) return;
     const socket: OffersSocket = io(`${SOCKET_URL}/offers`, {
@@ -69,11 +79,17 @@ export const useOffersSocket = ({
     });
     socket.on('offer:counter', (event: CounterOfferEvent) => {
       console.log('Counter Offer:', event);
-      // Logic to update existing offer could go here
+      setCounterOffers((prev) => [...prev, event.data]);
+      if (onCounterOfferRef.current) {
+        onCounterOfferRef.current(event.data);
+      }
     });
     socket.on('offer:accepted', (event: OfferAcceptedEvent) => {
       console.log('Offer Accepted:', event);
-      // Logic to handle acceptance
+      setAcceptedOffers((prev) => [...prev, event.data]);
+      if (onOfferAcceptedRef.current) {
+        onOfferAcceptedRef.current(event.data);
+      }
     });
     return () => {
       socket.disconnect();
@@ -88,6 +104,8 @@ export const useOffersSocket = ({
     isConnected,
     offers,
     views,
+    counterOffers,
+    acceptedOffers,
     joinServiceRequest,
   };
 };

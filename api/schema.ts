@@ -1120,7 +1120,7 @@ export interface paths {
         put?: never;
         /**
          * Start a job
-         * @description Artisan marks the job as in progress
+         * @description Artisan marks the job as in progress. Optionally upload before photos.
          */
         post: operations["JobsController_startJob"];
         delete?: never;
@@ -1140,7 +1140,7 @@ export interface paths {
         put?: never;
         /**
          * Complete a job
-         * @description Artisan marks the job as completed
+         * @description Artisan marks the job as completed. Optionally upload after photos.
          */
         post: operations["JobsController_completeJob"];
         delete?: never;
@@ -1163,6 +1163,26 @@ export interface paths {
          * @description User approves the completed job
          */
         post: operations["JobsController_approveJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/{id}/artisan-location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan location
+         * @description Get the artisan current/last known location for a job. For real-time tracking, use the WebSocket /jobs namespace instead.
+         */
+        get: operations["JobsController_getArtisanLocation"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1196,7 +1216,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get all chat rooms for current user */
+        /**
+         * Get all chat rooms for current user
+         * @description Returns all chat rooms where the current user is either the service requester or the artisan. Includes last message and unread count for each room.
+         */
         get: operations["ChatController_getRooms"];
         put?: never;
         post?: never;
@@ -1213,7 +1236,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get chat room details */
+        /**
+         * Get chat room details
+         * @description Returns detailed information about a specific chat room including job, user, and artisan details.
+         */
         get: operations["ChatController_getRoom"];
         put?: never;
         post?: never;
@@ -1230,10 +1256,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get messages in a chat room */
+        /**
+         * Get messages in a chat room
+         * @description Returns paginated messages for a chat room. Supports both page-based and cursor-based pagination, as well as date filters.
+         */
         get: operations["ChatController_getMessages"];
         put?: never;
-        /** Send a message in a chat room */
+        /**
+         * Send a message in a chat room
+         * @description Sends a new message in the specified chat room. Only participants can send messages.
+         */
         post: operations["ChatController_sendMessage"];
         delete?: never;
         options?: never;
@@ -1254,7 +1286,10 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /** Mark messages as read */
+        /**
+         * Mark messages as read
+         * @description Marks specific messages as read. Only messages from the other participant can be marked as read.
+         */
         patch: operations["ChatController_markRead"];
         trace?: never;
     };
@@ -1271,7 +1306,10 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /** Mark all messages in room as read */
+        /**
+         * Mark all messages in room as read
+         * @description Marks all unread messages from the other participant as read.
+         */
         patch: operations["ChatController_markAllRead"];
         trace?: never;
     };
@@ -1282,7 +1320,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get total unread message count */
+        /**
+         * Get total unread message count
+         * @description Returns the total number of unread messages across all chat rooms for the current user.
+         */
         get: operations["ChatController_getUnreadCount"];
         put?: never;
         post?: never;
@@ -1299,7 +1340,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get chat room for a specific job */
+        /**
+         * Get chat room for a specific job
+         * @description Returns the chat room associated with a specific job. Only the user or artisan involved in the job can access this.
+         */
         get: operations["ChatController_getRoomByJob"];
         put?: never;
         post?: never;
@@ -1724,6 +1768,26 @@ export interface paths {
         patch: operations["ReviewsController_update"];
         trace?: never;
     };
+    "/api/admin/change-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change default password
+         * @description Allow an admin who was issued a default password to securely change their password. The admin must provide current password, new password, and confirm password.
+         */
+        post: operations["AdminController_changeDefaultPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/artisans/verify": {
         parameters: {
             query?: never;
@@ -1776,6 +1840,94 @@ export interface paths {
          * @description Get detailed artisan profile for admin review
          */
         get: operations["AdminController_getArtisanProfile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/settings/commission": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get commission settings
+         * @description Get the current active commission settings
+         */
+        get: operations["AdminController_getCommissionSetting"];
+        /**
+         * Update commission settings
+         * @description Update the platform commission amount taken from artisans. Enter the amount and save.
+         */
+        put: operations["AdminController_updateCommissionSetting"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/terms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all terms and conditions versions
+         * @description Get a paginated list of all terms and conditions versions
+         */
+        get: operations["AdminController_getAllTermsAndConditions"];
+        /**
+         * Update terms and conditions
+         * @description Create a new version or update an existing version of terms and conditions. Specify the version and content.
+         */
+        put: operations["AdminController_updateTermsAndConditions"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/terms/active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get active terms and conditions
+         * @description Get the currently active terms and conditions
+         */
+        get: operations["AdminController_getActiveTermsAndConditions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/terms/{version}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get terms and conditions by version
+         * @description Get a specific version of terms and conditions
+         */
+        get: operations["AdminController_getTermsAndConditionsByVersion"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2038,21 +2190,43 @@ export interface components {
             updatedAt: string;
         };
         UserResponseDto: {
+            /** @description User unique identifier (UUID) */
             id: string;
+            /** @description User email address */
             email: string;
+            /** @description User phone number */
             phoneNumber: string;
-            /** @enum {string} */
+            /**
+             * @description User role
+             * @enum {string}
+             */
             role: "user" | "artisan" | "admin";
+            /** @description Whether email is verified */
             emailVerified: boolean;
+            /** @description Whether phone is verified */
             phoneVerified: boolean;
+            /** @description Whether account is active */
             isActive: boolean;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Last login timestamp
+             */
             lastLoginAt?: string;
-            /** Format: date-time */
+            /** @description User referral code for inviting others */
+            referralCode?: string;
+            /**
+             * Format: date-time
+             * @description Account creation timestamp
+             */
             createdAt: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Last update timestamp
+             */
             updatedAt: string;
+            /** @description User profile details */
             profile?: components["schemas"]["UserProfileResponseDto"];
+            /** @description User settings */
             settings?: components["schemas"]["UserSettingsResponseDto"];
         };
         TokensResponseDto: {
@@ -2077,6 +2251,11 @@ export interface components {
              * @example true
              */
             requiresVerification?: boolean;
+            /**
+             * @description Indicates if the admin user needs to change their default password. If true, the admin must change their password before proceeding.
+             * @example false
+             */
+            passwordResetRequired?: boolean;
         };
         ValidationErrorResponseDto: {
             /**
@@ -2313,10 +2492,10 @@ export interface components {
         };
         UnreadCountResponseDto: {
             /**
-             * @description Number of unread notifications
+             * @description Total unread message count
              * @example 5
              */
-            unreadCount: number;
+            count: number;
         };
         MarkNotificationsAsReadDto: {
             /**
@@ -2673,6 +2852,9 @@ export interface components {
             serviceRadiusKm: number;
             baseHourlyRate?: number;
             averageRating: number;
+            averagePunctualityRating: number;
+            averageCommunicationRating: number;
+            averageQualityRating: number;
             totalReviews: number;
             totalJobsCompleted: number;
             isAvailable: boolean;
@@ -2748,11 +2930,6 @@ export interface components {
              * @enum {string}
              */
             identificationType: "BVN" | "NIN";
-            /**
-             * @description Identification document number
-             * @example 12345678901
-             */
-            identificationNumber: string;
             /**
              * @description KYC verification status
              * @example pending
@@ -3286,10 +3463,10 @@ export interface components {
              * @example 2025-12-07T10:00:00.000Z
              */
             updatedAt: string;
-            /** @description User who created the request (includes profile) */
-            user: components["schemas"]["UserResponseDto"];
-            /** @description Category details */
-            category: components["schemas"]["CategoryResponseDto"];
+            /** @description User who created the request (included when relations are loaded) */
+            user?: components["schemas"]["UserResponseDto"];
+            /** @description Category details (included when relations are loaded) */
+            category?: components["schemas"]["CategoryResponseDto"];
         };
         CreateServiceRequestResponseDto: {
             /** @description Created service request */
@@ -3359,6 +3536,56 @@ export interface components {
              */
             message?: string;
         };
+        OfferArtisanStatsDto: {
+            /**
+             * @description Total number of jobs completed
+             * @example 45
+             */
+            totalJobsCompleted: number;
+            /**
+             * @description Overall average rating (0-5)
+             * @example 4.7
+             */
+            averageRating: number;
+            /**
+             * @description Average punctuality rating (0-5) - indicates how punctual the artisan is
+             * @example 4.8
+             */
+            averagePunctualityRating: number;
+            /**
+             * @description Average communication rating (0-5) - indicates communication quality
+             * @example 4.5
+             */
+            averageCommunicationRating: number;
+            /**
+             * @description Average quality of work rating (0-5) - indicates work quality
+             * @example 4.7
+             */
+            averageQualityRating: number;
+            /**
+             * @description Total number of reviews
+             * @example 38
+             */
+            totalReviews: number;
+            /**
+             * @description Years of experience
+             * @example 5
+             */
+            yearsOfExperience?: Record<string, never> | null;
+            /**
+             * @description Whether artisan is verified
+             * @example true
+             */
+            isVerified: boolean;
+            /**
+             * @description Photos of previous/recent work
+             * @example [
+             *       "https://storage.example.com/work1.jpg",
+             *       "https://storage.example.com/work2.jpg"
+             *     ]
+             */
+            recentWorkPhotos?: string[];
+        };
         OfferResponseDto: {
             /**
              * @description Offer unique identifier (UUID)
@@ -3389,6 +3616,8 @@ export interface components {
              * @example 25
              */
             artisanReviewCount?: number;
+            /** @description Artisan statistics (jobs completed, punctuality, response time, recent work) */
+            artisanStats?: components["schemas"]["OfferArtisanStatsDto"];
             /**
              * @description Who made the offer
              * @example artisan
@@ -3468,6 +3697,61 @@ export interface components {
              */
             action: "accept" | "reject";
         };
+        JobEvidenceResponseDto: {
+            /**
+             * @description Evidence unique identifier (UUID)
+             * @example 550e8400-e29b-414-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Job ID this evidence belongs to
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            jobId: string;
+            /**
+             * @description User ID who uploaded the evidence
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            uploadedBy: string;
+            /**
+             * @description Type of evidence (before or after)
+             * @example before
+             * @enum {string}
+             */
+            evidenceType: "before" | "after";
+            /**
+             * @description Type of media (image or video)
+             * @example image
+             * @enum {string}
+             */
+            mediaType: "image" | "video";
+            /**
+             * @description URL to the media file
+             * @example https://storage.example.com/job-evidence/abc123.jpg
+             */
+            mediaUrl: string;
+            /**
+             * @description File size in bytes
+             * @example 1024000
+             */
+            fileSizeBytes?: number;
+            /**
+             * @description MIME type of the file
+             * @example image/jpeg
+             */
+            mimeType?: string;
+            /**
+             * @description Description of the evidence
+             * @example Before photo showing the broken pipe
+             */
+            description?: string;
+            /**
+             * Format: date-time
+             * @description Creation timestamp
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            createdAt: string;
+        };
         JobResponseDto: {
             /**
              * @description Job unique identifier (UUID)
@@ -3479,36 +3763,36 @@ export interface components {
              * @example 550e8400-e29b-41d4-a716-446655440000
              */
             serviceRequestId: string;
-            /** @description Service Request details */
-            serviceRequest: components["schemas"]["ServiceRequestResponseDto"];
+            /** @description Service Request details (included when relations are loaded) */
+            serviceRequest?: components["schemas"]["ServiceRequestResponseDto"];
             /**
              * @description User ID (Requester)
              * @example 550e8400-e29b-41d4-a716-446655440000
              */
             userId: string;
-            /** @description User details */
-            user: components["schemas"]["UserResponseDto"];
+            /** @description User details (included when relations are loaded) */
+            user?: components["schemas"]["UserResponseDto"];
             /**
              * @description Artisan ID
              * @example 550e8400-e29b-41d4-a716-446655440000
              */
             artisanId: string;
-            /** @description Artisan details */
-            artisan: components["schemas"]["UserResponseDto"];
+            /** @description Artisan details (included when relations are loaded) */
+            artisan?: components["schemas"]["UserResponseDto"];
             /**
              * @description Accepted Offer ID
              * @example 550e8400-e29b-41d4-a716-446655440000
              */
             acceptedOfferId: string;
-            /** @description Accepted Offer details */
-            acceptedOffer: components["schemas"]["OfferResponseDto"];
+            /** @description Accepted Offer details (included when relations are loaded) */
+            acceptedOffer?: components["schemas"]["OfferResponseDto"];
             /**
              * @description Category ID
              * @example 550e8400-e29b-41d4-a716-446655440000
              */
             categoryId: string;
-            /** @description Category details */
-            category: components["schemas"]["CategoryResponseDto"];
+            /** @description Category details (included when relations are loaded) */
+            category?: components["schemas"]["CategoryResponseDto"];
             /**
              * @description Agreed amount
              * @example 7500
@@ -3567,6 +3851,27 @@ export interface components {
             /** @description Cancellation reason */
             cancellationReason?: string | null;
             /**
+             * @description Artisan last known latitude (for live tracking)
+             * @example 6.5244
+             */
+            artisanLastLatitude?: number | null;
+            /**
+             * @description Artisan last known longitude (for live tracking)
+             * @example 3.3792
+             */
+            artisanLastLongitude?: number | null;
+            /**
+             * Format: date-time
+             * @description When artisan location was last updated
+             * @example 2025-12-10T10:00:00.000Z
+             */
+            artisanLocationUpdatedAt?: string | null;
+            /**
+             * @description Whether artisan is currently sharing location
+             * @example false
+             */
+            isTrackingEnabled: boolean;
+            /**
              * Format: date-time
              * @description Creation timestamp
              * @example 2025-12-07T10:00:00.000Z
@@ -3578,6 +3883,8 @@ export interface components {
              * @example 2025-12-07T10:00:00.000Z
              */
             updatedAt: string;
+            /** @description Job evidence (before/after photos) */
+            evidence?: components["schemas"]["JobEvidenceResponseDto"][];
         };
         JobStatsResponseDto: {
             /**
@@ -3606,6 +3913,224 @@ export interface components {
              */
             cancelled: number;
         };
+        ArtisanLocationResponseDto: {
+            /**
+             * @description Artisan latitude coordinate
+             * @example 6.5244
+             */
+            latitude?: Record<string, never> | null;
+            /**
+             * @description Artisan longitude coordinate
+             * @example 3.3792
+             */
+            longitude?: Record<string, never> | null;
+            /**
+             * @description When the location was last updated
+             * @example 2024-01-01T12:00:00Z
+             */
+            updatedAt?: Record<string, never> | null;
+            /**
+             * @description Whether the artisan is currently sharing their location
+             * @example true
+             */
+            isTrackingEnabled: boolean;
+        };
+        CancelJobDto: {
+            /**
+             * @description Optional note explaining the reason for cancellation
+             * @example Schedule conflict - need to reschedule
+             */
+            note?: string;
+        };
+        ChatJobDto: {
+            /**
+             * @description Job ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Job status
+             * @example in_progress
+             */
+            status: string;
+            /**
+             * @description Agreed amount
+             * @example 15000
+             */
+            agreedAmount?: number;
+            /**
+             * Format: date-time
+             * @description Scheduled date
+             * @example 2025-02-01T10:00:00Z
+             */
+            scheduledDate?: string;
+        };
+        ChatUserProfileDto: {
+            /**
+             * @description Full name
+             * @example John Doe
+             */
+            fullName: string;
+            /**
+             * @description Avatar URL
+             * @example https://storage.example.com/avatar.jpg
+             */
+            avatarUrl?: string;
+        };
+        ChatUserDto: {
+            /**
+             * @description User ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Email address
+             * @example user@example.com
+             */
+            email: string;
+            /**
+             * @description Phone number
+             * @example +2348012345678
+             */
+            phoneNumber: string;
+            /** @description User profile */
+            profile?: components["schemas"]["ChatUserProfileDto"];
+        };
+        ChatMessageResponseDto: {
+            /**
+             * @description Message ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Chat room ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            chatRoomId: string;
+            /**
+             * @description Sender ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            senderId: string;
+            /** @description Sender details with profile */
+            sender?: components["schemas"]["ChatUserDto"];
+            /**
+             * @description Message type
+             * @example text
+             * @enum {string}
+             */
+            messageType: "text" | "system";
+            /**
+             * @description Message content
+             * @example Hello, when can you come?
+             */
+            content: string;
+            /**
+             * @description Whether message has been read
+             * @example false
+             */
+            isRead: boolean;
+            /**
+             * Format: date-time
+             * @description When message was read
+             * @example 2025-01-27T12:00:00Z
+             */
+            readAt?: string;
+            /**
+             * Format: date-time
+             * @description Message creation timestamp
+             * @example 2025-01-27T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Message update timestamp
+             * @example 2025-01-27T10:00:00Z
+             */
+            updatedAt: string;
+        };
+        ChatRoomResponseDto: {
+            /**
+             * @description Chat room ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Job ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            jobId: string;
+            /** @description Job details */
+            job?: components["schemas"]["ChatJobDto"];
+            /**
+             * @description User ID (service requester)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            userId: string;
+            /** @description User details with profile */
+            user?: components["schemas"]["ChatUserDto"];
+            /**
+             * @description Artisan ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            artisanId: string;
+            /** @description Artisan details with profile */
+            artisan?: components["schemas"]["ChatUserDto"];
+            /**
+             * @description Whether chat room is active
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * Format: date-time
+             * @description Timestamp of last message
+             * @example 2025-01-27T10:00:00Z
+             */
+            lastMessageAt?: string;
+            /** @description Last message in the room */
+            lastMessage?: components["schemas"]["ChatMessageResponseDto"];
+            /**
+             * @description Number of unread messages
+             * @example 3
+             */
+            unreadCount?: number;
+            /**
+             * Format: date-time
+             * @description Room creation timestamp
+             * @example 2025-01-27T09:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Room update timestamp
+             * @example 2025-01-27T10:00:00Z
+             */
+            updatedAt: string;
+        };
+        PaginatedMessagesResponseDto: {
+            /** @description Array of messages */
+            messages: components["schemas"]["ChatMessageResponseDto"][];
+            /**
+             * @description Total number of messages
+             * @example 150
+             */
+            total: number;
+            /**
+             * @description Current page number
+             * @example 1
+             */
+            page: number;
+            /**
+             * @description Number of messages per page
+             * @example 50
+             */
+            limit: number;
+            /**
+             * @description Whether there are more messages
+             * @example true
+             */
+            hasMore: boolean;
+        };
         SendMessageDto: {
             /**
              * @description The message content
@@ -3622,6 +4147,13 @@ export interface components {
              *     ]
              */
             messageIds: string[];
+        };
+        MarkReadResponseDto: {
+            /**
+             * @description Number of messages marked as read
+             * @example 3
+             */
+            updated: number;
         };
         EarningsOverviewResponseDto: {
             /**
@@ -3994,10 +4526,20 @@ export interface components {
              */
             jobId: string;
             /**
-             * @description Rating from 1 to 5 stars
+             * @description Punctuality rating from 1 to 5 stars - how punctual was the artisan
              * @example 5
              */
-            rating: number;
+            punctualityRating: number;
+            /**
+             * @description Communication rating from 1 to 5 stars - how well did the artisan communicate
+             * @example 4
+             */
+            communicationRating: number;
+            /**
+             * @description Quality of work rating from 1 to 5 stars - quality of the work delivered
+             * @example 5
+             */
+            qualityRating: number;
             /**
              * @description Optional review comment
              * @example Excellent work! Very professional and completed on time.
@@ -4055,8 +4597,23 @@ export interface components {
             /** @description Reviewee (artisan) details */
             reviewee?: components["schemas"]["UserResponseDto"];
             /**
-             * @description Rating (1-5 stars)
+             * @description Punctuality rating (1-5 stars) - how punctual was the artisan
              * @example 5
+             */
+            punctualityRating: number;
+            /**
+             * @description Communication rating (1-5 stars) - how well the artisan communicated
+             * @example 4
+             */
+            communicationRating: number;
+            /**
+             * @description Quality of work rating (1-5 stars) - quality of work delivered
+             * @example 5
+             */
+            qualityRating: number;
+            /**
+             * @description Overall rating (1-5 stars) - average of punctuality, communication, and quality
+             * @example 4.67
              */
             rating: number;
             /**
@@ -4118,17 +4675,32 @@ export interface components {
              */
             artisanId: string;
             /**
-             * @description Average rating (0-5)
+             * @description Average overall rating (0-5)
              * @example 4.5
              */
             averageRating: number;
+            /**
+             * @description Average punctuality rating (0-5)
+             * @example 4.7
+             */
+            averagePunctualityRating: number;
+            /**
+             * @description Average communication rating (0-5)
+             * @example 4.3
+             */
+            averageCommunicationRating: number;
+            /**
+             * @description Average quality rating (0-5)
+             * @example 4.5
+             */
+            averageQualityRating: number;
             /**
              * @description Total number of reviews
              * @example 25
              */
             totalReviews: number;
             /**
-             * @description Rating distribution (1-5 stars)
+             * @description Rating distribution (1-5 stars) based on overall rating
              * @example {
              *       "1": 1,
              *       "2": 2,
@@ -4153,15 +4725,49 @@ export interface components {
         };
         UpdateReviewDto: {
             /**
-             * @description Updated rating from 1 to 5 stars
+             * @description Updated punctuality rating from 1 to 5 stars
              * @example 4
              */
-            rating?: number;
+            punctualityRating?: number;
+            /**
+             * @description Updated communication rating from 1 to 5 stars
+             * @example 4
+             */
+            communicationRating?: number;
+            /**
+             * @description Updated quality of work rating from 1 to 5 stars
+             * @example 5
+             */
+            qualityRating?: number;
             /**
              * @description Updated review comment
              * @example Good work overall, but could improve on communication.
              */
             comment?: string;
+        };
+        ChangeDefaultPasswordDto: {
+            /**
+             * @description Current/default password for verification
+             * @example DefaultPass123!
+             */
+            currentPassword: string;
+            /**
+             * @description New password (min 8 chars, must contain uppercase, lowercase, number, and special character)
+             * @example NewSecurePass123!
+             */
+            newPassword: string;
+            /**
+             * @description Password confirmation - must match newPassword
+             * @example NewSecurePass123!
+             */
+            confirmPassword: string;
+        };
+        ChangeDefaultPasswordResponseDto: {
+            /**
+             * @description Success message
+             * @example Password changed successfully
+             */
+            message: string;
         };
         VerifyArtisanDto: {
             /**
@@ -4187,6 +4793,146 @@ export interface components {
             isVerified: boolean;
             /** Format: date-time */
             verifiedAt: string;
+        };
+        CommissionSettingResponseDto: {
+            /**
+             * @description Commission setting ID
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            id: string;
+            /**
+             * @description Commission value
+             * @example 10
+             */
+            commissionValue: number;
+            /**
+             * @description Whether this is a percentage
+             * @example true
+             */
+            isPercentage: boolean;
+            /**
+             * @description Description
+             * @example Platform commission for service fees
+             */
+            description?: string;
+            /**
+             * @description Whether this setting is active
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * Format: date-time
+             * @description Created timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated timestamp
+             */
+            updatedAt: string;
+        };
+        UpdateCommissionSettingDto: {
+            /**
+             * @description Commission value - percentage or fixed amount
+             * @example 10
+             */
+            commissionValue: number;
+            /**
+             * @description Whether the commission is a percentage (true) or fixed amount (false)
+             * @default true
+             * @example true
+             */
+            isPercentage: boolean;
+            /**
+             * @description Optional description for this commission setting
+             * @example Platform commission for service fees
+             */
+            description?: string;
+        };
+        UpdateCommissionSettingResponseDto: {
+            /**
+             * @description Success message
+             * @example Commission settings updated successfully
+             */
+            message: string;
+            /** @description Updated commission setting */
+            data: components["schemas"]["CommissionSettingResponseDto"];
+        };
+        TermsAndConditionsResponseDto: {
+            /**
+             * @description Terms and conditions ID
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            id: string;
+            /**
+             * @description Version string
+             * @example 1.0
+             */
+            version: string;
+            /** @description Content of the terms */
+            content: string;
+            /**
+             * @description Title of this version
+             * @example Terms of Service v1.0
+             */
+            title?: string;
+            /**
+             * @description Whether this version is active
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * Format: date-time
+             * @description Effective date
+             */
+            effectiveDate?: string;
+            /**
+             * Format: date-time
+             * @description Created timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated timestamp
+             */
+            updatedAt: string;
+        };
+        UpdateTermsAndConditionsDto: {
+            /**
+             * @description Version string for the terms (e.g., "1.0", "2.0")
+             * @example 1.0
+             */
+            version: string;
+            /**
+             * @description Full content of the terms and conditions
+             * @example By using this platform, you agree to...
+             */
+            content: string;
+            /**
+             * @description Optional title for this version
+             * @example Terms of Service v1.0
+             */
+            title?: string;
+            /**
+             * @description Whether to activate this version immediately
+             * @default false
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * @description Date when this version becomes effective
+             * @example 2025-02-01T00:00:00Z
+             */
+            effectiveDate?: string;
+        };
+        UpdateTermsAndConditionsResponseDto: {
+            /**
+             * @description Success message
+             * @example Terms and conditions updated successfully
+             */
+            message: string;
+            /** @description Updated terms and conditions */
+            data: components["schemas"]["TermsAndConditionsResponseDto"];
         };
         CreateSupportTicketDto: {
             /**
@@ -6808,7 +7554,16 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** @description Before photos (max 5) */
+                    beforePhotos?: string[];
+                    /** @description Optional notes */
+                    notes?: string;
+                };
+            };
+        };
         responses: {
             /** @description Job started successfully */
             200: {
@@ -6866,7 +7621,16 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** @description After photos (max 5) */
+                    afterPhotos?: string[];
+                    /** @description Optional notes */
+                    notes?: string;
+                };
+            };
+        };
         responses: {
             /** @description Job marked as completed */
             200: {
@@ -6973,7 +7737,7 @@ export interface operations {
             };
         };
     };
-    JobsController_cancelJob: {
+    JobsController_getArtisanLocation: {
         parameters: {
             query?: never;
             header?: never;
@@ -6983,6 +7747,59 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description Artisan location retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtisanLocationResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to view this location */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_cancelJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelJobDto"];
+            };
+        };
         responses: {
             /** @description Job cancelled successfully */
             200: {
@@ -7045,7 +7862,18 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ChatRoomResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
         };
     };
@@ -7054,7 +7882,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description Chat room ID */
+                /** @description Chat room ID (UUID) */
                 id: string;
             };
             cookie?: never;
@@ -7066,21 +7894,36 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ChatRoomResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
             /** @description Not authorized to access this room */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
             /** @description Chat room not found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
         };
     };
@@ -7100,7 +7943,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description Chat room ID */
+                /** @description Chat room ID (UUID) */
                 id: string;
             };
             cookie?: never;
@@ -7112,21 +7955,36 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["PaginatedMessagesResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
             /** @description Not authorized to access this room */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
             /** @description Chat room not found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
         };
     };
@@ -7135,7 +7993,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description Chat room ID */
+                /** @description Chat room ID (UUID) */
                 id: string;
             };
             cookie?: never;
@@ -7151,28 +8009,45 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ChatMessageResponseDto"];
+                };
             };
             /** @description Chat room is not active */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
             /** @description Not authorized to send messages in this room */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
             /** @description Chat room not found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
         };
     };
@@ -7181,7 +8056,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description Chat room ID */
+                /** @description Chat room ID (UUID) */
                 id: string;
             };
             cookie?: never;
@@ -7197,21 +8072,36 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["MarkReadResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
             /** @description Not authorized to access this room */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
             /** @description Chat room not found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
         };
     };
@@ -7220,7 +8110,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description Chat room ID */
+                /** @description Chat room ID (UUID) */
                 id: string;
             };
             cookie?: never;
@@ -7232,7 +8122,36 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["MarkReadResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to access this room */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Chat room not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
         };
     };
@@ -7251,10 +8170,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        /** @example 5 */
-                        count?: number;
-                    };
+                    "application/json": components["schemas"]["UnreadCountResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
                 };
             };
         };
@@ -7264,7 +8189,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description Job ID */
+                /** @description Job ID (UUID) */
                 jobId: string;
             };
             cookie?: never;
@@ -7276,21 +8201,36 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ChatRoomResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
             /** @description Not authorized to access this chat */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
             /** @description Chat room not found for this job */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
         };
     };
@@ -8333,6 +9273,57 @@ export interface operations {
             };
         };
     };
+    AdminController_changeDefaultPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangeDefaultPasswordDto"];
+            };
+        };
+        responses: {
+            /** @description Password changed successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChangeDefaultPasswordResponseDto"];
+                };
+            };
+            /** @description Bad Request - Password validation failed */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized - Invalid current password */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unprocessable Entity - Passwords do not match */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     AdminController_verifyArtisan: {
         parameters: {
             query?: never;
@@ -8472,6 +9463,284 @@ export interface operations {
                 };
             };
             /** @description Artisan not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_getCommissionSetting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current commission settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommissionSettingResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description No active commission setting found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_updateCommissionSetting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCommissionSettingDto"];
+            };
+        };
+        responses: {
+            /** @description Commission settings updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateCommissionSettingResponseDto"];
+                };
+            };
+            /** @description Bad Request - Invalid commission value */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_getAllTermsAndConditions: {
+        parameters: {
+            query?: {
+                /** @description Page number (default: 1) */
+                page?: number;
+                /** @description Items per page (default: 20) */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of terms and conditions versions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_updateTermsAndConditions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTermsAndConditionsDto"];
+            };
+        };
+        responses: {
+            /** @description Terms and conditions updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateTermsAndConditionsResponseDto"];
+                };
+            };
+            /** @description Bad Request - Validation failed */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_getActiveTermsAndConditions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current active terms and conditions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TermsAndConditionsResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_getTermsAndConditionsByVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Version string (e.g., "1.0", "2.0") */
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Terms and conditions for the specified version */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TermsAndConditionsResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Terms version not found */
             404: {
                 headers: {
                     [name: string]: unknown;

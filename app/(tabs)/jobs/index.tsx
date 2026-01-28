@@ -18,8 +18,10 @@ export default function Screen() {
 
   const { isLoading, data, isRefetching, refetch } = useQuery(api.getUserJobs());
 
-  const inProgressJobs = data?.filter((i) => i.status === 'in_progress');
-  const completedJobs = data?.filter((i) => i.status === 'completed');
+  const inProgressJobs = data?.filter(
+    (i) => i.status === 'paid' || i.status === 'in_progress' || i.status === 'completed'
+  );
+  const completedJobs = data?.filter((i) => i.status === 'approved');
 
   return (
     <Layout scrollable={false}>
@@ -91,8 +93,7 @@ export default function Screen() {
                               {item?.category?.name}
                             </Text>
                             <Text className="flex-1 text-xs text-[#FE6A00]">
-                              Posted
-                              {formatRelativeTime(item?.createdAt)}
+                              Posted {formatRelativeTime(item?.createdAt)}
                             </Text>
                           </View>
 
@@ -128,7 +129,7 @@ export default function Screen() {
                           <Pressable
                             onPress={() =>
                               router.navigate({
-                                pathname: '/jobs/ongoing',
+                                pathname: '/ongoing',
                                 params: {
                                   id: item?.id,
                                 },

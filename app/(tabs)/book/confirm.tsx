@@ -220,7 +220,9 @@ export default function Screen() {
                   {offer?.data?.serviceRequest?.category?.name}
                 </Text>
 
-                <Text className="text-xs text-[#FF6A00]">4.9 ★ (145)</Text>
+                <Text className="text-xs text-[#FF6A00]">
+                  {offer?.data?.artisanRating} ★ ({offer?.data?.artisanReviewCount})
+                </Text>
               </View>
             </View>
 
@@ -325,7 +327,7 @@ export default function Screen() {
             disabled={initializePayment?.isPending || verifyPayment?.isPending}
             onPress={() => {
               initializePayment?.mutate(
-                { jobId: offer?.data?.jobId || '', callbackUrl: 'https://example.com/' },
+                { jobId: id || '', callbackUrl: 'https://example.com/' },
                 {
                   onSuccess: (res) => {
                     SheetManager?.show('paystack-webview-sheet', {
