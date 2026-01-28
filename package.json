@@ -3,6 +3,9 @@
   "main": "expo-router/entry",
   "version": "0.1.10",
   "scripts": {
+    "patch": "pnpm version patch",
+    "minor": "pnpm version minor",
+    "major": "pnpm version major",
     "dev": "expo start",
     "generate:schema": "npx openapi-typescript https://server-api-bibv.onrender.com/api/docs-json -o ./api/schema.ts",
     "build": "eas build --platform all",
