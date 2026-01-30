@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import * as React from 'react';
-import { Image, Pressable, View } from 'react-native';
+import { Image, Pressable, View, Dimensions } from 'react-native';
 import { useAuthStore } from '@/store/auth-store';
 import { ArrowBigLeft, ArrowBigRight } from 'lucide-react-native';
 import Animated, {
@@ -9,7 +9,9 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
   withSpring,
+  runOnJS,
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const data = [
   {
@@ -42,6 +44,16 @@ export default function Screen() {
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const progress = useSharedValue(0);
   const autoAdvanceTimerRef = React.useRef<NodeJS.Timeout | number>(null);
+
+  const insets = useSafeAreaInsets();
+  const { height: screenHeight } = Dimensions.get('window');
+
+  // Calculate translateY value based on screen height (moved outside worklet)
+  const translateYValue = React.useMemo(() => {
+    if (screenHeight < 700) return 40; // Small screens (iPhone SE, etc.)
+    if (screenHeight < 800) return 60; // Medium screens (iPhone 13 mini, etc.)
+    return 80; // Larger screens
+  }, [screenHeight]);
 
   // Function to clear the timer
   const clearAutoAdvanceTimer = () => {
@@ -108,7 +120,7 @@ export default function Screen() {
           }),
         },
         {
-          translateY: 80,
+          translateY: translateYValue, // Use the pre-calculated value
         },
       ],
     };
@@ -146,96 +158,106 @@ export default function Screen() {
     <View className="relative flex-1 bg-background">
       <Image
         source={require('@/assets/images/onboarding-bg.png')}
-        className="inset-0 h-full w-full flex-1 object-cover"
+        className="absolute inset-0 h-full w-full"
+        resizeMode="cover"
       />
-      <View className="absolute inset-0 flex-1 items-center justify-center px-6 py-[26px]">
-        <View className="flex h-full w-full items-center justify-center">
+      <View
+        style={{
+          paddingTop: insets.top + 20,
+          paddingBottom: insets.bottom + 12,
+        }}
+        className="flex-1 items-center justify-between px-6">
+        <View className="w-full flex-1 items-center justify-center">
           {/* Animated Image */}
           <Animated.View
             key={`image-${data[currentIndex].id}`}
-            style={imageAnimatedStyle}
-            className="z-10 w-[90%] flex-1">
-            <Image source={data[currentIndex].imageSrc} className="h-full w-full object-contain" />
+            style={[imageAnimatedStyle, { maxHeight: screenHeight * 0.6 }]}
+            className="z-10 w-[85%]">
+            <Image
+              source={data[currentIndex].imageSrc}
+              className="h-full w-full"
+              resizeMode="contain"
+            />
           </Animated.View>
+        </View>
 
-          <View className="flex w-full justify-end rounded-sm rounded-tr-[70px] bg-white px-4 py-[22px] pt-24">
-            <Animated.View
-              key={`content-${data[currentIndex].id}`}
-              style={contentAnimatedStyle}
-              className="flex gap-4">
-              <View className="flex gap-2">
-                {/* Animated Title */}
-                <Text className="text-[20px] font-bold text-[#737381]">
-                  {data[currentIndex].title}
-                </Text>
-                <View className="h-[2px] w-10 rounded-sm bg-secondary" />
-                {/* Animated Subtitle */}
-                <Text className="text-[#737381]">{data[currentIndex].subtitle}</Text>
+        <View className="w-full rounded-sm rounded-tr-[70px] bg-white px-4 py-[22px] pt-24">
+          <Animated.View
+            key={`content-${data[currentIndex].id}`}
+            style={contentAnimatedStyle}
+            className="flex gap-4">
+            <View className="flex gap-2">
+              {/* Animated Title */}
+              <Text className="text-[20px] font-bold text-[#737381]">
+                {data[currentIndex].title}
+              </Text>
+              <View className="h-[2px] w-10 rounded-sm bg-secondary" />
+              {/* Animated Subtitle */}
+              <Text className="text-[#737381]">{data[currentIndex].subtitle}</Text>
+            </View>
+
+            <View className="flex flex-row items-center justify-between gap-4">
+              {/* Animated Indicators */}
+              <View className="flex flex-row gap-1">
+                {data.map((_, index) => {
+                  const indicatorStyle = useAnimatedStyle(() => {
+                    const isActive = index === currentIndex;
+                    return {
+                      backgroundColor: withTiming(isActive ? '#1B1B1E' : '#DFDFE1', {
+                        duration: 300,
+                      }),
+                      width: withSpring(isActive ? 8 : 8),
+                      height: withSpring(isActive ? 8 : 8),
+                    };
+                  });
+
+                  return (
+                    <Animated.View key={index} style={indicatorStyle} className="rounded-full" />
+                  );
+                })}
               </View>
 
-              <View className="flex flex-row items-center justify-between gap-4">
-                {/* Animated Indicators */}
-                <View className="flex flex-row gap-1">
-                  {data.map((_, index) => {
-                    const indicatorStyle = useAnimatedStyle(() => {
-                      const isActive = index === currentIndex;
-                      return {
-                        backgroundColor: withTiming(isActive ? '#1B1B1E' : '#DFDFE1', {
-                          duration: 300,
-                        }),
-                        width: withSpring(isActive ? 8 : 8),
-                        height: withSpring(isActive ? 8 : 8),
-                      };
-                    });
+              <View className="h-[1px] flex-1 bg-[#DFDFE1]" />
 
-                    return (
-                      <Animated.View key={index} style={indicatorStyle} className="rounded-full" />
-                    );
-                  })}
-                </View>
+              <View className="flex flex-row items-center gap-4">
+                {/* Left Arrow Navigator */}
+                <Pressable
+                  onPress={handleManualPrev}
+                  disabled={isFirstSlide}
+                  className={`flex h-8 w-8 items-center justify-center rounded-[8px] border ${
+                    isFirstSlide
+                      ? 'border-[#B4B4BC] bg-transparent'
+                      : 'border-[#1B1B1E] bg-[#1B1B1E]'
+                  }`}>
+                  <ArrowBigLeft
+                    size={16}
+                    color={isFirstSlide ? '#B4B4BC' : '#FFFFFF'}
+                    fill={isFirstSlide ? 'transparent' : '#FFFFFF'}
+                  />
+                </Pressable>
 
-                <View className="h-[1px] flex-1 bg-[#DFDFE1]" />
-
-                <View className="flex flex-row items-center gap-4">
-                  {/* Left Arrow Navigator */}
-                  <Pressable
-                    onPress={handleManualPrev}
-                    disabled={isFirstSlide}
-                    className={`flex h-8 w-8 items-center justify-center rounded-[8px] border ${
-                      isFirstSlide
-                        ? 'border-[#B4B4BC] bg-transparent'
-                        : 'border-[#1B1B1E] bg-[#1B1B1E]'
-                    }`}>
-                    <ArrowBigLeft
-                      size={16}
-                      color={isFirstSlide ? '#B4B4BC' : '#FFFFFF'}
-                      fill={isFirstSlide ? 'transparent' : '#FFFFFF'}
-                    />
-                  </Pressable>
-
-                  {/* Right Arrow Navigator */}
-                  <Pressable
-                    onPress={handleManualNext}
-                    disabled={isLastSlide}
-                    className={`flex h-8 w-8 items-center justify-center rounded-[8px] border ${
-                      isLastSlide
-                        ? 'border-[#B4B4BC] bg-transparent'
-                        : 'border-[#1B1B1E] bg-[#1B1B1E]'
-                    }`}>
-                    <ArrowBigRight
-                      fill={isLastSlide ? 'transparent' : '#FFFFFF'}
-                      size={16}
-                      color={isLastSlide ? '#B4B4BC' : '#FFFFFF'}
-                    />
-                  </Pressable>
-                </View>
+                {/* Right Arrow Navigator */}
+                <Pressable
+                  onPress={handleManualNext}
+                  disabled={isLastSlide}
+                  className={`flex h-8 w-8 items-center justify-center rounded-[8px] border ${
+                    isLastSlide
+                      ? 'border-[#B4B4BC] bg-transparent'
+                      : 'border-[#1B1B1E] bg-[#1B1B1E]'
+                  }`}>
+                  <ArrowBigRight
+                    fill={isLastSlide ? 'transparent' : '#FFFFFF'}
+                    size={16}
+                    color={isLastSlide ? '#B4B4BC' : '#FFFFFF'}
+                  />
+                </Pressable>
               </View>
+            </View>
 
-              <Button className="mt-2 h-12" onPress={completeOnboarding}>
-                Get Started
-              </Button>
-            </Animated.View>
-          </View>
+            <Button className="mt-2 h-12" onPress={completeOnboarding}>
+              Get Started
+            </Button>
+          </Animated.View>
         </View>
       </View>
     </View>

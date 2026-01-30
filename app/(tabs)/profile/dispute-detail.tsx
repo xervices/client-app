@@ -15,76 +15,105 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/api';
+import { LoadingState } from '@/components/loading-state';
+import { formatCurrency, formatDateTime } from '@/lib/utils';
 
 export default function Screen() {
-  const { id } = useLocalSearchParams();
+  const { id }: { id: string } = useLocalSearchParams();
+
+  const { isLoading, refetch, isRefetching, data } = useQuery(api.getDisputeDetail(id));
+
+  const job = useQuery(api.getJobDetail(data?.jobId));
 
   return (
     <Layout
       useBackground
+      isRefreshing={isRefetching || job?.isRefetching}
+      onRefresh={() => {
+        refetch();
+        job?.refetch();
+      }}
       stickyHeader={
         <View className="pb-4">
           <AuthHeader title="Disputes" />
         </View>
       }>
-      <View className="flex-1 gap-4">
-        <View className="flex w-full flex-row">
-          <View className="flex w-1/2 flex-row items-center gap-2">
-            <Avatar alt="User's Avatar" className="h-14 w-14">
-              <AvatarImage source={{ uri: 'https://github.com/mrzachnugent.png' }} />
-              <AvatarFallback className="bg-primary">
-                <Text className="font-cabinet-bold leading-none">ZN</Text>
-              </AvatarFallback>
-            </Avatar>
+      {isLoading ? (
+        <LoadingState title="Loading Dispute..." />
+      ) : (
+        <View className="flex-1 gap-4">
+          <View className="flex w-full flex-row">
+            <View className="flex w-1/2 flex-row items-center gap-2">
+              <Avatar alt="User's Avatar" className="h-14 w-14">
+                <AvatarImage source={{ uri: job?.data?.artisan?.profile?.avatarUrl }} />
+                <AvatarFallback className="bg-primary">
+                  <Text className="font-cabinet-bold text-xs uppercase leading-none">
+                    {job?.data?.artisan?.profile?.fullName?.substring(0, 2)}
+                  </Text>
+                </AvatarFallback>
+              </Avatar>
 
-            <View>
-              <View className="flex flex-row items-center">
-                <Text className="font-cabinet-bold text-[18px] text-[#1B1B1E]">Sarah Rodri</Text>
+              <View>
+                <View className="flex flex-row items-center">
+                  <Text className="font-cabinet-bold text-[18px] text-[#1B1B1E]">
+                    {job?.data?.artisan?.profile?.fullName}
+                  </Text>
 
-                <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                  <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                </View>
+
+                <Text className="text-xs text-[#1B1B1E]">
+                  {job?.data?.serviceRequest?.category?.name} Specialist
+                </Text>
+
+                <Text className="text-xs text-[#FF6A00]">
+                  {job?.data?.artisanRating} ★ ({job?.data?.artisanReviewCount})
+                </Text>
               </View>
+            </View>
 
-              <Text className="text-xs text-[#1B1B1E]">Plumbing Specialist</Text>
+            <View className="flex w-1/2 justify-between">
+              <Text className="text-right text-xs text-[#FF6A00]">JOB ID ● {job?.data?.id}</Text>
 
-              <Text className="text-xs text-[#FF6A00]">4.9 ★ (145)</Text>
+              <Text className="text-right font-cabinet-bold text-[18px] text-[#FF6A00]">
+                {formatCurrency(job?.data?.finalAmount)}
+              </Text>
             </View>
           </View>
 
-          <View className="flex w-1/2 justify-between">
-            <Text className="text-right text-xs text-[#FF6A00]">JOB ID ● #25667</Text>
+          <View className="flex w-full flex-row justify-between">
+            <Text className="flex-1 text-sm text-[#737381]">Booking Date & Time</Text>
 
-            <Text className="text-right font-cabinet-bold text-[18px] text-[#FF6A00]">₦8500</Text>
-          </View>
-        </View>
-
-        <View className="flex w-full flex-row justify-between">
-          <Text className="flex-1 text-sm text-[#737381]">Booking Date & Time</Text>
-
-          <Text className="font-cabinet-bold text-sm text-[#737381]">2025-11-27 17:47:27</Text>
-        </View>
-
-        <View className="flex w-full flex-row justify-between">
-          <Text className="flex-1 text-sm text-[#737381]">Job Description</Text>
-
-          <Text className="font-cabinet-bold text-sm text-[#737381]">Plumbing</Text>
-        </View>
-
-        <View className="w-full rounded-[4px] border border-[#DFDFE1] p-4">
-          <Text className="flex-1 text-sm text-[#737381]">Work Quality Issues</Text>
-        </View>
-
-        <View>
-          <Text className="font-cabinet-bold text-[#737381]">Concern</Text>
-
-          <View className="w-full rounded-[4px] border border-[#DFDFE1] p-4">
-            <Text className="flex-1 text-sm text-[#737381]">
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh
-              euismod tincidunt ut laoreet
+            <Text className="font-cabinet-bold text-sm text-[#737381]">
+              {formatDateTime(job?.data?.serviceRequest?.createdAt)}
             </Text>
           </View>
-        </View>
 
-        <View>
+          <View className="flex w-full flex-row justify-between">
+            <Text className="flex-1 text-sm text-[#737381]">Job Description</Text>
+
+            <Text className="font-cabinet-bold text-sm text-[#737381]">
+              {job?.data?.serviceRequest?.category?.name}
+            </Text>
+          </View>
+
+          <View className="w-full rounded-[4px] border border-[#DFDFE1] p-4">
+            <Text className="flex-1 text-sm capitalize text-[#737381]">
+              {data?.disputeType} Issues
+            </Text>
+          </View>
+
+          <View>
+            <Text className="font-cabinet-bold text-[#737381]">Concern</Text>
+
+            <View className="w-full rounded-[4px] border border-[#DFDFE1] p-4">
+              <Text className="flex-1 text-sm text-[#737381]">{data?.description}</Text>
+            </View>
+          </View>
+
+          {/* <View>
           <Text className="font-cabinet-bold text-[#737381]">Photos or Videos</Text>
 
           <Text className="flex-1 text-sm text-[#737381]">Photos and videos before and after</Text>
@@ -122,18 +151,21 @@ export default function Screen() {
               </View>
             </View>
           </View>
-        </View>
+        </View> */}
 
-        <View>
-          <Text className="font-cabinet-bold text-[#FE6A00]">Conclusion</Text>
+          {data?.status === 'resolved' || data?.status === 'closed' ? (
+            <View>
+              <Text className="font-cabinet-bold text-[#FE6A00]">Conclusion</Text>
 
-          <View className="w-full rounded-[4px] border border-[#DFDFE1] p-4">
-            <Text className="flex-1 text-sm text-[#1B1B1E]">
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh
-            </Text>
-          </View>
+              <View className="w-full rounded-[4px] border border-[#DFDFE1] p-4">
+                <Text className="flex-1 text-sm text-[#1B1B1E]">
+                  Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh
+                </Text>
+              </View>
+            </View>
+          ) : null}
         </View>
-      </View>
+      )}
     </Layout>
   );
 }

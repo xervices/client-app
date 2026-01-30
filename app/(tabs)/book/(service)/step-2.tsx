@@ -4,8 +4,9 @@ import { Text } from '@/components/ui/text';
 import { Textarea } from '@/components/ui/textarea';
 import { UploadedMedia } from '@/components/uploaded-media';
 import { useServiceStore } from '@/store/service-store';
+import { useCameraPermissions } from 'expo-camera';
 import { Image } from 'expo-image';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams, usePathname } from 'expo-router';
 import { Camera } from 'lucide-react-native';
 import * as React from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
@@ -13,6 +14,9 @@ import { SheetManager } from 'react-native-actions-sheet';
 
 export default function Screen() {
   const { setStep2 } = useServiceStore();
+
+  const [permission] = useCameraPermissions();
+  const [showPermissionModal, setShowPermissionModal] = React.useState(false);
 
   const [media, setMediaSrcs] = React.useState<
     { url: string; mimeType: string; isVideo?: boolean }[]
@@ -68,17 +72,21 @@ export default function Screen() {
             </View>
 
             <Pressable
-              onPress={() =>
-                SheetManager.show('camera-sheet', {
-                  payload: {
-                    onSelect(value) {
-                      setMediaSrcs((prev) => {
-                        return [...prev, value];
-                      });
+              onPress={() => {
+                if (permission?.granted) {
+                  SheetManager.show('camera-sheet', {
+                    payload: {
+                      onSelect(value) {
+                        setMediaSrcs((prev) => {
+                          return [...prev, value];
+                        });
+                      },
                     },
-                  },
-                })
-              }
+                  });
+                } else {
+                  setShowPermissionModal(true);
+                }
+              }}
               className="flex aspect-square w-16 items-center justify-center rounded-[8px] border border-[#E0E0E0]">
               <Camera size={24} color={'#737381'} />
             </Pressable>
@@ -99,7 +107,21 @@ export default function Screen() {
           Continue
         </Button>
 
-        <CameraPermissionDialog />
+        <CameraPermissionDialog
+          onPermissionsGranted={() => {
+            SheetManager.show('camera-sheet', {
+              payload: {
+                onSelect(value) {
+                  setMediaSrcs((prev) => {
+                    return [...prev, value];
+                  });
+                },
+              },
+            });
+          }}
+          visible={showPermissionModal}
+          setVisible={setShowPermissionModal}
+        />
       </View>
     </ScrollView>
   );

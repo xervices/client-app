@@ -7,11 +7,23 @@ import { Services } from '@/components/home/services';
 import { UserOfWeek } from '@/components/home/user-of-week';
 import { ActiveJobs } from '@/components/home/active-jobs';
 import EnableLocationDialog from '@/components/enable-location-dialog';
-import Storage from 'expo-sqlite/kv-store';
+import { useQueries } from '@tanstack/react-query';
+import { api } from '@/api';
+import { usePathname } from 'expo-router';
 
 export default function Screen() {
+  const [categories, requests, jobs] = useQueries({
+    queries: [api.getAllCategories(), api.getUserServiceRequests(), api.getUserJobs()],
+  });
+
   return (
     <Layout
+      isRefreshing={categories?.isRefetching || requests?.isRefetching || jobs?.isRefetching}
+      onRefresh={() => {
+        categories?.refetch();
+        requests?.refetch();
+        jobs?.refetch();
+      }}
       useBackground
       horizontalPadding={false}
       stickyHeader={

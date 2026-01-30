@@ -47,6 +47,7 @@ export default function RootLayout() {
                   <Stack.Screen name="ongoing" options={{ headerShown: false }} />
                   <Stack.Screen name="photo-preview" options={{ headerShown: false }} />
                   <Stack.Screen name="rate" options={{ headerShown: false }} />
+                  <Stack.Screen name="dispute" options={{ headerShown: false }} />
                 </Stack.Protected>
 
                 <Stack.Protected guard={!isLoggedIn && hasCompletedOnboarding}>

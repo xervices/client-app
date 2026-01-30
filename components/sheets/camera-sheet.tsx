@@ -9,6 +9,7 @@ import { Button } from '../ui/button';
 import { Camera, Video } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { RecordingIndicator } from '../recording-indicator';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -19,6 +20,8 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
   const [mode, setMode] = useState<CameraMode>('picture');
   const [facing, setFacing] = useState<CameraType>('back');
   const [recording, setRecording] = useState(false);
+
+  const insets = useSafeAreaInsets();
 
   const player = useVideoPlayer(videoMedia?.uri || '', (player) => {
     player.loop = true;
@@ -165,7 +168,9 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
       containerStyle={{
         backgroundColor: '#140900',
       }}>
-      <View style={{ height: screenHeight }} className="flex gap-4 p-6">
+      <View
+        style={{ height: screenHeight, paddingBottom: insets.bottom }}
+        className="flex gap-4 p-6">
         <View className="relative z-10 flex w-full flex-row items-center gap-4">
           <Pressable
             onPress={() => {
@@ -182,7 +187,7 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
           ? renderPicture(imageMedia?.uri, videoMedia?.uri)
           : renderCamera()}
 
-        <View className="mt-auto flex flex-row items-center justify-between">
+        <View className="mt-auto flex flex-row items-center justify-between pb-28">
           <Pressable
             onPress={pickImage}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-[#27272B]">

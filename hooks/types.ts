@@ -65,6 +65,7 @@ export interface RequestViewedEvent {
   data: {
     artisanId: string;
     artisanName: string;
+    artisanAvatarUrl: string;
   };
   timestamp: string;
 }

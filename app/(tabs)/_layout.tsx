@@ -4,6 +4,7 @@ import { Image } from 'expo-image';
 import { Tabs } from 'expo-router';
 import { Key } from 'react';
 import { Pressable, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabsLayout() {
   return (
@@ -45,6 +46,8 @@ type MyTabBarProps = {
 };
 
 function MyTabBar({ state, descriptors, navigation }: MyTabBarProps) {
+  const insets = useSafeAreaInsets();
+
   const TAB_ICONS: Record<string, { icon: any; active: any }> = {
     '(home)': {
       icon: require('@/assets/icons/home.svg'),
@@ -65,8 +68,8 @@ function MyTabBar({ state, descriptors, navigation }: MyTabBarProps) {
   };
 
   return (
-    <View className="bg-white">
-      <View className="mb-5 flex h-20 w-full flex-row items-center justify-center gap-[8%] bg-white">
+    <View style={{ paddingBottom: insets.bottom }} className="bg-white">
+      <View className="flex h-20 w-full flex-row items-center justify-center gap-[8%] bg-white">
         {state.routes.map(
           (route: { key: string | number; name: any }, index: Key | null | undefined) => {
             const { options } = descriptors[route.key];

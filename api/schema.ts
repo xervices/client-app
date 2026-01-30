@@ -1936,6 +1936,114 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/settings/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get admin notification settings
+         * @description Get notification preferences for the current admin. Returns default settings (all enabled) if none exist.
+         */
+        get: operations["AdminController_getAdminNotificationSetting"];
+        /**
+         * Update admin notification settings
+         * @description Update notification preferences for the current admin. Configure alerts for disputes, transactions, withdrawals, artisan verification, and WebSocket updates.
+         */
+        put: operations["AdminController_updateAdminNotificationSetting"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/settings/referral": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get referral program settings
+         * @description Get the current active referral program settings including bonus amounts, expiry period, and program status.
+         */
+        get: operations["AdminController_getReferralProgramSetting"];
+        /**
+         * Update referral program settings
+         * @description Update referral program configuration including enable/disable, referrer bonus amount, referred user bonus percentage, and referral expiry period.
+         */
+        put: operations["AdminController_updateReferralProgramSetting"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/auth/request-otp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Request OTP for admin verification
+         * @description Request a 6-digit OTP code for admin verification. The code is sent to both registered email and phone number. Valid for 15 minutes.
+         */
+        post: operations["AdminController_requestAdminOtp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/auth/verify-otp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify admin OTP
+         * @description Verify the 6-digit OTP code sent to admin. Returns a session token for authorized sensitive actions.
+         */
+        post: operations["AdminController_verifyAdminOtp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/auth/resend-otp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Resend admin OTP
+         * @description Resend the OTP code to admin. Limited to 3 requests per 15 minutes for security.
+         */
+        post: operations["AdminController_resendAdminOtp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/support/tickets": {
         parameters: {
             query?: never;
@@ -3619,6 +3727,16 @@ export interface components {
             /** @description Artisan statistics (jobs completed, punctuality, response time, recent work) */
             artisanStats?: components["schemas"]["OfferArtisanStatsDto"];
             /**
+             * @description Artisan latitude coordinate (from profile location)
+             * @example 6.5244
+             */
+            artisanLatitude?: Record<string, never> | null;
+            /**
+             * @description Artisan longitude coordinate (from profile location)
+             * @example 3.3792
+             */
+            artisanLongitude?: Record<string, never> | null;
+            /**
              * @description Who made the offer
              * @example artisan
              * @enum {string}
@@ -3779,6 +3897,16 @@ export interface components {
             artisanId: string;
             /** @description Artisan details (included when relations are loaded) */
             artisan?: components["schemas"]["UserResponseDto"];
+            /**
+             * @description Artisan average rating (0-5)
+             * @example 4.5
+             */
+            artisanRating?: Record<string, never> | null;
+            /**
+             * @description Artisan total number of reviews
+             * @example 25
+             */
+            artisanReviewCount?: Record<string, never> | null;
             /**
              * @description Accepted Offer ID
              * @example 550e8400-e29b-41d4-a716-446655440000
@@ -4933,6 +5061,273 @@ export interface components {
             message: string;
             /** @description Updated terms and conditions */
             data: components["schemas"]["TermsAndConditionsResponseDto"];
+        };
+        AdminNotificationSettingResponseDto: {
+            /**
+             * @description Notification setting ID
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            id: string;
+            /**
+             * @description Admin user ID
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            adminId: string;
+            /**
+             * @description Notify when new disputes are opened
+             * @example true
+             */
+            notifyNewDisputes: boolean;
+            /**
+             * @description Notify for high-value transactions
+             * @example true
+             */
+            notifyHighValueTransactions: boolean;
+            /**
+             * @description Threshold amount for high-value transaction alerts
+             * @example 1000
+             */
+            highValueThreshold: number;
+            /**
+             * @description Notify when artisans request withdrawals
+             * @example true
+             */
+            notifyWithdrawalRequests: boolean;
+            /**
+             * @description Notify when new artisans submit for verification
+             * @example true
+             */
+            notifyNewArtisanVerification: boolean;
+            /**
+             * @description Notify when artisans update job status
+             * @example true
+             */
+            notifyArtisanStatusChanges: boolean;
+            /**
+             * @description Enable real-time WebSocket updates
+             * @example true
+             */
+            realtimeWebsocketUpdates: boolean;
+            /**
+             * Format: date-time
+             * @description Created timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated timestamp
+             */
+            updatedAt: string;
+        };
+        UpdateAdminNotificationSettingDto: {
+            /**
+             * @description Receive notifications when new disputes are opened
+             * @default true
+             * @example true
+             */
+            notifyNewDisputes: boolean;
+            /**
+             * @description Receive notifications for high-value transactions
+             * @default true
+             * @example true
+             */
+            notifyHighValueTransactions: boolean;
+            /**
+             * @description Threshold amount for high-value transaction alerts
+             * @example 1000
+             */
+            highValueThreshold?: number;
+            /**
+             * @description Receive notifications when artisans request withdrawals
+             * @default true
+             * @example true
+             */
+            notifyWithdrawalRequests: boolean;
+            /**
+             * @description Receive notifications when new artisans submit for verification
+             * @default true
+             * @example true
+             */
+            notifyNewArtisanVerification: boolean;
+            /**
+             * @description Receive real-time notifications when artisans update job status
+             * @default true
+             * @example true
+             */
+            notifyArtisanStatusChanges: boolean;
+            /**
+             * @description Enable real-time WebSocket updates without page refresh
+             * @default true
+             * @example true
+             */
+            realtimeWebsocketUpdates: boolean;
+        };
+        UpdateAdminNotificationSettingResponseDto: {
+            /**
+             * @description Success message
+             * @example Notification settings updated successfully
+             */
+            message: string;
+            /** @description Updated notification settings */
+            data: components["schemas"]["AdminNotificationSettingResponseDto"];
+        };
+        ReferralProgramSettingResponseDto: {
+            /**
+             * @description Referral program setting ID
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            id: string;
+            /**
+             * @description Whether the referral program is enabled
+             * @example true
+             */
+            isEnabled: boolean;
+            /**
+             * @description Amount given to the person who refers
+             * @example 25
+             */
+            referrerBonus: number;
+            /**
+             * @description Percentage bonus given to the new user
+             * @example 15
+             */
+            referredUserBonus: number;
+            /**
+             * @description Days to complete required jobs for referral bonus
+             * @example 90
+             */
+            referralExpiryDays: number;
+            /**
+             * @description Minimum completed jobs required for referral bonus
+             * @example 1
+             */
+            minJobsRequired: number;
+            /**
+             * @description Maximum referral bonuses a user can earn
+             * @example 0
+             */
+            maxReferralsPerUser: number;
+            /**
+             * @description Description or notes
+             * @example Holiday promotion referral program
+             */
+            description?: string;
+            /**
+             * @description Whether this setting is active
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * Format: date-time
+             * @description Created timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated timestamp
+             */
+            updatedAt: string;
+        };
+        UpdateReferralProgramSettingDto: {
+            /**
+             * @description Enable or disable the referral program
+             * @default true
+             * @example true
+             */
+            isEnabled: boolean;
+            /**
+             * @description Amount given to the person who refers (in base currency)
+             * @example 25
+             */
+            referrerBonus?: number;
+            /**
+             * @description Percentage bonus given to the new user
+             * @example 15
+             */
+            referredUserBonus?: number;
+            /**
+             * @description Number of days the referred user has to complete required jobs
+             * @example 90
+             */
+            referralExpiryDays?: number;
+            /**
+             * @description Minimum number of completed jobs required for referral bonus
+             * @example 1
+             */
+            minJobsRequired?: number;
+            /**
+             * @description Maximum referral bonuses a user can earn (0 = unlimited)
+             * @example 0
+             */
+            maxReferralsPerUser?: number;
+            /**
+             * @description Optional description or notes about current referral program
+             * @example Holiday promotion referral program
+             */
+            description?: string;
+        };
+        UpdateReferralProgramSettingResponseDto: {
+            /**
+             * @description Success message
+             * @example Referral program settings updated successfully
+             */
+            message: string;
+            /** @description Updated referral program settings */
+            data: components["schemas"]["ReferralProgramSettingResponseDto"];
+        };
+        RequestAdminOtpDto: {
+            /**
+             * @description Purpose of the OTP (e.g., "sensitive_action", "login_verification"). Defaults to "verification".
+             * @default verification
+             * @example sensitive_action
+             */
+            purpose: string;
+        };
+        AdminOtpSentResponseDto: {
+            /**
+             * @description Success message
+             * @example OTP sent successfully
+             */
+            message: string;
+            /**
+             * @description Email where OTP was sent (masked)
+             * @example a***n@xervices.com
+             */
+            emailSentTo: string;
+            /**
+             * @description Phone number where OTP was sent (masked)
+             * @example +234***7890
+             */
+            phoneSentTo: string;
+            /**
+             * @description OTP expiry time in minutes
+             * @example 15
+             */
+            expiresInMinutes: number;
+        };
+        VerifyAdminOtpDto: {
+            /**
+             * @description The 6-digit OTP code sent to admin email/phone
+             * @example 123456
+             */
+            code: string;
+        };
+        AdminOtpVerifiedResponseDto: {
+            /**
+             * @description Success message
+             * @example OTP verified successfully
+             */
+            message: string;
+            /**
+             * @description Whether the OTP was valid
+             * @example true
+             */
+            verified: boolean;
+            /**
+             * @description Session token for authorized action (if applicable)
+             * @example abc123xyz...
+             */
+            sessionToken?: string;
         };
         CreateSupportTicketDto: {
             /**
@@ -9742,6 +10137,337 @@ export interface operations {
             };
             /** @description Terms version not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_getAdminNotificationSetting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Admin notification settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminNotificationSettingResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_updateAdminNotificationSetting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAdminNotificationSettingDto"];
+            };
+        };
+        responses: {
+            /** @description Notification settings updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateAdminNotificationSettingResponseDto"];
+                };
+            };
+            /** @description Bad Request - Validation failed */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_getReferralProgramSetting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Referral program settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferralProgramSettingResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_updateReferralProgramSetting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateReferralProgramSettingDto"];
+            };
+        };
+        responses: {
+            /** @description Referral program settings updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateReferralProgramSettingResponseDto"];
+                };
+            };
+            /** @description Bad Request - Validation failed */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_requestAdminOtp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RequestAdminOtpDto"];
+            };
+        };
+        responses: {
+            /** @description OTP sent successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminOtpSentResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Too many requests - Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_verifyAdminOtp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyAdminOtpDto"];
+            };
+        };
+        responses: {
+            /** @description OTP verified successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminOtpVerifiedResponseDto"];
+                };
+            };
+            /** @description Bad Request - Invalid or expired OTP */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_resendAdminOtp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RequestAdminOtpDto"];
+            };
+        };
+        responses: {
+            /** @description OTP resent successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminOtpSentResponseDto"];
+                };
+            };
+            /** @description Bad Request - Too many attempts */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

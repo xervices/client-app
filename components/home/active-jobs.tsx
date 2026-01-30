@@ -4,19 +4,23 @@ import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { ArrowUpRight, BadgeCheck, X } from 'lucide-react-native';
 import { router } from 'expo-router';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import React from 'react';
+import { LoadingIndicator } from '../ui/loading-indicator';
+import { showErrorMessage } from '@/api/helpers';
 
 export function ActiveJobs() {
-  const { data } = useQuery(api.getUserServiceRequests());
+  const { data, refetch } = useQuery(api.getUserServiceRequests());
 
   const jobs = useQuery(api.getUserJobs());
 
   const inCompleteSearch = data?.filter((i) => i.status === 'open');
   const negotiatingJobs = data?.filter((i) => i.status === 'in_negotiation');
 
-  const activeJobs = jobs?.data?.filter((i) => i.status === 'in_progress');
+  const activeJobs = jobs?.data?.filter(
+    (i) => i.status === 'paid' || i.status === 'in_progress' || i.status === 'completed'
+  );
   const pendingJobs = jobs?.data?.filter((i) => i.status === 'pending');
 
   return (
@@ -27,94 +31,31 @@ export function ActiveJobs() {
       {inCompleteSearch &&
         inCompleteSearch?.length > 0 &&
         inCompleteSearch?.map((search) => (
-          <View
+          <RequestCard
             key={search.id}
-            style={{
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 8,
-              elevation: 4,
+            id={search.id}
+            category={search.category?.name}
+            onCancelFn={() => {
+              refetch();
             }}
-            className="flex gap-4 rounded-[8px] bg-white p-4">
-            <View className="flex flex-row items-center justify-between">
-              <Text className="flex-1 font-cabinet-bold text-primary">Incomplete search</Text>
-
-              <Pressable className="flex h-4 w-4 items-center justify-center">
-                <X size={14} color={'#737381'} />
-              </Pressable>
-            </View>
-
-            <Text className="text-sm text-[#737381]">
-              Your previous search for {search?.category?.name} was not complete. Click "continue
-              search" to continue your search.
-            </Text>
-
-            <View className="flex flex-row items-center justify-end">
-              <Pressable
-                onPress={() => {
-                  router.navigate({
-                    pathname: '/book/searching',
-                    params: {
-                      id: search.id,
-                    },
-                  });
-                }}
-                className="flex flex-row items-center gap-1">
-                <Text className="font-cabinet-bold text-sm text-primary">Continue search</Text>
-
-                <ArrowUpRight size={14} color={'#FE6A00'} />
-              </Pressable>
-            </View>
-          </View>
+          />
         ))}
 
       {/* Pending jobs */}
       {pendingJobs &&
         pendingJobs?.length > 0 &&
         pendingJobs?.map((search) => (
-          <View
+          <PendingJobCard
             key={search.id}
-            style={{
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 8,
-              elevation: 4,
+            artisanId={search.artisanId}
+            id={search.id}
+            offerId={search?.acceptedOfferId}
+            serviceId={search.serviceRequestId}
+            category={search.serviceRequest?.category?.name}
+            onCancelFn={() => {
+              jobs?.refetch();
             }}
-            className="flex gap-4 rounded-[8px] bg-white p-4">
-            <View className="flex flex-row items-center justify-between">
-              <Text className="flex-1 font-cabinet-bold text-primary">Pending request</Text>
-
-              <Pressable className="flex h-4 w-4 items-center justify-center">
-                <X size={14} color={'#737381'} />
-              </Pressable>
-            </View>
-
-            <Text className="text-sm text-[#737381]">
-              Your previous search for {search?.category?.name} was not complete. Click "continue to
-              payment" to complete your request.
-            </Text>
-
-            <View className="flex flex-row items-center justify-end">
-              <Pressable
-                onPress={() => {
-                  router.navigate({
-                    pathname: '/book/pro',
-                    params: {
-                      serviceId: search?.serviceRequestId,
-                      artisanId: search?.artisanId,
-                      offerId: search?.acceptedOfferId,
-                    },
-                  });
-                }}
-                className="flex flex-row items-center gap-1">
-                <Text className="font-cabinet-bold text-sm text-primary">Continue to Payment</Text>
-
-                <ArrowUpRight size={14} color={'#FE6A00'} />
-              </Pressable>
-            </View>
-          </View>
+          />
         ))}
 
       {activeJobs && activeJobs?.length > 0 ? (
@@ -162,7 +103,16 @@ export function ActiveJobs() {
                   </View>
                 </View>
 
-                <Pressable className="flex flex-row items-center gap-1">
+                <Pressable
+                  onPress={() =>
+                    router.navigate({
+                      pathname: '/ongoing',
+                      params: {
+                        id: job?.id,
+                      },
+                    })
+                  }
+                  className="flex flex-row items-center gap-1">
                   <Text className="font-cabinet-bold text-sm text-primary">Track activities</Text>
 
                   <ArrowUpRight size={14} color={'#FE6A00'} />
@@ -261,7 +211,7 @@ function NegotiatingJobCard({ jobId }: NegotiatingJobCardProp) {
         <Pressable
           onPress={() =>
             router.navigate({
-              pathname: '/book/offer',
+              pathname: '/offer',
               params: {
                 id: jobId,
               },
@@ -269,6 +219,158 @@ function NegotiatingJobCard({ jobId }: NegotiatingJobCardProp) {
           }
           className="flex flex-row items-center gap-1">
           <Text className="font-cabinet-bold text-sm text-primary">See offers</Text>
+
+          <ArrowUpRight size={14} color={'#FE6A00'} />
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+interface RequestCardProp {
+  id: string;
+  category?: string;
+  onCancelFn?: () => void;
+}
+
+function RequestCard({ category, id, onCancelFn }: RequestCardProp) {
+  const { mutate, isPending } = useMutation(api.cancelServiceRequest(id));
+
+  return (
+    <View
+      style={{
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 4,
+      }}
+      className="flex gap-4 rounded-[8px] bg-white p-4">
+      <View className="flex flex-row items-center justify-between">
+        <Text className="flex-1 font-cabinet-bold text-primary">Incomplete search</Text>
+
+        {isPending ? (
+          <LoadingIndicator size={16} />
+        ) : (
+          <Pressable
+            onPress={() => {
+              mutate(
+                {},
+                {
+                  onError: (err) => {
+                    showErrorMessage(err?.message);
+                  },
+                  onSuccess: () => {
+                    onCancelFn?.();
+                  },
+                }
+              );
+            }}
+            className="flex h-4 w-4 items-center justify-center">
+            <X size={14} color={'#737381'} />
+          </Pressable>
+        )}
+      </View>
+
+      <Text className="text-sm text-[#737381]">
+        Your previous search for {category} was not complete. Click "continue search" to continue
+        your search.
+      </Text>
+
+      <View className="flex flex-row items-center justify-end">
+        <Pressable
+          onPress={() => {
+            router.navigate({
+              pathname: '/searching',
+              params: {
+                id: id,
+              },
+            });
+          }}
+          className="flex flex-row items-center gap-1">
+          <Text className="font-cabinet-bold text-sm text-primary">Continue search</Text>
+
+          <ArrowUpRight size={14} color={'#FE6A00'} />
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+interface PendingJobCardProp {
+  id: string;
+  serviceId: string;
+  artisanId: string;
+  offerId: string;
+  category?: string;
+  onCancelFn?: () => void;
+}
+
+function PendingJobCard({
+  artisanId,
+  id,
+  offerId,
+  serviceId,
+  category,
+  onCancelFn,
+}: PendingJobCardProp) {
+  const { mutate, isPending } = useMutation(api.cancelJob(id));
+
+  return (
+    <View
+      style={{
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 4,
+      }}
+      className="flex gap-4 rounded-[8px] bg-white p-4">
+      <View className="flex flex-row items-center justify-between">
+        <Text className="flex-1 font-cabinet-bold text-primary">Pending request</Text>
+
+        {isPending ? (
+          <LoadingIndicator size={16} />
+        ) : (
+          <Pressable
+            onPress={() => {
+              mutate(
+                {},
+                {
+                  onError: (err) => {
+                    showErrorMessage(err?.message);
+                  },
+                  onSuccess: () => {
+                    onCancelFn?.();
+                  },
+                }
+              );
+            }}
+            className="flex h-4 w-4 items-center justify-center">
+            <X size={14} color={'#737381'} />
+          </Pressable>
+        )}
+      </View>
+
+      <Text className="text-sm text-[#737381]">
+        Your previous search for {category} was not complete. Click "continue to payment" to
+        complete your request.
+      </Text>
+
+      <View className="flex flex-row items-center justify-end">
+        <Pressable
+          onPress={() => {
+            router.navigate({
+              pathname: '/pro',
+              params: {
+                serviceId,
+                artisanId,
+                offerId,
+              },
+            });
+          }}
+          className="flex flex-row items-center gap-1">
+          <Text className="font-cabinet-bold text-sm text-primary">Continue to Payment</Text>
 
           <ArrowUpRight size={14} color={'#FE6A00'} />
         </Pressable>

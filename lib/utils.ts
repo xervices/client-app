@@ -5,6 +5,8 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
+import { showErrorMessage } from '@/api/helpers';
+import { Linking } from 'react-native';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -423,3 +425,34 @@ function formatDuration(minutes: number): string {
   if (mins === 0) return `${hours} hr`;
   return `${hours} hr ${mins} min`;
 }
+
+export const makePhoneCall = (phoneNumber: string | undefined) => {
+  // Check if phoneNumber is undefined or empty
+  if (!phoneNumber || phoneNumber.trim() === '') {
+    showErrorMessage('Phone number is not available');
+    return;
+  }
+
+  // Remove any spaces, dashes, or parentheses
+  const cleanNumber = phoneNumber.replace(/[^0-9+]/g, '');
+
+  // Check if we have a valid number after cleaning
+  if (cleanNumber.length === 0) {
+    showErrorMessage('Invalid phone number');
+    return;
+  }
+
+  const phoneUrl = `tel:${cleanNumber}`;
+
+  Linking.canOpenURL(phoneUrl)
+    .then((supported) => {
+      if (supported) {
+        return Linking.openURL(phoneUrl);
+      } else {
+        showErrorMessage('Phone calls are not supported on this device');
+      }
+    })
+    .catch((err) => {
+      showErrorMessage('Unable to make phone call');
+    });
+};

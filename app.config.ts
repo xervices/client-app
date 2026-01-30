@@ -87,6 +87,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           apiKey: googleMapsApiKey,
         },
       },
+      softwareKeyboardLayoutMode: 'resize',
     },
     web: {
       bundler: 'metro',

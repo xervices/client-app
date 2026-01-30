@@ -154,7 +154,12 @@ export default function Screen() {
   });
 
   return (
-    <Layout useBackground scrollable={false}>
+    <Layout
+      isRefreshing={messages?.isRefetching}
+      onRefresh={messages?.refetch}
+      useBackground
+      scrollable={true}
+      keyboardAvoiding>
       {messages?.isLoading ? (
         <LoadingState title="Loading messages..." />
       ) : (

@@ -28,7 +28,7 @@ export default function Screen() {
       {isLoading ? (
         <LoadingState title="Loading your jobs..." />
       ) : (
-        <View className="flex-1">
+        <View className="flex-1 pb-44">
           <Tabs value={value} onValueChange={setValue} className="w-full">
             <TabsList className="h-[52px] w-full border-none p-0">
               <TabsTrigger

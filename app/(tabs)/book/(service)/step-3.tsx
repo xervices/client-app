@@ -25,7 +25,9 @@ export default function Screen() {
   const [serviceAddress, setServiceAddress] = React.useState('');
   const [latitude, setLatitude] = React.useState<number>();
   const [longitude, setLongitude] = React.useState<number>();
-  const [contactPhone, setContactPhone] = React.useState(user?.phoneNumber);
+  const [contactPhone, setContactPhone] = React.useState(
+    user?.phoneVerified ? user?.phoneNumber : undefined
+  );
   const [loadingLocation, setLoadingLocation] = React.useState(false);
 
   const { mutate, isPending } = useMutation(api.createServiceRequest());
@@ -85,7 +87,7 @@ export default function Screen() {
         });
       },
       onError: (err) => {
-        console.log(err);
+        // console.log(err);
         showErrorMessage(err.message);
       },
     });
