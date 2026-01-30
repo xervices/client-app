@@ -65,7 +65,9 @@ export default function Screen() {
 
                 <Text className="text-xs text-[#1B1B1E]">{data?.category?.name} Specialist</Text>
 
-                <Text className="text-xs text-[#FF6A00]">4.9 ★ (145)</Text>
+                <Text className="text-xs text-[#FF6A00]">
+                  {data?.artisanRating} ★ ({data?.artisanReviewCount})
+                </Text>
               </View>
             </View>
 

@@ -2,7 +2,7 @@ import { Text } from '@/components/ui/text';
 import * as React from 'react';
 import { Platform, Pressable, View } from 'react-native';
 import { Layout } from '@/components/layout';
-import { router, useLocalSearchParams, useNavigation, usePathname } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { SheetManager } from 'react-native-actions-sheet';
 import MapView, { Marker, Polyline, PROVIDER_DEFAULT, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Image } from 'expo-image';
