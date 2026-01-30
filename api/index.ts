@@ -554,6 +554,21 @@ export const api = {
       },
     };
   },
+  getArtisanLocation: (id: string) =>
+    queryOptions({
+      queryKey: ['job', 'artisan', 'location', id],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/jobs/{id}/artisan-location', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
 
   // offers endpoints
   getOffers: (id: string) =>

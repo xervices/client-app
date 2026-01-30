@@ -118,14 +118,14 @@ export default function Screen() {
                     },
                   });
                 }}
-                className="flex aspect-square w-full items-center justify-center gap-[2px] rounded-[8px] border border-[#FFCFAD]">
+                className="flex aspect-square w-full items-center justify-center gap-[2px] rounded-[8px] border border-[#FE6A00]">
                 <Image
                   source={item.iconUrl}
                   style={{ width: 24, height: 24 }}
                   contentFit="contain"
                 />
 
-                <Text className="text-center font-cabinet-bold text-xs text-[#737381]">
+                <Text className="text-center font-cabinet-bold text-xs text-[#1B1B1E]">
                   {item.name}
                 </Text>
               </Pressable>

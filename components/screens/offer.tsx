@@ -28,7 +28,10 @@ export function OfferScreen() {
 
   const { joinServiceRequest, offers } = useOffersContext({
     onOfferEvent(eventType, data) {
-      allOffers?.refetch();
+      if (eventType === 'offer:accepted') {
+        allOffers?.refetch();
+        showSuccessMessage('Offer accepted, You proceed to payment');
+      }
     },
   });
 
@@ -262,7 +265,7 @@ function OfferCard({
                 onConfirm: (amount) => {
                   sendCounterOffer.mutate(
                     // @ts-ignore
-                    { amount, id: offer.id },
+                    { amount, id },
                     {
                       onSuccess: () => {
                         onCounterOfferCallback?.();

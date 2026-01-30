@@ -27,6 +27,23 @@ export function ActiveJobs() {
     <View className="flex gap-2 px-6">
       <Text className="font-cabinet-medium text-xs uppercase">Active Jobs</Text>
 
+      {inCompleteSearch &&
+      inCompleteSearch?.length === 0 &&
+      pendingJobs &&
+      pendingJobs?.length == 0 &&
+      activeJobs &&
+      activeJobs?.length === 0 &&
+      negotiatingJobs &&
+      negotiatingJobs?.length === 0 ? (
+        <View className="flex w-full items-center justify-center gap-5 rounded-[8px] border border-[#D4D4D8] p-4">
+          <Text className="text-sm text-[#B4B4BC]">No active job</Text>
+
+          <Button onPress={() => router.navigate('/book')} className="w-full">
+            Book a service
+          </Button>
+        </View>
+      ) : null}
+
       {/* Incomplete search */}
       {inCompleteSearch &&
         inCompleteSearch?.length > 0 &&
@@ -121,20 +138,12 @@ export function ActiveJobs() {
             </View>
           ))}
         </>
-      ) : (
-        <View className="flex w-full items-center justify-center gap-5 rounded-[8px] border border-[#D4D4D8] p-4">
-          <Text className="text-sm text-[#B4B4BC]">No active job</Text>
-
-          <Button onPress={() => router.navigate('/book')} className="w-full">
-            Book a service
-          </Button>
-        </View>
-      )}
+      ) : null}
 
       {negotiatingJobs && negotiatingJobs?.length > 0 && (
         <>
           {negotiatingJobs?.map((job) => (
-            <NegotiatingJobCard key={job.id} jobId={job.id} />
+            <NegotiatingJobCard key={job.id} jobId={job.id} onCancelFn={refetch} />
           ))}
         </>
       )}
@@ -144,10 +153,13 @@ export function ActiveJobs() {
 
 interface NegotiatingJobCardProp {
   jobId: string;
+  onCancelFn?: () => void;
 }
 
-function NegotiatingJobCard({ jobId }: NegotiatingJobCardProp) {
+function NegotiatingJobCard({ jobId, onCancelFn }: NegotiatingJobCardProp) {
   const { isLoading, data } = useQuery(api.getOffers(jobId));
+
+  const { mutate, isPending } = useMutation(api.cancelServiceRequest(jobId));
 
   const uniqueOffersByArtisan = React.useMemo(() => {
     if (!data) return [];
@@ -175,6 +187,28 @@ function NegotiatingJobCard({ jobId }: NegotiatingJobCardProp) {
         <Text className="text-sm text-[#737381]">
           {uniqueOffersByArtisan?.length} artisans sent offers
         </Text>
+
+        {isPending ? (
+          <LoadingIndicator size={16} />
+        ) : (
+          <Pressable
+            onPress={() => {
+              mutate(
+                {},
+                {
+                  onError: (err) => {
+                    showErrorMessage(err?.message);
+                  },
+                  onSuccess: () => {
+                    onCancelFn?.();
+                  },
+                }
+              );
+            }}
+            className="flex h-4 w-4 items-center justify-center">
+            <X size={14} color={'#737381'} />
+          </Pressable>
+        )}
       </View>
 
       <View className="flex flex-row items-center justify-between">

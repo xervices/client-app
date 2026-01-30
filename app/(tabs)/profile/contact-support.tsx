@@ -20,7 +20,7 @@ const data = [
     icon: require('@/assets/icons/whatsapp.svg'),
     isLink: true,
     isDestructive: false,
-    onPress: () => router.navigate('/profile/password'),
+    onPress: () => {},
   },
 ];
 
@@ -50,7 +50,7 @@ export default function Screen() {
               />
 
               <Text
-                className={`text-sm ${item.isDestructive ? 'text-[#B3031E]' : 'text-[#737381]'}`}>
+                className={`font-cabinet-medium text-sm ${item.isDestructive ? 'text-[#B3031E]' : 'text-[#1B1B1E]'}`}>
                 {item.name}
               </Text>
             </View>

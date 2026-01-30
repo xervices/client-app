@@ -470,9 +470,19 @@ export function ConfirmScreen() {
                                     useCheckImage: true,
                                     onRedirect() {
                                       if (IS_BOOK_TAB) {
-                                        router.replace('/book');
+                                        router.replace({
+                                          pathname: '/ongoing',
+                                          params: {
+                                            id,
+                                          },
+                                        });
                                       } else {
-                                        router.replace('/(tabs)/(home)');
+                                        router.replace({
+                                          pathname: '/ongoing',
+                                          params: {
+                                            id,
+                                          },
+                                        });
                                       }
                                     },
                                   },

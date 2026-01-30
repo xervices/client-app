@@ -245,8 +245,8 @@ export function SearchInput({ defaultCategoryId }: SearchInputProps = {}) {
       <Input
         ref={inputRef}
         placeholder="Book a service"
-        className="rounded-full bg-white"
-        icon={<Search size={20} color="#B4B4BC" />}
+        className="rounded-full border-[#9F9FA7] bg-white"
+        icon={<Search size={20} color="#9F9FA7" />}
         value={searchValue}
         onFocus={() => setShowBanner(true)}
         onChangeText={(text) => {
@@ -262,7 +262,7 @@ export function SearchInput({ defaultCategoryId }: SearchInputProps = {}) {
         rightIcon={
           searchValue ? (
             <Pressable onPress={handleClearSearch} className="rounded-full p-1">
-              <X size={16} color="#B4B4BC" />
+              <X size={16} color="#9F9FA7" />
             </Pressable>
           ) : undefined
         }

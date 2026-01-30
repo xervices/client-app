@@ -31,14 +31,14 @@ export function SearchingScreen() {
   React.useEffect(() => {
     if (offers && offers?.length > 1) {
       if (IS_BOOK_TAB) {
-        router.navigate({
+        router.replace({
           pathname: '/book/offer',
           params: {
             id: serviceRequest?.data?.id,
           },
         });
       } else {
-        router.navigate({
+        router.replace({
           pathname: '/offer',
           params: {
             id: serviceRequest?.data?.id,

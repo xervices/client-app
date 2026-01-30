@@ -21,6 +21,7 @@ export default function Screen() {
   const { id }: { id: string } = useLocalSearchParams();
 
   const { isLoading, data, refetch, isRefetching } = useQuery(api.getJobDetail(id));
+  const artisanLocation = useQuery(api.getArtisanLocation(id));
 
   const approveJob = useMutation(api.approveJob(id));
 
@@ -176,6 +177,15 @@ export default function Screen() {
       fetchEta(artisanCoords, destination);
     }
   }, [artisanCoords, data?.serviceRequest]);
+
+  React.useEffect(() => {
+    if (artisanLocation?.data?.latitude && artisanLocation?.data?.longitude) {
+      setArtisanCoords({
+        latitude: artisanLocation.data.latitude,
+        longitude: artisanLocation.data.longitude,
+      });
+    }
+  }, [artisanLocation?.data]);
 
   React.useEffect(() => {
     if (mapRef.current && artisanCoords) {

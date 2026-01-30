@@ -28,8 +28,8 @@ function SelectValue({
     <SelectPrimitive.Value
       ref={ref}
       className={cn(
-        'line-clamp-1 flex flex-row items-center gap-2 font-cabinet text-base font-thin text-[#1B1B1E]',
-        !value && 'font-cabinet text-base font-thin text-[#B4B4BC]',
+        'line-clamp-1 flex flex-row items-center gap-2 font-cabinet-medium text-base text-[#1B1B1E]',
+        !value && 'font-cabinet text-base text-[#1B1B1E]',
         className
       )}
       {...props}
