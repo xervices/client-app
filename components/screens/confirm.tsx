@@ -26,16 +26,7 @@ import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 import { LoadingState } from '@/components/loading-state';
 import { formatCurrency, formatDate } from '@/lib/utils';
-
-const routeCoordinates = [
-  { latitude: 37.78825, longitude: -122.4324 }, // Start point
-  { latitude: 37.78625, longitude: -122.4304 },
-  { latitude: 37.78425, longitude: -122.4284 },
-  { latitude: 37.78225, longitude: -122.4264 },
-  { latitude: 37.78025, longitude: -122.4244 },
-  { latitude: 37.77825, longitude: -122.4224 },
-  { latitude: 37.77625, longitude: -122.4204 }, // End point
-];
+import * as Location from 'expo-location';
 
 export function ConfirmScreen() {
   const {
@@ -58,6 +49,7 @@ export function ConfirmScreen() {
 
   const [promoCode, setPromoCode] = React.useState('');
   const [useReferralReward, setUseReferralReward] = React.useState(false);
+  const [artisanAddress, setArtisanAddress] = React.useState<string>();
 
   const [eta, setEta] = React.useState<string | null>(null);
   const [routeCoords, setRouteCoords] = React.useState<{ latitude: number; longitude: number }[]>(
@@ -132,6 +124,44 @@ export function ConfirmScreen() {
     }
   };
 
+  const getAddressFromCoords = async ({
+    latitude,
+    longitude,
+    defaultAddress,
+  }: {
+    latitude: number;
+    longitude: number;
+    defaultAddress: string;
+  }) => {
+    try {
+      if (latitude && longitude) {
+        const [address] = await Location.reverseGeocodeAsync({
+          latitude: latitude,
+          longitude: longitude,
+        });
+
+        // formattedAddress is only available on Android, so we construct it manually for iOS
+        const formattedAddress =
+          address.formattedAddress ||
+          [
+            address.streetNumber,
+            address.street,
+            address.city,
+            address.region,
+            address.postalCode,
+            address.country,
+          ]
+            .filter(Boolean)
+            .join(', ');
+
+        setArtisanAddress(formattedAddress);
+      }
+    } catch (err) {
+      console.log(err);
+      setArtisanAddress(defaultAddress);
+    }
+  };
+
   const mapRef = React.useRef<MapView>(null);
 
   React.useEffect(() => {
@@ -153,6 +183,12 @@ export function ConfirmScreen() {
           longitude: offer?.data?.artisanLongitude,
         }
       );
+
+      getAddressFromCoords({
+        latitude: offer?.data?.artisanLatitude,
+        longitude: offer?.data?.artisanLongitude,
+        defaultAddress: offer?.data?.artisan?.profile?.address || '',
+      });
     }
   }, [offer?.data]);
 
@@ -307,9 +343,13 @@ export function ConfirmScreen() {
                     contentFit="contain"
                   />
 
-                  <Text className="text-xs leading-none text-[#737381]">
-                    {offer?.data?.artisan?.profile?.address}
-                  </Text>
+                  {artisanAddress ? (
+                    <Text className="flex-1 text-xs leading-none text-[#737381]">
+                      {artisanAddress}
+                    </Text>
+                  ) : (
+                    <LoadingIndicator size={14} />
+                  )}
                 </View>
               </View>
             </View>

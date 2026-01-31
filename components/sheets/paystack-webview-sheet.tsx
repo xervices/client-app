@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import React, { useRef, useCallback } from 'react';
 import { Text } from '../ui/text';
 import ActionSheet, { SheetManager, SheetProps } from 'react-native-actions-sheet';
-import { X } from 'lucide-react-native';
+import { ArrowLeft, X } from 'lucide-react-native';
 import { WebView, WebViewNavigation } from 'react-native-webview';
 
 export interface PaystackWebviewPayload {
@@ -91,16 +91,16 @@ export function PaystackWebviewSheet(props: SheetProps<'paystack-webview-sheet'>
       }}>
       <View className="relative flex h-full w-full flex-col">
         {/* Header with close button */}
-        <View className="relative flex w-full flex-row items-center justify-between border-b border-[#F1F1F1] px-6 py-4">
-          <Text className="text-lg font-semibold">Payment</Text>
+        <View className="realtive flex w-full flex-row items-center gap-4 px-6 py-4">
           <Pressable
             onPress={() => {
               onError?.('Payment cancelled');
               SheetManager.hide('paystack-webview-sheet');
             }}
-            className="h-8 w-8 items-center justify-center">
-            <X size={24} color={'#B4B4BC'} />
+            className="h-8 w-8 justify-center">
+            <ArrowLeft size={24} color={'#B4B4BC'} />
           </Pressable>
+          <Text className="flex-1 font-cabinet-bold text-lg text-[#1B1B1E]">Payment</Text>
         </View>
 
         {/* WebView Container */}

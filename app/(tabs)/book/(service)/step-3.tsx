@@ -54,7 +54,22 @@ export default function Screen() {
 
         setLatitude(res.location?.coords.latitude);
         setLongitude(res.location?.coords.longitude);
-        setServiceAddress(address.formattedAddress || '');
+
+        // formattedAddress is only available on Android, so we construct it manually for iOS
+        const formattedAddress =
+          address.formattedAddress ||
+          [
+            address.streetNumber,
+            address.street,
+            address.city,
+            address.region,
+            address.postalCode,
+            address.country,
+          ]
+            .filter(Boolean)
+            .join(', ');
+
+        setServiceAddress(formattedAddress);
       }
     } catch (err) {
       showErrorMessage("Failed to get current location ensure you've granted location permission.");

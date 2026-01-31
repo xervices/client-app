@@ -29,9 +29,9 @@ export function OfferScreen() {
   const { joinServiceRequest, offers } = useOffersContext({
     onOfferEvent(eventType, data) {
       if (eventType === 'offer:accepted') {
-        allOffers?.refetch();
-        showSuccessMessage('Offer accepted, You proceed to payment');
+        showSuccessMessage('Offer accepted, You can proceed to payment');
       }
+      allOffers?.refetch();
     },
   });
 

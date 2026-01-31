@@ -6,7 +6,7 @@ import updateLocale from 'dayjs/plugin/updateLocale';
 import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
 import { showErrorMessage } from '@/api/helpers';
-import { Linking } from 'react-native';
+import { Linking, Platform } from 'react-native';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -426,7 +426,7 @@ function formatDuration(minutes: number): string {
   return `${hours} hr ${mins} min`;
 }
 
-export const makePhoneCall = (phoneNumber: string | undefined) => {
+export const makePhoneCall = async (phoneNumber: string | undefined) => {
   // Check if phoneNumber is undefined or empty
   if (!phoneNumber || phoneNumber.trim() === '') {
     showErrorMessage('Phone number is not available');
@@ -444,15 +444,21 @@ export const makePhoneCall = (phoneNumber: string | undefined) => {
 
   const phoneUrl = `tel:${cleanNumber}`;
 
-  Linking.canOpenURL(phoneUrl)
-    .then((supported) => {
+  try {
+    if (Platform.OS === 'android') {
+      // Android: Just open directly, canOpenURL is unreliable for tel:
+      await Linking.openURL(phoneUrl);
+    } else {
+      // iOS: Check if supported first
+      const supported = await Linking.canOpenURL(phoneUrl);
       if (supported) {
-        return Linking.openURL(phoneUrl);
+        await Linking.openURL(phoneUrl);
       } else {
         showErrorMessage('Phone calls are not supported on this device');
       }
-    })
-    .catch((err) => {
-      showErrorMessage('Unable to make phone call');
-    });
+    }
+  } catch (err) {
+    console.error('Error making phone call:', err);
+    showErrorMessage('Unable to make phone call');
+  }
 };

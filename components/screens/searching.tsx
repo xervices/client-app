@@ -26,7 +26,11 @@ export function SearchingScreen() {
     queries: [api.getMatchingArtisans(id), api.getServiceRequest(id), api.getOffers(id)],
   });
 
-  const { joinServiceRequest, views, offers, isConnected } = useOffersContext();
+  const { joinServiceRequest, views, offers, isConnected } = useOffersContext({
+    onOfferEvent(eventType, data) {
+      allOffers?.refetch();
+    },
+  });
 
   React.useEffect(() => {
     if (offers && offers?.length > 1) {

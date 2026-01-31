@@ -158,7 +158,7 @@ export default function Screen() {
       isRefreshing={messages?.isRefetching}
       onRefresh={messages?.refetch}
       useBackground
-      scrollable={true}
+      scrollable={false}
       keyboardAvoiding>
       {messages?.isLoading ? (
         <LoadingState title="Loading messages..." />
@@ -219,7 +219,7 @@ export default function Screen() {
               renderItem={({ item }) =>
                 item?.messageType === 'system' ? null : item?.senderId !== user?.id ? (
                   <View>
-                    <Text className="text-sm text-[#737381]">{item?.content}</Text>
+                    <Text className="text-sm text-[#1B1B1E]">{item?.content}</Text>
                     <Text className="text-xs text-[#AAA6B9]">
                       {formatTime12HourIntl(item?.createdAt)}
                     </Text>

@@ -29,7 +29,7 @@ const Textarea = React.forwardRef<TextInput, TextareaProps>(
           color: '#1B1B1E',
         }}
         className={cn(
-          'flex min-h-20 w-full flex-row rounded-[4px] border bg-transparent px-4 py-2 font-cabinet-medium text-base font-thin text-[#1B1B1E] md:text-sm',
+          'flex min-h-20 w-full flex-row rounded-[4px] border bg-transparent px-4 py-2 font-cabinet-medium text-base text-[#1B1B1E] md:text-sm',
           // Error state border color
           hasError ? 'border-error' : 'border-input',
           Platform.select({
