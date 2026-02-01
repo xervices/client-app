@@ -22,8 +22,13 @@ export function SearchingScreen() {
 
   const IS_BOOK_TAB = pathname.includes('book');
 
-  const [artisans, serviceRequest, allOffers] = useQueries({
-    queries: [api.getMatchingArtisans(id), api.getServiceRequest(id), api.getOffers(id)],
+  const [artisans, serviceRequest, allOffers, userServiceRequests] = useQueries({
+    queries: [
+      api.getMatchingArtisans(id),
+      api.getServiceRequest(id),
+      api.getOffers(id),
+      api.getUserServiceRequests(),
+    ],
   });
 
   const { joinServiceRequest, views, offers, isConnected } = useOffersContext({
@@ -35,6 +40,7 @@ export function SearchingScreen() {
   React.useEffect(() => {
     if (offers && offers?.length > 1) {
       if (IS_BOOK_TAB) {
+        userServiceRequests?.refetch();
         router.replace({
           pathname: '/book/offer',
           params: {
@@ -42,6 +48,7 @@ export function SearchingScreen() {
           },
         });
       } else {
+        userServiceRequests?.refetch();
         router.replace({
           pathname: '/offer',
           params: {
@@ -62,6 +69,7 @@ export function SearchingScreen() {
     if (!artisans.isLoading && artisans.data !== undefined && artisans.data.length === 0) {
       const redirectTimeout = setTimeout(() => {
         if (IS_BOOK_TAB) {
+          userServiceRequests?.refetch();
           router.replace({
             pathname: '/book/no-result',
             params: {
@@ -69,6 +77,7 @@ export function SearchingScreen() {
             },
           });
         } else {
+          userServiceRequests?.refetch();
           router.replace({
             pathname: '/no-result',
             params: {
