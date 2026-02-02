@@ -8,76 +8,95 @@ import { ChevronRight } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useAuthStore } from '@/store/auth-store';
 import { tokenStorage } from '@/api/token-storage';
-
-const data = [
-  {
-    name: 'Personal Details',
-    icon: require('@/assets/icons/personal.svg'),
-    isLink: true,
-    isDestructive: false,
-    onPress: () => router.navigate('/profile/personal'),
-  },
-  {
-    name: 'Password',
-    icon: require('@/assets/icons/password.svg'),
-    isLink: true,
-    isDestructive: false,
-    onPress: () => router.navigate('/profile/password'),
-  },
-  {
-    name: 'Dispute',
-    icon: require('@/assets/icons/dispute.svg'),
-    isLink: true,
-    isDestructive: false,
-    onPress: () => router.navigate('/profile/disputes'),
-  },
-  // {
-  //   name: 'Payment',
-  //   icon: require('@/assets/icons/payment.svg'),
-  //   isLink: true,
-  //   onPress: () => router.navigate('/profile'),
-  // },
-  {
-    name: 'Promo',
-    icon: require('@/assets/icons/promo.svg'),
-    isLink: true,
-    isDestructive: false,
-    onPress: () => router.navigate('/profile/promo'),
-  },
-  {
-    name: 'Rate Xervices',
-    icon: require('@/assets/icons/rate.svg'),
-    isLink: true,
-    isDestructive: false,
-    onPress: () => router.navigate('/profile/rate'),
-  },
-  {
-    name: 'Support',
-    icon: require('@/assets/icons/support.svg'),
-    isLink: true,
-    isDestructive: false,
-    onPress: () => router.navigate('/profile/support'),
-  },
-  {
-    name: 'About Xervices',
-    icon: require('@/assets/icons/about.svg'),
-    isLink: true,
-    isDestructive: false,
-    onPress: () => router.navigate('/profile/about'),
-  },
-  {
-    name: 'Logout',
-    icon: require('@/assets/icons/logout.svg'),
-    isLink: false,
-    isDestructive: true,
-    onPress: async () => {
-      await tokenStorage.clearTokens();
-      useAuthStore.getState().setLoginState(false);
-    },
-  },
-];
+import { useNotification } from '@/providers/notification-provider';
+import { useMutation } from '@tanstack/react-query';
+import { api } from '@/api';
+import Storage from 'expo-sqlite/kv-store';
+import { LoadingIndicator } from '@/components/ui/loading-indicator';
 
 export default function Screen() {
+  const { expoPushToken } = useNotification();
+  const { mutateAsync: unregisterDevice, isPending } = useMutation(
+    api.unregisterDeviceForPushNotification()
+  );
+
+  const data = [
+    {
+      name: 'Personal Details',
+      icon: require('@/assets/icons/personal.svg'),
+      isLink: true,
+      isDestructive: false,
+      onPress: () => router.navigate('/profile/personal'),
+    },
+    {
+      name: 'Password',
+      icon: require('@/assets/icons/password.svg'),
+      isLink: true,
+      isDestructive: false,
+      onPress: () => router.navigate('/profile/password'),
+    },
+    {
+      name: 'Dispute',
+      icon: require('@/assets/icons/dispute.svg'),
+      isLink: true,
+      isDestructive: false,
+      onPress: () => router.navigate('/profile/disputes'),
+    },
+    // {
+    //   name: 'Payment',
+    //   icon: require('@/assets/icons/payment.svg'),
+    //   isLink: true,
+    //   onPress: () => router.navigate('/profile'),
+    // },
+    {
+      name: 'Promo',
+      icon: require('@/assets/icons/promo.svg'),
+      isLink: true,
+      isDestructive: false,
+      onPress: () => router.navigate('/profile/promo'),
+    },
+    {
+      name: 'Rate Xervices',
+      icon: require('@/assets/icons/rate.svg'),
+      isLink: true,
+      isDestructive: false,
+      onPress: () => router.navigate('/profile/rate'),
+    },
+    {
+      name: 'Support',
+      icon: require('@/assets/icons/support.svg'),
+      isLink: true,
+      isDestructive: false,
+      onPress: () => router.navigate('/profile/support'),
+    },
+    {
+      name: 'About Xervices',
+      icon: require('@/assets/icons/about.svg'),
+      isLink: true,
+      isDestructive: false,
+      onPress: () => router.navigate('/profile/about'),
+    },
+    {
+      name: 'Logout',
+      icon: require('@/assets/icons/logout.svg'),
+      isLink: false,
+      isDestructive: true,
+      onPress: async () => {
+        if (expoPushToken) {
+          try {
+            await unregisterDevice({ pushToken: expoPushToken });
+            Storage.removeItemSync('push_token_registered');
+            Storage.removeItemSync('is_registered_for_push');
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        await tokenStorage.clearTokens();
+        useAuthStore.getState().setLoginState(false);
+      },
+    },
+  ];
+
   return (
     <Layout
       useBackground
@@ -109,6 +128,8 @@ export default function Screen() {
             </View>
 
             {item.isLink && <ChevronRight size={20} color={'#B4B4BC'} />}
+
+            {isPending && item.isDestructive ? <LoadingIndicator size={14} /> : null}
           </Pressable>
         ))}
       </View>

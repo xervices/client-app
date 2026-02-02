@@ -78,7 +78,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       edgeToEdgeEnabled: true,
       adaptiveIcon: {
         foregroundImage: './assets/images/splash.png',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#E15D02',
       },
       package: packageName,
       googleServicesFile,

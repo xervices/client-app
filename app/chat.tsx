@@ -1,6 +1,6 @@
 import { Text } from '@/components/ui/text';
 import * as React from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Platform, Pressable, ScrollView, View } from 'react-native';
 import * as Application from 'expo-application';
 import { Layout } from '@/components/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -26,12 +26,41 @@ import { formatTime12HourIntl } from '@/lib/utils';
 import { LoadingState } from '@/components/loading-state';
 import { useAuthStore } from '@/store/auth-store';
 import { useChatSocket } from '@/hooks/use-chat-socket';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { useKeyboardHandler } from 'react-native-keyboard-controller';
 
 const formSchema = z.object({
   content: z.string().min(1, 'Message content is required.'),
 });
 
+const PADDING_BOTTOM = Platform.OS === 'ios' ? 20 : 0;
+
+const useGradualAnimation = () => {
+  const height = useSharedValue(PADDING_BOTTOM);
+
+  useKeyboardHandler(
+    {
+      onMove: (e) => {
+        'worklet';
+        height.value = Math.max(e.height, PADDING_BOTTOM);
+      },
+    },
+    []
+  );
+
+  return { height };
+};
+
 export default function Screen() {
+  const { height } = useGradualAnimation();
+
+  const fakeView = useAnimatedStyle(() => {
+    return {
+      height: Math.abs(height.value),
+      marginBottom: height.value > 0 ? 0 : PADDING_BOTTOM,
+    };
+  }, []);
+
   const { id }: { id: string } = useLocalSearchParams();
 
   const job = useQuery(api.getJobDetail(id));
@@ -275,6 +304,8 @@ export default function Screen() {
               <Send size={24} stroke={'#FFF4EA'} fill={'#FFF4EA'} />
             </Pressable>
           </View>
+
+          <Animated.View style={fakeView} />
         </View>
       )}
     </Layout>

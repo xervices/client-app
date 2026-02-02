@@ -5,8 +5,9 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
-import { showErrorMessage } from '@/api/helpers';
+import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 import { Linking, Platform } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -460,5 +461,17 @@ export const makePhoneCall = async (phoneNumber: string | undefined) => {
   } catch (err) {
     console.error('Error making phone call:', err);
     showErrorMessage('Unable to make phone call');
+  }
+};
+
+export const copyToClipboard = async (text?: string) => {
+  if (text) {
+    const status = await Clipboard.setStringAsync(text);
+
+    if (status) {
+      showSuccessMessage('Copied successfully...');
+    } else {
+      showErrorMessage('Failed to copy...');
+    }
   }
 };

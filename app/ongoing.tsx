@@ -321,7 +321,11 @@ export default function Screen() {
                 <View className="relative flex w-full flex-row items-center justify-center">
                   <Pressable
                     onPress={() => {
-                      router.back();
+                      if (router.canGoBack()) {
+                        router.back();
+                      } else {
+                        router.replace('/(tabs)/(home)');
+                      }
                     }}
                     className="absolute left-0 h-8 w-8 justify-center">
                     <ArrowLeft size={24} color={'#B4B4BC'} />

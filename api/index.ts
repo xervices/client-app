@@ -803,6 +803,23 @@ export const api = {
       },
     };
   },
+  unregisterDeviceForPushNotification: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/notifications/devices', 'delete'>) => {
+        const { data, error } = await apiClient.DELETE('/api/notifications/devices', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(
+            getErrorMessage(error, 'Failed to unregister device for push notification')
+          );
+        }
+
+        return data;
+      },
+    };
+  },
 
   // chat  endpoints
   getChatRoom: (jobId: string) =>
