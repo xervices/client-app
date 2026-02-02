@@ -291,21 +291,24 @@ export function ProScreen() {
                   <Avatar
                     alt="User's Avatar"
                     className="h-10 w-10 rounded-sm border border-[#FFE6D6]">
-                    <AvatarImage source={{ uri: review?.reviewer?.profile?.avatarUrl }} />
+                    <AvatarImage source={{ uri: review?.reviewer?.avatarUrl }} />
                     <AvatarFallback className="bg-primary">
                       <Text className="font-cabinet-bold text-xs uppercase leading-none">
-                        {review?.reviewer?.profile?.fullName?.substring(0, 2)}
+                        {review?.reviewer?.fullName?.substring(0, 2)}
                       </Text>
                     </AvatarFallback>
                   </Avatar>
 
                   <View>
                     <Text className="font-cabinet-bold leading-none text-[#737381]">
-                      {review?.reviewer?.profile?.fullName}
+                      {review?.reviewer?.fullName}
                     </Text>
 
                     <Text className="text-xs text-[#FE6A00]">
-                      {new Array(review?.rating).fill(0)?.map((_, index) => '★')}{' '}
+                      {/* {new Array(Math.abs(review?.rating)).fill(0)?.map((_, index) => '★')}{' '} */}
+                      {new Array(Math.floor(review.rating)).fill(0).map((_, index) => (
+                        <Text key={index}>★</Text>
+                      ))}{' '}
                       <Text className="text-xs text-[#B4B4BC]">
                         {formatRelativeTime(review?.createdAt)}
                       </Text>

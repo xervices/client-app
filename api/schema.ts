@@ -84,6 +84,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/mfa/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify MFA code
+         * @description Complete admin login by verifying TOTP or backup code.
+         */
+        post: operations["AuthController_verifyMfa"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/refresh": {
         parameters: {
             query?: never;
@@ -819,6 +839,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/service-requests/browse/nearby": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Browse nearby service requests
+         * @description Get available service requests near the artisan's location that match their skills
+         */
+        get: operations["ServiceRequestsController_browseNearby"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/service-requests/{id}": {
         parameters: {
             query?: never;
@@ -1407,6 +1447,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/security/pin/request-otp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Request OTP for PIN creation
+         * @description Sends an OTP to the user email that must be provided when creating/updating the PIN
+         */
+        post: operations["SecurityController_requestPinOtp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/security/pin": {
         parameters: {
             query?: never;
@@ -1416,7 +1476,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Create or update withdrawal PIN */
+        /**
+         * Create or update withdrawal PIN
+         * @description Create or update the withdrawal PIN. Requires OTP verification first (call /security/pin/request-otp)
+         */
         post: operations["SecurityController_createOrUpdatePin"];
         delete?: never;
         options?: never;
@@ -1550,6 +1613,94 @@ export interface paths {
         get: operations["PaymentsController_getPaymentByJob"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bank-accounts/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify bank account
+         * @description Verify a bank account number with Paystack and get the account name. Use this before adding a bank account.
+         */
+        post: operations["BankAccountsController_verifyAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bank-accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get my bank accounts
+         * @description Get all bank accounts for the current user
+         */
+        get: operations["BankAccountsController_findAll"];
+        put?: never;
+        /**
+         * Add bank account
+         * @description Add a verified bank account for withdrawals. The account will be verified with Paystack before being saved.
+         */
+        post: operations["BankAccountsController_addAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bank-accounts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get bank account
+         * @description Get a specific bank account by ID
+         */
+        get: operations["BankAccountsController_findOne"];
+        put?: never;
+        post?: never;
+        /**
+         * Remove bank account
+         * @description Remove a bank account
+         */
+        delete: operations["BankAccountsController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bank-accounts/{id}/set-default": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Set as default
+         * @description Set a bank account as the default for withdrawals
+         */
+        post: operations["BankAccountsController_setAsDefault"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2044,6 +2195,326 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/team": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List admin team members
+         * @description Get list of all admin team members with their roles and status.
+         */
+        get: operations["AdminTeamController_listAdmins"];
+        put?: never;
+        /**
+         * Create admin team member
+         * @description Create a new admin with specified role. Returns temporary password.
+         */
+        post: operations["AdminTeamController_createAdmin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/team/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get admin details
+         * @description Get detailed information about a specific admin.
+         */
+        get: operations["AdminTeamController_getAdmin"];
+        /**
+         * Update admin team member
+         * @description Update admin role, status, or name.
+         */
+        put: operations["AdminTeamController_updateAdmin"];
+        post?: never;
+        /**
+         * Deactivate admin
+         * @description Deactivate an admin account. Cannot deactivate yourself.
+         */
+        delete: operations["AdminTeamController_deactivateAdmin"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/impersonate/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start impersonation session
+         * @description Start impersonating a user. Super Admin only. Returns session token.
+         */
+        post: operations["ImpersonationController_startImpersonation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/impersonate/end": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * End impersonation session
+         * @description End the current impersonation session.
+         */
+        post: operations["ImpersonationController_endImpersonation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/impersonation-logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get impersonation logs
+         * @description View history of all impersonation sessions.
+         */
+        get: operations["ImpersonationLogsController_getImpersonationLogs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/mfa/setup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Setup MFA
+         * @description Generate TOTP secret and QR code for MFA setup.
+         */
+        post: operations["MfaController_setupMfa"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/mfa/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Enable MFA
+         * @description Enable MFA after verifying the TOTP code from authenticator app.
+         */
+        post: operations["MfaController_enableMfa"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/mfa/disable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Disable MFA
+         * @description Disable MFA. Requires current TOTP code. Super Admins cannot disable MFA.
+         */
+        post: operations["MfaController_disableMfa"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/mfa/backup-codes/regenerate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Regenerate backup codes
+         * @description Generate new backup codes. Old codes are invalidated.
+         */
+        post: operations["MfaController_regenerateBackupCodes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/mfa/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get MFA status
+         * @description Get current MFA status including whether it is required and enabled.
+         */
+        get: operations["MfaController_getMfaStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/broadcasts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List broadcasts
+         * @description Get list of all broadcasts with pagination and optional status filter.
+         */
+        get: operations["BroadcastController_listBroadcasts"];
+        put?: never;
+        /**
+         * Create broadcast
+         * @description Create a new broadcast notification. Can be saved as draft or scheduled.
+         */
+        post: operations["BroadcastController_createBroadcast"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/broadcasts/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get broadcast templates
+         * @description Get list of predefined broadcast templates.
+         */
+        get: operations["BroadcastController_getTemplates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/broadcasts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get broadcast details
+         * @description Get detailed information about a specific broadcast.
+         */
+        get: operations["BroadcastController_getBroadcast"];
+        /**
+         * Update broadcast
+         * @description Update a draft or scheduled broadcast.
+         */
+        put: operations["BroadcastController_updateBroadcast"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/broadcasts/{id}/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send broadcast immediately
+         * @description Send a draft or scheduled broadcast immediately.
+         */
+        post: operations["BroadcastController_sendBroadcast"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/broadcasts/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel scheduled broadcast
+         * @description Cancel a scheduled broadcast.
+         */
+        post: operations["BroadcastController_cancelBroadcast"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/support/tickets": {
         parameters: {
             query?: never;
@@ -2413,6 +2884,18 @@ export interface components {
              * @example Password123!
              */
             password: string;
+        };
+        MfaVerifyDto: {
+            /**
+             * @description Temporary MFA token from login response
+             * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+             */
+            mfaToken: string;
+            /**
+             * @description TOTP code (6 digits) or backup code (XXXX-XXXX format)
+             * @example 123456
+             */
+            code: string;
         };
         RefreshTokenDto: {
             /**
@@ -3585,6 +4068,40 @@ export interface components {
              */
             matchingArtisansCount: number;
         };
+        PaginatedServiceRequestsResponseDto: {
+            /** @description List of service requests */
+            requests: components["schemas"]["ServiceRequestResponseDto"][];
+            /**
+             * @description Total number of requests matching the criteria
+             * @example 50
+             */
+            total: number;
+            /**
+             * @description Current page number
+             * @example 1
+             */
+            page: number;
+            /**
+             * @description Number of items per page
+             * @example 20
+             */
+            limit: number;
+            /**
+             * @description Total number of pages
+             * @example 3
+             */
+            totalPages: number;
+            /**
+             * @description Whether there is a next page
+             * @example true
+             */
+            hasNext: boolean;
+            /**
+             * @description Whether there is a previous page
+             * @example false
+             */
+            hasPrev: boolean;
+        };
         MatchingArtisanResponseDto: {
             /**
              * @description Artisan unique identifier (UUID)
@@ -4310,6 +4827,33 @@ export interface components {
              */
             currency: string;
         };
+        TransactionJobDetailsDto: {
+            /**
+             * @description Job unique identifier
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            jobId: string;
+            /**
+             * @description Customer's full name
+             * @example John Doe
+             */
+            customerName: string;
+            /**
+             * @description Service category name
+             * @example Plumbing
+             */
+            categoryName: string;
+            /**
+             * @description Commission charged by Xervices
+             * @example 750
+             */
+            xervicesCharge: number;
+            /**
+             * @description Gross amount before commission
+             * @example 5000
+             */
+            grossAmount: number;
+        };
         TransactionItemDto: {
             /**
              * @description Transaction unique identifier
@@ -4347,6 +4891,8 @@ export interface components {
              * @example 550e8400-e29b-41d4-a716-446655440000
              */
             referenceId?: string;
+            /** @description Job details (only present for payment transactions) */
+            jobDetails?: components["schemas"]["TransactionJobDetailsDto"];
             /**
              * Format: date-time
              * @description When the transaction was created
@@ -4391,7 +4937,24 @@ export interface components {
              */
             currency: string;
         };
+        PinOtpResponseDto: {
+            /**
+             * @description Operation success status
+             * @example true
+             */
+            success: boolean;
+            /**
+             * @description Response message
+             * @example OTP sent to your email address
+             */
+            message: string;
+        };
         CreatePinDto: {
+            /**
+             * @description OTP code received via email
+             * @example 123456
+             */
+            otp: string;
             /**
              * @description New PIN (4-6 digits)
              * @example 1234
@@ -4579,6 +5142,114 @@ export interface components {
              */
             createdAt: string;
         };
+        VerifyBankAccountDto: {
+            /**
+             * @description Bank account number
+             * @example 0123456789
+             */
+            accountNumber: string;
+            /**
+             * @description Bank code (from /payments/banks)
+             * @example 058
+             */
+            bankCode: string;
+        };
+        VerifyBankAccountResponseDto: {
+            /**
+             * @description Account holder name from bank
+             * @example John Doe
+             */
+            accountName: string;
+            /**
+             * @description Account number
+             * @example 0123456789
+             */
+            accountNumber: string;
+        };
+        AddBankAccountDto: {
+            /**
+             * @description Bank account number
+             * @example 0123456789
+             */
+            accountNumber: string;
+            /**
+             * @description Bank code (from /payments/banks)
+             * @example 058
+             */
+            bankCode: string;
+            /**
+             * @description Bank name
+             * @example Guaranty Trust Bank
+             */
+            bankName: string;
+            /**
+             * @description Set as default account for withdrawals
+             * @default false
+             * @example true
+             */
+            setAsDefault: boolean;
+        };
+        BankAccountResponseDto: {
+            /**
+             * @description Bank account unique identifier
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Account holder name
+             * @example John Doe
+             */
+            accountName: string;
+            /**
+             * @description Masked account number (last 4 digits)
+             * @example ******6789
+             */
+            maskedAccountNumber: string;
+            /**
+             * @description Bank name
+             * @example Guaranty Trust Bank
+             */
+            bankName: string;
+            /**
+             * @description Bank code
+             * @example 058
+             */
+            bankCode: string;
+            /**
+             * @description Whether account is verified
+             * @example true
+             */
+            isVerified: boolean;
+            /**
+             * @description Whether this is the default account for withdrawals
+             * @example true
+             */
+            isDefault: boolean;
+            /**
+             * Format: date-time
+             * @description When the account was created
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            createdAt: string;
+        };
+        DisputeMediaAttachmentDto: {
+            /**
+             * @description Type of media
+             * @example image
+             * @enum {string}
+             */
+            mediaType: "image" | "video";
+            /**
+             * @description URL to the uploaded media file
+             * @example https://storage.example.com/evidence/image.jpg
+             */
+            mediaUrl: string;
+            /**
+             * @description Description of the evidence
+             * @example Photo showing the unfinished work
+             */
+            description?: string;
+        };
         CreateDisputeDto: {
             /**
              * @description ID of the job to dispute
@@ -4596,6 +5267,17 @@ export interface components {
              * @example The artisan did not complete the work as agreed.
              */
             description: string;
+            /**
+             * @description Optional media attachments for the dispute
+             * @example [
+             *       {
+             *         "mediaType": "image",
+             *         "mediaUrl": "https://storage.example.com/evidence/image1.jpg",
+             *         "description": "Photo of damaged work"
+             *       }
+             *     ]
+             */
+            media?: components["schemas"]["DisputeMediaAttachmentDto"][];
         };
         DisputeEvidenceResponseDto: {
             id: string;
@@ -5329,6 +6011,244 @@ export interface components {
              */
             sessionToken?: string;
         };
+        CreateAdminDto: {
+            /**
+             * Format: email
+             * @description Admin email address
+             * @example admin@xervices.com
+             */
+            email: string;
+            /**
+             * @description Phone number in international or local format
+             * @example 08012345678
+             */
+            phoneNumber: string;
+            /**
+             * @description Admin full name
+             * @example John Admin
+             */
+            fullName: string;
+            /**
+             * @description Admin role
+             * @example admin
+             * @enum {string}
+             */
+            adminRole: "super_admin" | "admin" | "finance" | "support";
+        };
+        UpdateAdminDto: {
+            /**
+             * @description Admin role
+             * @enum {string}
+             */
+            adminRole?: "super_admin" | "admin" | "finance" | "support";
+            /**
+             * @description Admin status
+             * @enum {string}
+             */
+            status?: "active" | "inactive" | "disabled";
+            /** @description Admin full name */
+            fullName?: string;
+        };
+        StartImpersonationDto: {
+            /**
+             * @description Reason for impersonation
+             * @example Investigating support ticket #12345
+             */
+            reason: string;
+        };
+        MfaSetupResponseDto: {
+            /**
+             * @description Base32 encoded TOTP secret (for manual entry)
+             * @example JBSWY3DPEHPK3PXP
+             */
+            secret: string;
+            /**
+             * @description QR code as data URL for scanning with authenticator app
+             * @example data:image/png;base64,...
+             */
+            qrCodeDataUrl: string;
+            /**
+             * @description Backup codes for account recovery
+             * @example [
+             *       "XXXX-XXXX",
+             *       "YYYY-YYYY"
+             *     ]
+             */
+            backupCodes: string[];
+        };
+        EnableMfaDto: {
+            /**
+             * @description TOTP code from authenticator app (6 digits)
+             * @example 123456
+             */
+            code: string;
+        };
+        DisableMfaDto: {
+            /**
+             * @description Current TOTP code to verify
+             * @example 123456
+             */
+            code: string;
+        };
+        RegenerateBackupCodesDto: {
+            /**
+             * @description Current TOTP code to verify
+             * @example 123456
+             */
+            code: string;
+        };
+        BackupCodesResponseDto: {
+            /** @description New backup codes (only shown once) */
+            backupCodes: string[];
+        };
+        MfaStatusResponseDto: {
+            /** @description Whether MFA is enabled */
+            mfaEnabled: boolean;
+            /** @description Number of backup codes remaining */
+            backupCodesRemaining: number;
+            /** @description Whether MFA is required for this admin role */
+            mfaRequired: boolean;
+        };
+        CreateBroadcastDto: {
+            /**
+             * @description Notification title
+             * @example New Feature Available
+             */
+            title: string;
+            /**
+             * @description Notification body
+             * @example Check out our latest update with exciting new features!
+             */
+            body: string;
+            /**
+             * @description Template type to use as base
+             * @enum {string}
+             */
+            templateType?: "app_update" | "maintenance" | "promotion" | "policy_update" | "safety_alert" | "new_feature";
+            /**
+             * @description Target audience
+             * @default all_users
+             * @enum {string}
+             */
+            targetAudience: "all_users" | "customers" | "artisans";
+            /**
+             * @description Target platform
+             * @default all
+             * @enum {string}
+             */
+            platform: "all" | "android" | "ios" | "web";
+            /**
+             * @description Additional data for deep linking
+             * @example {
+             *       "screen": "promotions",
+             *       "promotionId": "123"
+             *     }
+             */
+            data?: Record<string, never>;
+            /**
+             * Format: date-time
+             * @description Schedule send time (ISO 8601 format)
+             * @example 2025-01-15T10:00:00Z
+             */
+            scheduledAt?: string;
+        };
+        BroadcastResponseDto: {
+            /** @description Broadcast ID */
+            id: string;
+            /** @description Notification title */
+            title: string;
+            /** @description Notification body */
+            body: string;
+            /**
+             * @description Template type
+             * @enum {string}
+             */
+            templateType?: "app_update" | "maintenance" | "promotion" | "policy_update" | "safety_alert" | "new_feature";
+            /**
+             * @description Target audience
+             * @enum {string}
+             */
+            targetAudience: "all_users" | "customers" | "artisans";
+            /**
+             * @description Target platform
+             * @enum {string}
+             */
+            platform: "all" | "android" | "ios" | "web";
+            /**
+             * @description Broadcast status
+             * @enum {string}
+             */
+            status: "draft" | "scheduled" | "sending" | "completed" | "failed" | "cancelled";
+            /** @description Additional data */
+            data?: Record<string, never>;
+            /** @description Total recipient count */
+            recipientCount: number;
+            /** @description Delivered count */
+            deliveredCount: number;
+            /** @description Failed count */
+            failedCount: number;
+            /** @description Scheduled send time */
+            scheduledAt?: Record<string, never>;
+            /** @description Actual send time */
+            sentAt?: Record<string, never>;
+            /** @description Completion time */
+            completedAt?: Record<string, never>;
+            /** @description Creator ID */
+            createdBy: string;
+            /** @description Creator name */
+            createdByName: string;
+            /**
+             * Format: date-time
+             * @description Created at timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated at timestamp
+             */
+            updatedAt: string;
+        };
+        BroadcastListResponseDto: {
+            data: components["schemas"]["BroadcastResponseDto"][];
+            /** @description Total count */
+            total: number;
+            /** @description Current page */
+            page: number;
+            /** @description Items per page */
+            limit: number;
+        };
+        BroadcastTemplatesResponseDto: {
+            /**
+             * @description Available templates
+             * @example {
+             *       "app_update": {
+             *         "title": "App Update Available",
+             *         "body": "A new version..."
+             *       }
+             *     }
+             */
+            templates: Record<string, never>;
+        };
+        UpdateBroadcastDto: {
+            /** @description Notification title */
+            title?: string;
+            /** @description Notification body */
+            body?: string;
+            /**
+             * @description Target audience
+             * @enum {string}
+             */
+            targetAudience?: "all_users" | "customers" | "artisans";
+            /**
+             * @description Target platform
+             * @enum {string}
+             */
+            platform?: "all" | "android" | "ios" | "web";
+            /** @description Additional data for deep linking */
+            data?: Record<string, never>;
+            /** @description Schedule send time (ISO 8601 format, null to unschedule) */
+            scheduledAt?: Record<string, never>;
+        };
         CreateSupportTicketDto: {
             /**
              * @description Brief subject/title for the support ticket
@@ -5610,6 +6530,39 @@ export interface operations {
                 };
             };
             /** @description Invalid credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_verifyMfa: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MfaVerifyDto"];
+            };
+        };
+        responses: {
+            /** @description MFA verification successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokensResponseDto"];
+                };
+            };
+            /** @description Invalid MFA token or code */
             401: {
                 headers: {
                     [name: string]: unknown;
@@ -7304,6 +8257,62 @@ export interface operations {
             };
         };
     };
+    ServiceRequestsController_browseNearby: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: string;
+                /** @description Items per page (max 50) */
+                limit?: string;
+                /** @description Filter by specific category ID (optional) */
+                categoryId?: string;
+                /** @description Search radius in kilometers (defaults to artisan service radius) */
+                radiusKm?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Nearby service requests retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedServiceRequestsResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Artisan profile not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     ServiceRequestsController_findOne: {
         parameters: {
             query?: never;
@@ -8752,6 +9761,35 @@ export interface operations {
             };
         };
     };
+    SecurityController_requestPinOtp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OTP sent successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PinOtpResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     SecurityController_createOrUpdatePin: {
         parameters: {
             query?: never;
@@ -8774,7 +9812,7 @@ export interface operations {
                     "application/json": components["schemas"]["PinResponseDto"];
                 };
             };
-            /** @description Invalid PIN format */
+            /** @description Invalid PIN format or OTP */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -9141,6 +10179,188 @@ export interface operations {
             };
         };
     };
+    BankAccountsController_verifyAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyBankAccountDto"];
+            };
+        };
+        responses: {
+            /** @description Account verified successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerifyBankAccountResponseDto"];
+                };
+            };
+            /** @description Invalid account number or bank code */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    BankAccountsController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bank accounts retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankAccountResponseDto"][];
+                };
+            };
+        };
+    };
+    BankAccountsController_addAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddBankAccountDto"];
+            };
+        };
+        responses: {
+            /** @description Bank account added successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankAccountResponseDto"];
+                };
+            };
+            /** @description Invalid account details or account already exists */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    BankAccountsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Bank account ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bank account retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankAccountResponseDto"];
+                };
+            };
+            /** @description Bank account not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    BankAccountsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Bank account ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bank account removed successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Bank account not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    BankAccountsController_setAsDefault: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Bank account ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bank account set as default */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankAccountResponseDto"];
+                };
+            };
+            /** @description Bank account not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     DisputesController_getDisputes: {
         parameters: {
             query?: never;
@@ -9405,9 +10625,9 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Page number */
-                page?: number;
+                page?: string;
                 /** @description Items per page */
-                limit?: number;
+                limit?: string;
             };
             header?: never;
             path: {
@@ -9442,9 +10662,9 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Page number */
-                page?: number;
+                page?: string;
                 /** @description Items per page */
-                limit?: number;
+                limit?: string;
             };
             header?: never;
             path?: never;
@@ -10474,6 +11694,584 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ErrorResponseDto"];
                 };
+            };
+        };
+    };
+    AdminTeamController_listAdmins: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of admins */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminTeamController_createAdmin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAdminDto"];
+            };
+        };
+        responses: {
+            /** @description Admin created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Email or phone already exists */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminTeamController_getAdmin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Admin profile ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Admin details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Admin not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminTeamController_updateAdmin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Admin profile ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAdminDto"];
+            };
+        };
+        responses: {
+            /** @description Admin updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Admin not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminTeamController_deactivateAdmin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Admin profile ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Admin deactivated successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Cannot deactivate yourself */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Admin not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ImpersonationController_startImpersonation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description User ID to impersonate */
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StartImpersonationDto"];
+            };
+        };
+        responses: {
+            /** @description Impersonation session started */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authorized or cannot impersonate admins */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Target user not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ImpersonationController_endImpersonation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Impersonation session ended */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No active session found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ImpersonationLogsController_getImpersonationLogs: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: number;
+                /** @description Items per page */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Impersonation logs */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MfaController_setupMfa: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description MFA setup data */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MfaSetupResponseDto"];
+                };
+            };
+            /** @description MFA already enabled */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MfaController_enableMfa: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EnableMfaDto"];
+            };
+        };
+        responses: {
+            /** @description MFA enabled successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid verification code or MFA not set up */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MfaController_disableMfa: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisableMfaDto"];
+            };
+        };
+        responses: {
+            /** @description MFA disabled successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid verification code or MFA not enabled */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Super Admins cannot disable MFA */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MfaController_regenerateBackupCodes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegenerateBackupCodesDto"];
+            };
+        };
+        responses: {
+            /** @description New backup codes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BackupCodesResponseDto"];
+                };
+            };
+            /** @description Invalid verification code or MFA not enabled */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MfaController_getMfaStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description MFA status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MfaStatusResponseDto"];
+                };
+            };
+        };
+    };
+    BroadcastController_listBroadcasts: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: number;
+                /** @description Items per page */
+                limit?: number;
+                /** @description Filter by status */
+                status?: "draft" | "scheduled" | "sending" | "completed" | "failed" | "cancelled";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of broadcasts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BroadcastListResponseDto"];
+                };
+            };
+        };
+    };
+    BroadcastController_createBroadcast: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBroadcastDto"];
+            };
+        };
+        responses: {
+            /** @description Broadcast created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BroadcastController_getTemplates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Available templates */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BroadcastTemplatesResponseDto"];
+                };
+            };
+        };
+    };
+    BroadcastController_getBroadcast: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Broadcast ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Broadcast details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Broadcast not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BroadcastController_updateBroadcast: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Broadcast ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateBroadcastDto"];
+            };
+        };
+        responses: {
+            /** @description Broadcast updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Cannot update broadcast in current status */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Broadcast not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BroadcastController_sendBroadcast: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Broadcast ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Broadcast sending started */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Cannot send broadcast in current status */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Broadcast not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BroadcastController_cancelBroadcast: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Broadcast ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Broadcast cancelled */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Can only cancel scheduled broadcasts */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Broadcast not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
