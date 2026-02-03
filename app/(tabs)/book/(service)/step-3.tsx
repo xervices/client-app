@@ -13,7 +13,7 @@ import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import EnableLocationDialog from '@/components/enable-location-dialog';
 import { useServiceStore } from '@/store/service-store';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import { SheetManager } from 'react-native-actions-sheet';
 
@@ -31,6 +31,7 @@ export default function Screen() {
   const [loadingLocation, setLoadingLocation] = React.useState(false);
 
   const { mutate, isPending } = useMutation(api.createServiceRequest());
+  const { refetch } = useQuery(api.getUserServiceRequests());
 
   const getContact = async () => {
     const { status } = await Contacts.requestPermissionsAsync();
@@ -94,6 +95,7 @@ export default function Screen() {
     mutate(data, {
       onSuccess: (res) => {
         showSuccessMessage('Service created successfully...');
+        refetch();
         router.replace({
           pathname: '/book/searching',
           params: {

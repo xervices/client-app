@@ -104,7 +104,15 @@ export function SearchingScreen() {
       }}
       stickyHeader={
         <View className="pb-4">
-          <AuthHeader />
+          <AuthHeader
+            onBackButtonPress={() => {
+              if (IS_BOOK_TAB) {
+                router.replace('/book');
+              } else {
+                router.back();
+              }
+            }}
+          />
         </View>
       }>
       {artisans?.isLoading || serviceRequest?.isLoading ? (
