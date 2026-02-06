@@ -25,6 +25,7 @@ const formSchema = z
     password: z.string().min(1, 'Password is required.'),
     confirmPassword: z.string().min(1, 'Password confirmation is required.'),
     role: z.union([z.literal('user')]),
+    referralCode: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -39,6 +40,8 @@ export default function Screen() {
     },
   });
 
+  const applyReferralCode = useMutation(api.applyReferralCode());
+
   const form = useForm({
     defaultValues: {
       fullName: '',
@@ -47,16 +50,21 @@ export default function Screen() {
       password: '',
       confirmPassword: '',
       role: 'user' as const,
+      referralCode: '',
     },
     validators: {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      const { confirmPassword, ...registerData } = value;
+      const { confirmPassword, referralCode, ...registerData } = value;
 
       mutate(registerData, {
         onSuccess: () => {
           showSuccessMessage('Account created successfully');
+
+          if (referralCode) {
+            applyReferralCode?.mutate({ referralCode });
+          }
 
           router.navigate({
             pathname: '/verify-email',
@@ -158,6 +166,22 @@ export default function Screen() {
                   onChangeText={field.handleChange}
                   placeholder="Confirm your password"
                   secureTextEntry
+                  hasError={!field.state.meta.isValid}
+                />
+                {!field.state.meta.isValid ? <InputError errors={field.state.meta.errors} /> : null}
+              </View>
+            )}
+          </form.Field>
+
+          <form.Field name="referralCode">
+            {(field) => (
+              <View>
+                <Label nativeID="referral">Referral Code (Optional)</Label>
+                <Input
+                  id="referral"
+                  value={field.state.value}
+                  onChangeText={field.handleChange}
+                  placeholder="Enter your referral code"
                   hasError={!field.state.meta.isValid}
                 />
                 {!field.state.meta.isValid ? <InputError errors={field.state.meta.errors} /> : null}

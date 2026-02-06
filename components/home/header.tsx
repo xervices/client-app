@@ -39,8 +39,8 @@ export function Header() {
         <Bell fill={'#1B1B1E'} />
 
         {unreadNotifications?.data &&
-        unreadNotifications?.data?.count &&
-        unreadNotifications?.data?.count > 0 ? (
+        unreadNotifications?.data?.unreadCount &&
+        unreadNotifications?.data?.unreadCount > 0 ? (
           <View className="absolute right-0 top-0 h-2 w-2 rounded-full bg-[#FE6A00]" />
         ) : null}
       </Pressable>

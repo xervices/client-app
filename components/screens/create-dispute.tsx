@@ -106,8 +106,10 @@ export function CreateDisputeScreen() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
+      const data = { ...value, media };
+
       // @ts-ignore
-      mutate(value, {
+      mutate(data, {
         onSuccess: (res) => {
           showSuccessMessage('Dispute created successfully');
           router.replace('/(tabs)/(home)');

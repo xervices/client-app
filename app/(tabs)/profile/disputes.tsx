@@ -93,7 +93,10 @@ export default function Screen() {
                       <Text className="flex-1 font-cabinet-bold leading-none text-[#1B1B1E]">
                         Plumber
                       </Text>
-                      <Text className="flex-1 text-sm text-[#FE6A00]">
+                      <Text
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                        className="flex-1 text-sm text-[#FE6A00]">
                         Dispute ID: {dispute?.id}
                       </Text>
                     </View>
@@ -147,7 +150,10 @@ export default function Screen() {
                       <Text className="flex-1 font-cabinet-bold leading-none text-[#1B1B1E]">
                         Plumber
                       </Text>
-                      <Text className="flex-1 text-sm text-[#FE6A00]">
+                      <Text
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                        className="flex-1 text-sm text-[#FE6A00]">
                         Dispute ID: {dispute?.id}
                       </Text>
                     </View>

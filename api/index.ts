@@ -332,6 +332,36 @@ export const api = {
         return data;
       },
     }),
+  useReferralReward: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/referrals/use-reward', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/referrals/use-reward', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to use referral reward'));
+        }
+
+        return data;
+      },
+    };
+  },
+  applyReferralCode: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/referrals/apply', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/referrals/apply', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to apply referral code.'));
+        }
+
+        return data;
+      },
+    };
+  },
 
   // Support tickets endpoints
   createSupportTicket: () => {
@@ -877,8 +907,39 @@ export const api = {
   createDispute: () => {
     return {
       mutationFn: async (credentials: RequestBody<'/api/disputes', 'post'>) => {
+        const formData = new FormData();
+
+        const fields = ['jobId', 'disputeType', 'description'];
+
+        // Append only non-empty fields
+        fields.forEach((field) => {
+          const value = credentials[field];
+
+          if (value !== undefined && value !== null && value !== '') {
+            formData.append(field, String(value));
+          }
+        });
+
+        // @ts-ignore
+        if (credentials.media && credentials.media.length > 0) {
+          // @ts-ignore
+          credentials.media.forEach((media, index) => {
+            const extension = getFileExtension(media.url, media.mimeType);
+
+            const file = {
+              uri: normalizePath(media.url),
+              type: media.mimeType || 'image/jpg',
+              name: media.name || `media_${index}_${Date.now()}.${extension}`,
+            };
+            // @ts-ignore - FormData typing issue in React Native
+            formData.append('media', file);
+          });
+        }
+
         const { data, error } = await apiClient.POST('/api/disputes', {
-          body: credentials,
+          // @ts-ignore - FormData not properly typed in openapi-fetch
+          body: formData,
+          bodySerializer: () => formData,
         });
 
         if (error) {

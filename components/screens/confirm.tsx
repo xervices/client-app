@@ -25,7 +25,7 @@ import { useMutation, useQueries } from '@tanstack/react-query';
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 import { LoadingState } from '@/components/loading-state';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatCurrency, formatDate, formatDateTime } from '@/lib/utils';
 import * as Location from 'expo-location';
 
 export function ConfirmScreen() {
@@ -41,11 +41,12 @@ export function ConfirmScreen() {
 
   const IS_BOOK_TAB = pathname.includes('book');
 
-  const [offer] = useQueries({
-    queries: [api.getOfferDetails(offerId)],
+  const [offer, referrals] = useQueries({
+    queries: [api.getOfferDetails(offerId), api.getMyPromotions()],
   });
   const initializePayment = useMutation(api.initializePayment());
   const verifyPayment = useMutation(api.verifyPayment());
+  const applyReferralReward = useMutation(api.useReferralReward());
 
   const [promoCode, setPromoCode] = React.useState('');
   const [useReferralReward, setUseReferralReward] = React.useState(false);
@@ -55,6 +56,13 @@ export function ConfirmScreen() {
   const [routeCoords, setRouteCoords] = React.useState<{ latitude: number; longitude: number }[]>(
     []
   );
+
+  const referralAmount =
+    referrals?.data?.availableReferralBalance &&
+    offer?.data?.amount &&
+    referrals?.data?.availableReferralBalance > offer?.data?.amount
+      ? offer?.data?.amount
+      : referrals?.data?.availableReferralBalance;
 
   // Decode polyline from Google's encoded format
   const decodePolyline = (encoded: string): { latitude: number; longitude: number }[] => {
@@ -214,6 +222,7 @@ export function ConfirmScreen() {
       isRefreshing={offer?.isRefetching}
       onRefresh={() => {
         offer?.refetch();
+        referrals?.refetch();
       }}
       stickyHeader={
         <View className="pb-4">
@@ -425,12 +434,21 @@ export function ConfirmScreen() {
 
               <Dot size={16} color={'#FF6A00'} />
 
-              <Text className="text-sm leading-none text-[#FF6A00]">₦0.00</Text>
+              <Text className="text-sm leading-none text-[#FF6A00]">
+                {formatCurrency(referrals?.data?.availableReferralBalance)}
+              </Text>
             </View>
 
             <Pressable
               className={`flex h-4 w-4 flex-row items-center justify-center rounded-full border-2 ${useReferralReward ? 'border-[#FE6A00]' : 'border-[#737381]'} `}
-              onPress={() => setUseReferralReward((prev) => !prev)}>
+              onPress={() => {
+                if (
+                  referrals?.data?.availableReferralBalance &&
+                  referrals?.data?.availableReferralBalance > 0
+                ) {
+                  setUseReferralReward((prev) => !prev);
+                }
+              }}>
               {useReferralReward && <View className="h-2 w-2 rounded-full bg-[#FE6A00]" />}
             </Pressable>
           </View>
@@ -438,7 +456,9 @@ export function ConfirmScreen() {
           <View className="flex flex-row items-center justify-between border-y border-[#F4F4F5] py-4">
             <Text className="text-sm leading-none text-[#737381]">Booking Date & Time</Text>
 
-            <Text className="text-sm leading-none text-[#737381]">2025-11-27 17:47:27</Text>
+            <Text className="text-sm leading-none text-[#737381]">
+              {formatDateTime(offer?.data?.serviceRequest?.createdAt)}
+            </Text>
           </View>
 
           {promoCode && (
@@ -453,7 +473,9 @@ export function ConfirmScreen() {
             <View className="flex flex-row items-center justify-between">
               <Text className="text-sm leading-none text-[#737381]">Referral Discount</Text>
 
-              <Text className="text-sm leading-none text-[#FE6A00]">-₦1000</Text>
+              <Text className="text-sm leading-none text-[#FE6A00]">
+                -{formatCurrency(referralAmount)}
+              </Text>
             </View>
           )}
 
@@ -461,7 +483,9 @@ export function ConfirmScreen() {
             <Text className="text-sm leading-none text-[#737381]">Total Price</Text>
 
             <Text className="text-sm leading-none text-[#FE6A00]">
-              {formatCurrency(offer?.data?.amount)}
+              {useReferralReward && referralAmount && offer?.data?.amount
+                ? formatCurrency(offer?.data?.amount - referralAmount)
+                : formatCurrency(offer?.data?.amount)}
             </Text>
           </View>
 
@@ -482,66 +506,154 @@ export function ConfirmScreen() {
           </View>
 
           <Button
-            isLoading={initializePayment?.isPending || verifyPayment?.isPending}
-            disabled={initializePayment?.isPending || verifyPayment?.isPending}
+            isLoading={
+              initializePayment?.isPending ||
+              verifyPayment?.isPending ||
+              applyReferralReward?.isPending
+            }
+            disabled={
+              initializePayment?.isPending ||
+              verifyPayment?.isPending ||
+              applyReferralReward?.isPending
+            }
             onPress={() => {
-              initializePayment?.mutate(
-                { jobId: id || '', callbackUrl: 'https://example.com/' },
-                {
-                  onSuccess: (res) => {
-                    SheetManager?.show('paystack-webview-sheet', {
-                      payload: {
-                        authorizationUrl: res.authorizationUrl,
-                        callbackUrl: 'https://example.com/',
-                        onError(errorMessage) {
-                          showErrorMessage(errorMessage);
-                        },
-                        onSuccess(reference) {
-                          verifyPayment?.mutate(
-                            { reference },
-                            {
-                              onSuccess: (res) => {
-                                showSuccessMessage(res?.message || 'Payment verified successfully');
-                                SheetManager.show('success-sheet', {
-                                  payload: {
-                                    title: 'Your payment was successful.',
-                                    subtitle: 'You will be redirected to the home page shortly.',
-                                    hideBackButton: true,
-                                    useCheckImage: true,
-                                    onRedirect() {
-                                      if (IS_BOOK_TAB) {
-                                        router.replace({
-                                          pathname: '/ongoing',
-                                          params: {
-                                            id,
+              if (useReferralReward) {
+                applyReferralReward?.mutate(
+                  {
+                    amount: referralAmount || 0,
+                    jobId: id,
+                  },
+                  {
+                    onSuccess: (res) => {
+                      offer?.refetch();
+                      referrals?.refetch();
+                      initializePayment?.mutate(
+                        { jobId: id || '', callbackUrl: 'https://example.com/' },
+                        {
+                          onSuccess: (res) => {
+                            SheetManager?.show('paystack-webview-sheet', {
+                              payload: {
+                                authorizationUrl: res.authorizationUrl,
+                                callbackUrl: 'https://example.com/',
+                                onError(errorMessage) {
+                                  showErrorMessage(errorMessage);
+                                },
+                                onSuccess(reference) {
+                                  verifyPayment?.mutate(
+                                    { reference },
+                                    {
+                                      onSuccess: (res) => {
+                                        showSuccessMessage(
+                                          res?.message || 'Payment verified successfully'
+                                        );
+                                        SheetManager.show('success-sheet', {
+                                          payload: {
+                                            title: 'Your payment was successful.',
+                                            subtitle:
+                                              'You will be redirected to the home page shortly.',
+                                            hideBackButton: true,
+                                            useCheckImage: true,
+                                            onRedirect() {
+                                              if (IS_BOOK_TAB) {
+                                                router.replace({
+                                                  pathname: '/ongoing',
+                                                  params: {
+                                                    id,
+                                                  },
+                                                });
+                                              } else {
+                                                router.replace({
+                                                  pathname: '/ongoing',
+                                                  params: {
+                                                    id,
+                                                  },
+                                                });
+                                              }
+                                            },
                                           },
                                         });
-                                      } else {
-                                        router.replace({
-                                          pathname: '/ongoing',
-                                          params: {
-                                            id,
-                                          },
-                                        });
-                                      }
+                                      },
+                                      onError: (err) => {
+                                        showErrorMessage(err.message);
+                                      },
+                                    }
+                                  );
+                                },
+                              },
+                            });
+                          },
+                          onError: (err) => {
+                            showErrorMessage(err.message);
+                          },
+                        }
+                      );
+                    },
+                    onError: (err) => {
+                      showErrorMessage(err?.message);
+                    },
+                  }
+                );
+              } else {
+                initializePayment?.mutate(
+                  { jobId: id || '', callbackUrl: 'https://example.com/' },
+                  {
+                    onSuccess: (res) => {
+                      SheetManager?.show('paystack-webview-sheet', {
+                        payload: {
+                          authorizationUrl: res.authorizationUrl,
+                          callbackUrl: 'https://example.com/',
+                          onError(errorMessage) {
+                            showErrorMessage(errorMessage);
+                          },
+                          onSuccess(reference) {
+                            verifyPayment?.mutate(
+                              { reference },
+                              {
+                                onSuccess: (res) => {
+                                  showSuccessMessage(
+                                    res?.message || 'Payment verified successfully'
+                                  );
+                                  SheetManager.show('success-sheet', {
+                                    payload: {
+                                      title: 'Your payment was successful.',
+                                      subtitle: 'You will be redirected to the home page shortly.',
+                                      hideBackButton: true,
+                                      useCheckImage: true,
+                                      onRedirect() {
+                                        if (IS_BOOK_TAB) {
+                                          router.replace({
+                                            pathname: '/ongoing',
+                                            params: {
+                                              id,
+                                            },
+                                          });
+                                        } else {
+                                          router.replace({
+                                            pathname: '/ongoing',
+                                            params: {
+                                              id,
+                                            },
+                                          });
+                                        }
+                                      },
                                     },
-                                  },
-                                });
-                              },
-                              onError: (err) => {
-                                showErrorMessage(err.message);
-                              },
-                            }
-                          );
+                                  });
+                                },
+                                onError: (err) => {
+                                  showErrorMessage(err.message);
+                                },
+                              }
+                            );
+                          },
                         },
-                      },
-                    });
-                  },
-                  onError: (err) => {
-                    showErrorMessage(err.message);
-                  },
-                }
-              );
+                      });
+                    },
+                    onError: (err) => {
+                      showErrorMessage(err.message);
+                    },
+                  }
+                );
+              }
             }}>
             Proceed to payment
           </Button>

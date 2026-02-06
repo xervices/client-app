@@ -19,6 +19,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import { LoadingState } from '@/components/loading-state';
 import { formatCurrency, formatDateTime } from '@/lib/utils';
+import { SheetManager } from 'react-native-actions-sheet';
 
 export default function Screen() {
   const { id }: { id: string } = useLocalSearchParams();
@@ -113,45 +114,66 @@ export default function Screen() {
             </View>
           </View>
 
-          {/* <View>
-          <Text className="font-cabinet-bold text-[#737381]">Photos or Videos</Text>
+          <View>
+            <Text className="font-cabinet-bold text-[#737381]">Photos or Videos</Text>
 
-          <Text className="flex-1 text-sm text-[#737381]">Photos and videos before and after</Text>
+            <Text className="flex-1 text-sm text-[#737381]">
+              Photos and videos before and after
+            </Text>
 
-          <View className="mt-2 flex gap-2">
-            <View>
-              <Text className="font-cabinet-bold text-xs text-[#B4B4BC]">Before</Text>
+            <View className="mt-2 flex gap-2">
+              <View>
+                {/* <Text className="font-cabinet-bold text-xs text-[#B4B4BC]">Before</Text> */}
 
-              <View className="flex flex-row flex-wrap gap-2">
-                {new Array(4).fill(0).map((_, index) => (
-                  <View key={index} className="aspect-[56/46] w-14 overflow-hidden rounded-[4px]">
-                    <Image
-                      source={require('@/assets/images/sample.png')}
-                      style={{ width: '100%', height: '100%' }}
-                      contentFit="cover"
-                    />
-                  </View>
-                ))}
+                <View className="flex flex-row flex-wrap gap-2">
+                  {data?.evidence?.map((media) => (
+                    <Pressable
+                      onPress={() =>
+                        SheetManager.show('image-preview-sheet', {
+                          payload: {
+                            imgSource: media?.mediaUrl,
+                          },
+                        })
+                      }
+                      key={media?.id}
+                      className="aspect-[56/46] w-14 overflow-hidden rounded-[4px]">
+                      <Image
+                        source={media?.mediaUrl}
+                        style={{ width: '100%', height: '100%' }}
+                        contentFit="cover"
+                      />
+                    </Pressable>
+                  ))}
+
+                  {/* {new Array(4).fill(0).map((_, index) => (
+                    <View key={index} className="aspect-[56/46] w-14 overflow-hidden rounded-[4px]">
+                      <Image
+                        source={require('@/assets/images/sample.png')}
+                        style={{ width: '100%', height: '100%' }}
+                        contentFit="cover"
+                      />
+                    </View>
+                  ))} */}
+                </View>
               </View>
-            </View>
 
-            <View>
-              <Text className="font-cabinet-bold text-xs text-[#B4B4BC]">After</Text>
+              {/* <View>
+                <Text className="font-cabinet-bold text-xs text-[#B4B4BC]">After</Text>
 
-              <View className="flex flex-row flex-wrap gap-2">
-                {new Array(4).fill(0).map((_, index) => (
-                  <View key={index} className="aspect-[56/46] w-14 overflow-hidden rounded-[4px]">
-                    <Image
-                      source={require('@/assets/images/sample.png')}
-                      style={{ width: '100%', height: '100%' }}
-                      contentFit="cover"
-                    />
-                  </View>
-                ))}
-              </View>
+                <View className="flex flex-row flex-wrap gap-2">
+                  {new Array(4).fill(0).map((_, index) => (
+                    <View key={index} className="aspect-[56/46] w-14 overflow-hidden rounded-[4px]">
+                      <Image
+                        source={require('@/assets/images/sample.png')}
+                        style={{ width: '100%', height: '100%' }}
+                        contentFit="cover"
+                      />
+                    </View>
+                  ))}
+                </View>
+              </View> */}
             </View>
           </View>
-        </View> */}
 
           {data?.status === 'resolved' || data?.status === 'closed' ? (
             <View>

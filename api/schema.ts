@@ -823,8 +823,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get user service requests
-         * @description Get all service requests for the authenticated user
+         * Get service requests
+         * @description For Users: Get all service requests created by the authenticated user. For Artisans: Get service requests matching their categories and location (requests sent to them).
          */
         get: operations["ServiceRequestsController_findMine"];
         put?: never;
@@ -1410,6 +1410,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/earnings/commission-rate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get current platform commission rate
+         * @description Fetch the current commission percentage the platform charges on artisan earnings.
+         */
+        get: operations["EarningsController_getCommissionRate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/earnings/transactions": {
         parameters: {
             query?: never;
@@ -1439,6 +1459,26 @@ export interface paths {
          * @description Get detailed earnings breakdown by period (today, this week, this month, all time)
          */
         get: operations["EarningsController_getEarningsBreakdown"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get transaction history
+         * @description Fetch all transaction history for the authenticated user with filters for period, date range, type, and pagination.
+         */
+        get: operations["TransactionsController_getTransactions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1722,7 +1762,7 @@ export interface paths {
         put?: never;
         /**
          * Create a dispute
-         * @description Raise a dispute on a job. Only job participants can raise disputes.
+         * @description Raise a dispute on a job. Only job participants can raise disputes. Supports multipart/form-data for file uploads.
          */
         post: operations["DisputesController_createDispute"];
         delete?: never;
@@ -1762,7 +1802,7 @@ export interface paths {
         put?: never;
         /**
          * Add evidence to dispute
-         * @description Upload evidence for an open or under-review dispute. Only job participants can add evidence.
+         * @description Upload evidence for an open or under-review dispute. Only job participants can add evidence. Supports multipart/form-data for file uploads.
          */
         post: operations["DisputesController_addEvidence"];
         delete?: never;
@@ -2515,6 +2555,238 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/services": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List all services in catalogue
+         * @description Get all services with optional filters by category, status, and search term. Supports pagination.
+         */
+        get: operations["ServiceCatalogueController_listServices"];
+        put?: never;
+        /**
+         * Add a new service to catalogue
+         * @description Create a new service/category in the platform catalogue. Upload icon file via "icon" field.
+         */
+        post: operations["ServiceCatalogueController_createService"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/services/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get service details
+         * @description Get details of a specific service by ID
+         */
+        get: operations["ServiceCatalogueController_getService"];
+        /**
+         * Update a service
+         * @description Update service details like name, category, description, or icon.
+         */
+        put: operations["ServiceCatalogueController_updateService"];
+        post?: never;
+        /**
+         * Delete a service
+         * @description Soft delete a service from the catalogue.
+         */
+        delete: operations["ServiceCatalogueController_deleteService"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/services/{id}/toggle-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Toggle service status (enable/disable)
+         * @description Enable or disable a service. Disabled services are hidden from users.
+         */
+        put: operations["ServiceCatalogueController_toggleServiceStatus"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/dashboard/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Dashboard overview metrics
+         * @description Fetch high-level dashboard statistics including active users, ongoing jobs, open disputes, and escrow balance.
+         */
+        get: operations["DashboardController_getOverviewMetrics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/dashboard/app-downloads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * App downloads analytics
+         * @description Provide total app downloads by platform (iOS and Android).
+         */
+        get: operations["DashboardController_getAppDownloads"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/dashboard/registration-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Registration statistics
+         * @description Fetch user and artisan registration counts for today and this month.
+         */
+        get: operations["DashboardController_getRegistrationStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/dashboard/registration-trend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Registration trend graph
+         * @description Return monthly registration data for chart display. Data grouped by month (Jan-Dec).
+         */
+        get: operations["DashboardController_getRegistrationTrend"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/dashboard/recent-activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Recent activity feed
+         * @description Provide a list of recent platform activities including job completions, dispute openings, artisan verifications, and withdrawal requests.
+         */
+        get: operations["DashboardController_getRecentActivity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/dashboard/cancellation-reasons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Cancellation reasons analytics
+         * @description Return job cancellation reasons with counts and percentages.
+         */
+        get: operations["DashboardController_getCancellationReasons"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/dashboard/state-analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * State analytics
+         * @description Provide state-based analytics for signups, users, artisans, and active jobs.
+         */
+        get: operations["DashboardController_getStateAnalytics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/dashboard/best-booked-services": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Best booked service types
+         * @description Return analytics for most booked service categories including bookings, revenue, artisan count, and percentage contribution.
+         */
+        get: operations["DashboardController_getBestBookedServices"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/support/tickets": {
         parameters: {
             query?: never;
@@ -3080,13 +3352,6 @@ export interface components {
              * @example false
              */
             hasPrev: boolean;
-        };
-        UnreadCountResponseDto: {
-            /**
-             * @description Total unread message count
-             * @example 5
-             */
-            count: number;
         };
         MarkNotificationsAsReadDto: {
             /**
@@ -4800,6 +5065,13 @@ export interface components {
              */
             updated: number;
         };
+        UnreadCountResponseDto: {
+            /**
+             * @description Total unread message count
+             * @example 5
+             */
+            count: number;
+        };
         EarningsOverviewResponseDto: {
             /**
              * @description Available balance that can be withdrawn
@@ -5232,53 +5504,6 @@ export interface components {
              */
             createdAt: string;
         };
-        DisputeMediaAttachmentDto: {
-            /**
-             * @description Type of media
-             * @example image
-             * @enum {string}
-             */
-            mediaType: "image" | "video";
-            /**
-             * @description URL to the uploaded media file
-             * @example https://storage.example.com/evidence/image.jpg
-             */
-            mediaUrl: string;
-            /**
-             * @description Description of the evidence
-             * @example Photo showing the unfinished work
-             */
-            description?: string;
-        };
-        CreateDisputeDto: {
-            /**
-             * @description ID of the job to dispute
-             * @example 123e4567-e89b-12d3-a456-426614174000
-             */
-            jobId: string;
-            /**
-             * @description Type of dispute
-             * @example service_quality
-             * @enum {string}
-             */
-            disputeType: "service_quality" | "payment" | "behavior" | "cancellation" | "other";
-            /**
-             * @description Detailed description of the dispute
-             * @example The artisan did not complete the work as agreed.
-             */
-            description: string;
-            /**
-             * @description Optional media attachments for the dispute
-             * @example [
-             *       {
-             *         "mediaType": "image",
-             *         "mediaUrl": "https://storage.example.com/evidence/image1.jpg",
-             *         "description": "Photo of damaged work"
-             *       }
-             *     ]
-             */
-            media?: components["schemas"]["DisputeMediaAttachmentDto"][];
-        };
         DisputeEvidenceResponseDto: {
             id: string;
             /** @enum {string} */
@@ -5310,24 +5535,6 @@ export interface components {
             /** Format: date-time */
             resolvedAt?: string;
             evidence?: components["schemas"]["DisputeEvidenceResponseDto"][];
-        };
-        AddEvidenceDto: {
-            /**
-             * @description Type of media
-             * @example image
-             * @enum {string}
-             */
-            mediaType: "image" | "video";
-            /**
-             * @description URL to the uploaded media file
-             * @example https://storage.example.com/evidence/image.jpg
-             */
-            mediaUrl: string;
-            /**
-             * @description Description of the evidence
-             * @example Photo showing the unfinished work
-             */
-            description?: string;
         };
         CreateReviewDto: {
             /**
@@ -5379,6 +5586,39 @@ export interface components {
              */
             completedAt: string;
         };
+        ReviewUserDto: {
+            /**
+             * @description User unique identifier (UUID)
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description User email address
+             * @example user@example.com
+             */
+            email: string;
+            /**
+             * @description User phone number
+             * @example +2348012345678
+             */
+            phoneNumber: string;
+            /**
+             * @description User role
+             * @example user
+             * @enum {string}
+             */
+            role: "user" | "artisan" | "admin";
+            /**
+             * @description User full name (from profile)
+             * @example John Doe
+             */
+            fullName?: string;
+            /**
+             * @description User avatar URL (from profile)
+             * @example https://storage.example.com/avatars/user1.jpg
+             */
+            avatarUrl?: string | null;
+        };
         ReviewResponseDto: {
             /**
              * @description Review unique identifier (UUID)
@@ -5397,15 +5637,15 @@ export interface components {
              * @example 550e8400-e29b-41d4-a716-446655440000
              */
             reviewerId: string;
-            /** @description Reviewer details */
-            reviewer?: components["schemas"]["UserResponseDto"];
+            /** @description Reviewer details with flattened profile info */
+            reviewer?: components["schemas"]["ReviewUserDto"];
             /**
              * @description Reviewee (artisan) user ID
              * @example 550e8400-e29b-41d4-a716-446655440000
              */
             revieweeId: string;
-            /** @description Reviewee (artisan) details */
-            reviewee?: components["schemas"]["UserResponseDto"];
+            /** @description Reviewee (artisan) details with flattened profile info */
+            reviewee?: components["schemas"]["ReviewUserDto"];
             /**
              * @description Punctuality rating (1-5 stars) - how punctual was the artisan
              * @example 5
@@ -6249,6 +6489,49 @@ export interface components {
             /** @description Schedule send time (ISO 8601 format, null to unschedule) */
             scheduledAt?: Record<string, never>;
         };
+        CreateServiceDto: {
+            /**
+             * @description Service name
+             * @example Home Cleaning
+             */
+            name: string;
+            /**
+             * @description URL-friendly slug (auto-generated from name if not provided)
+             * @example home-cleaning
+             */
+            slug?: string;
+            /**
+             * @description Service category/group
+             * @example Cleaning
+             */
+            category: string;
+            /**
+             * @description Service description
+             * @example Residential and commercial cleaning services
+             */
+            description?: string;
+            /** @description Icon URL for the service */
+            iconUrl?: string;
+            /**
+             * @description Whether this service is featured
+             * @default false
+             */
+            isFeatured: boolean;
+        };
+        UpdateServiceDto: {
+            /** @description Service name */
+            name?: string;
+            /** @description URL-friendly slug */
+            slug?: string;
+            /** @description Service category/group */
+            category?: string;
+            /** @description Service description */
+            description?: string;
+            /** @description Icon URL */
+            iconUrl?: string;
+            /** @description Whether this service is featured */
+            isFeatured?: boolean;
+        };
         CreateSupportTicketDto: {
             /**
              * @description Brief subject/title for the support ticket
@@ -6890,7 +7173,13 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnreadCountResponseDto"];
+                    "application/json": {
+                        /**
+                         * @description Number of unread notifications
+                         * @example 5
+                         */
+                        unreadCount?: number;
+                    };
                 };
             };
         };
@@ -9676,6 +9965,42 @@ export interface operations {
             };
         };
     };
+    EarningsController_getCommissionRate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current commission rate retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     EarningsController_getTransactionHistory: {
         parameters: {
             query?: {
@@ -9752,6 +10077,44 @@ export interface operations {
             };
             /** @description Forbidden - Artisan access required */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    TransactionsController_getTransactions: {
+        parameters: {
+            query?: {
+                /** @description Filter by period */
+                period?: "today" | "this_week" | "this_month" | "previous_month" | "this_year";
+                /** @description Start date (ISO format) */
+                startDate?: string;
+                /** @description End date (ISO format) */
+                endDate?: string;
+                /** @description Page number */
+                page?: number;
+                /** @description Items per page */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Transaction history retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10397,9 +10760,25 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
+        /** @description Dispute data with optional media files */
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateDisputeDto"];
+                "multipart/form-data": {
+                    /**
+                     * Format: uuid
+                     * @description ID of the job to dispute
+                     */
+                    jobId: string;
+                    /**
+                     * @description Type of dispute
+                     * @enum {string}
+                     */
+                    disputeType: "service_quality" | "payment" | "behavior" | "cancellation" | "other";
+                    /** @description Detailed description of the dispute */
+                    description: string;
+                    /** @description Evidence files (images/videos) - max 10 files */
+                    media?: string[];
+                };
             };
         };
         responses: {
@@ -10508,9 +10887,18 @@ export interface operations {
             };
             cookie?: never;
         };
+        /** @description Evidence file with optional description */
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AddEvidenceDto"];
+                "multipart/form-data": {
+                    /**
+                     * Format: binary
+                     * @description Evidence file (image or video)
+                     */
+                    media: string;
+                    /** @description Optional description of the evidence */
+                    description?: string;
+                };
             };
         };
         responses: {
@@ -10523,7 +10911,7 @@ export interface operations {
                     "application/json": components["schemas"]["DisputeEvidenceResponseDto"];
                 };
             };
-            /** @description Dispute is not accepting evidence */
+            /** @description Dispute is not accepting evidence or no file provided */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -12268,6 +12656,337 @@ export interface operations {
             };
             /** @description Broadcast not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ServiceCatalogueController_listServices: {
+        parameters: {
+            query?: {
+                /** @description Filter by category name */
+                category?: string;
+                /** @description Search services by name or description */
+                search?: string;
+                /** @description Filter by status */
+                status?: "active" | "inactive";
+                /** @description Page number */
+                page?: number;
+                /** @description Items per page */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of services */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ServiceCatalogueController_createService: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["CreateServiceDto"];
+            };
+        };
+        responses: {
+            /** @description Service created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Service with this name or slug already exists */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ServiceCatalogueController_getService: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Service/Category ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Service details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Service not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ServiceCatalogueController_updateService: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Service/Category ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UpdateServiceDto"];
+            };
+        };
+        responses: {
+            /** @description Service updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Service not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Service with this name or slug already exists */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ServiceCatalogueController_deleteService: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Service/Category ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Service deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Service not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ServiceCatalogueController_toggleServiceStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Service/Category ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Service status toggled */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Service not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DashboardController_getOverviewMetrics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Dashboard overview metrics */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DashboardController_getAppDownloads: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description App download statistics */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DashboardController_getRegistrationStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Registration statistics */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DashboardController_getRegistrationTrend: {
+        parameters: {
+            query?: {
+                /** @description Year for trend data (default: current year) */
+                year?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Monthly registration trend data */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DashboardController_getRecentActivity: {
+        parameters: {
+            query?: {
+                /** @description Number of activities to return (default: 20) */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Recent platform activities */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DashboardController_getCancellationReasons: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Cancellation reasons breakdown */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DashboardController_getStateAnalytics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Per-state analytics */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DashboardController_getBestBookedServices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Best booked service analytics */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
