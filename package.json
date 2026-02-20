@@ -1,7 +1,7 @@
 {
   "name": "expo-sample",
   "main": "expo-router/entry",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "scripts": {
     "patch": "pnpm version patch",
     "minor": "pnpm version minor",
