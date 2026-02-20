@@ -19,12 +19,17 @@ import { SheetManager } from 'react-native-actions-sheet';
 
 export default function Screen() {
   const { user } = useAuthStore();
-  const { setStep3, getFormData } = useServiceStore();
+  const { setStep3, getFormData, requiresDestination } = useServiceStore();
   const { fetchLocation } = useCurrentLocation();
 
   const [serviceAddress, setServiceAddress] = React.useState('');
   const [latitude, setLatitude] = React.useState<number>();
   const [longitude, setLongitude] = React.useState<number>();
+
+  const [destinationAddress, setDestinationAddress] = React.useState('');
+  const [destinationLatitude, setDestinationLatitude] = React.useState<number>();
+  const [destinationLongitude, setDestinationLongitude] = React.useState<number>();
+
   const [contactPhone, setContactPhone] = React.useState(
     user?.phoneVerified ? user?.phoneNumber : undefined
   );
@@ -82,11 +87,21 @@ export default function Screen() {
   const handleOnSubmit = () => {
     if (!contactPhone || !latitude || !longitude || !serviceAddress)
       return showErrorMessage('Complete the form before proceeding.');
+
+    if (
+      requiresDestination &&
+      (!destinationAddress || !destinationLatitude || !destinationLongitude)
+    )
+      return showErrorMessage('Provide the destination location.');
+
     setStep3({
       contactPhone,
       latitude,
       longitude,
       serviceAddress,
+      destinationAddress,
+      destinationLatitude,
+      destinationLongitude,
     });
 
     const data = getFormData();
@@ -171,6 +186,38 @@ export default function Screen() {
               )}
             </View>
           </View>
+
+          {requiresDestination ? (
+            <View className="flex gap-2">
+              <Pressable
+                onPress={() =>
+                  SheetManager.show('location-search-sheet', {
+                    payload: {
+                      onSelect: (location) => {
+                        setDestinationLatitude(Number(location.latitude));
+                        setDestinationLongitude(Number(location.longitude));
+                        setDestinationAddress(location.address);
+                      },
+                    },
+                  })
+                }
+                className="flex h-[52px] flex-row items-center gap-2 rounded-sm border border-[#DFDFE1] px-4">
+                <View className="flex h-4 w-4 items-center justify-center rounded-full bg-[#FE6A00]">
+                  <View className="h-2 w-2 rounded-full bg-white" />
+                </View>
+
+                {destinationAddress ? (
+                  <Text className="flex-1" numberOfLines={1}>
+                    {destinationAddress}
+                  </Text>
+                ) : (
+                  <Text className="flex-1 text-[#B4B4BC]" numberOfLines={1}>
+                    Enter your destination
+                  </Text>
+                )}
+              </Pressable>
+            </View>
+          ) : null}
         </View>
 
         <View className="flex gap-2">

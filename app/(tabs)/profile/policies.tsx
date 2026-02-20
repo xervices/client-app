@@ -9,6 +9,13 @@ import { router } from 'expo-router';
 
 const data = [
   {
+    name: 'Privacy Policy',
+    icon: require('@/assets/icons/terms.svg'),
+    isLink: true,
+    isDestructive: false,
+    onPress: () => router.navigate('/profile/privacy'),
+  },
+  {
     name: 'Terms & conditons',
     icon: require('@/assets/icons/terms.svg'),
     isLink: true,

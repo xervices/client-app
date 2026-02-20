@@ -11,7 +11,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
 const formSchema = z.object({
-  code: z.string().min(1, 'Reason is required.'),
+  code: z.string().min(1, 'Promo Code is required.'),
 });
 
 export function AddPromoCodeSheet(props: SheetProps<'add-promo-code-sheet'>) {

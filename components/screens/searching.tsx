@@ -1,6 +1,6 @@
 import { Text } from '@/components/ui/text';
 import * as React from 'react';
-import { Pressable, View } from 'react-native';
+import { AppState, Pressable, View } from 'react-native';
 import { Layout } from '@/components/layout';
 import { AuthHeader } from '@/components/auth-header';
 import { Image } from 'expo-image';
@@ -22,6 +22,8 @@ export function SearchingScreen() {
 
   const IS_BOOK_TAB = pathname.includes('book');
 
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+
   const [artisans, serviceRequest, allOffers, userServiceRequests] = useQueries({
     queries: [
       api.getMatchingArtisans(id),
@@ -36,6 +38,44 @@ export function SearchingScreen() {
       allOffers?.refetch();
     },
   });
+
+  const handleOnRefresh = async () => {
+    setIsRefreshing(true);
+
+    try {
+      await Promise.all([
+        artisans.refetch(),
+        serviceRequest?.refetch(),
+        allOffers?.refetch(),
+        userServiceRequests?.refetch(),
+      ]);
+    } catch (error) {
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  React.useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active') {
+        // App came to foreground
+        // Reconnect socket if disconnected
+        if (!isConnected) {
+          joinServiceRequest(id);
+        }
+
+        // Refetch all data
+        artisans?.refetch();
+        serviceRequest?.refetch();
+        allOffers?.refetch();
+        userServiceRequests?.refetch();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [isConnected, id]);
 
   React.useEffect(() => {
     if (offers && offers?.length > 1) {
@@ -94,14 +134,8 @@ export function SearchingScreen() {
   return (
     <Layout
       useBackground
-      isRefreshing={
-        artisans?.isRefetching || serviceRequest?.isRefetching || allOffers?.isRefetching
-      }
-      onRefresh={() => {
-        artisans?.refetch();
-        serviceRequest?.refetch();
-        allOffers?.refetch();
-      }}
+      isRefreshing={isRefreshing}
+      onRefresh={handleOnRefresh}
       stickyHeader={
         <View className="pb-4">
           <AuthHeader
@@ -168,7 +202,7 @@ export function SearchingScreen() {
             </Text>
           </View>
 
-          {offers && offers?.length > 0 && (
+          {allOffers?.data && allOffers?.data.length > 0 && (
             <View
               style={{
                 shadowColor: '#000',
@@ -184,7 +218,7 @@ export function SearchingScreen() {
                     {serviceRequest?.data?.category?.name}
                   </Text>
                   <Text className="flex-1 text-xs text-[#FE6A00]">
-                    {formatRelativeTime(offers[0]?.createdAt)}
+                    {formatRelativeTime(allOffers?.data[0]?.createdAt)}
                   </Text>
                 </View>
 

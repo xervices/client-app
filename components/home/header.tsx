@@ -1,4 +1,4 @@
-import { View, Pressable } from 'react-native';
+import { View, Pressable, AppState } from 'react-native';
 import { Bell } from 'lucide-react-native';
 import { router } from 'expo-router';
 
@@ -7,11 +7,24 @@ import { Text } from '../ui/text';
 import { useAuthStore } from '@/store/auth-store';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
+import { useEffect } from 'react';
 
 export function Header() {
   const { user } = useAuthStore();
 
   const unreadNotifications = useQuery(api.getUnreadNotificationCount());
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active') {
+        unreadNotifications?.refetch();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   return (
     <View className="flex w-full flex-row items-end justify-between">

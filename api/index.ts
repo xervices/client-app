@@ -332,6 +332,15 @@ export const api = {
         return data;
       },
     }),
+  getPromoCodes: () =>
+    queryOptions({
+      queryKey: ['promo', 'codes'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/promotions/promo-codes');
+
+        return data;
+      },
+    }),
   useReferralReward: () => {
     return {
       mutationFn: async (credentials: RequestBody<'/api/referrals/use-reward', 'post'>) => {
@@ -356,6 +365,83 @@ export const api = {
 
         if (error) {
           throw new Error(getErrorMessage(error, 'Failed to apply referral code.'));
+        }
+
+        return data;
+      },
+    };
+  },
+  validatePromoCode: () => {
+    return {
+      mutationFn: async (
+        credentials: RequestBody<'/api/promotions/validate-promo-code', 'post'>
+      ) => {
+        const { data, error } = await apiClient.POST('/api/promotions/validate-promo-code', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to validate promo code.'));
+        }
+
+        return data;
+      },
+    };
+  },
+  applyPromoCode: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/promotions/apply-promo-code', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/promotions/apply-promo-code', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to apply promo code.'));
+        }
+
+        return data;
+      },
+    };
+  },
+  removePromoCode: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/promotions/remove-promo-code', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/promotions/remove-promo-code', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to remove promo code.'));
+        }
+
+        return data;
+      },
+    };
+  },
+
+  // broadcast endpoints
+  getActiveBroadcasts: () =>
+    queryOptions({
+      queryKey: ['broadcasts', 'active'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/broadcasts/active');
+
+        return data;
+      },
+    }),
+  dismissBroadcast: (id: string) => {
+    return {
+      mutationFn: async () => {
+        const { data, error } = await apiClient.POST('/api/broadcasts/{id}/dismiss', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Dismiss broadcast request failed'));
         }
 
         return data;
@@ -419,6 +505,9 @@ export const api = {
           'serviceAddress',
           'latitude',
           'longitude',
+          'destinationAddress',
+          'destinationLatitude',
+          'destinationLongitude',
           'contactPhone',
         ] as const;
 
@@ -994,4 +1083,24 @@ export const api = {
       },
     };
   },
+
+  // legal endpoints
+  getPrivacyPolicy: () =>
+    queryOptions({
+      queryKey: ['privacy'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/privacy-policy');
+
+        return data;
+      },
+    }),
+  getTerms: () =>
+    queryOptions({
+      queryKey: ['terms'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/terms-and-conditions');
+
+        return data;
+      },
+    }),
 };

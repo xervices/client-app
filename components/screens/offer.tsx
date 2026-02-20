@@ -1,6 +1,6 @@
 import { Text } from '@/components/ui/text';
 import * as React from 'react';
-import { Pressable, View } from 'react-native';
+import { AppState, Pressable, View } from 'react-native';
 import { Layout } from '@/components/layout';
 import { AuthHeader } from '@/components/auth-header';
 import { Image } from 'expo-image';
@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { Button } from '@/components/ui/button';
 import { SheetManager } from 'react-native-actions-sheet';
-import { useMutation, useQueries } from '@tanstack/react-query';
+import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api';
 import { LoadingState } from '@/components/loading-state';
 import { useOffersContext } from '@/providers/offers-context';
@@ -26,18 +26,54 @@ export function OfferScreen() {
     queries: [api.getOffers(id)],
   });
 
-  const { joinServiceRequest, offers } = useOffersContext({
+  const queryClient = useQueryClient();
+
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+  const handleOnRefresh = async () => {
+    setIsRefreshing(true);
+
+    try {
+      await Promise.all([allOffers.refetch()]);
+    } catch (error) {
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  const { joinServiceRequest, isConnected } = useOffersContext({
     onOfferEvent(eventType, data) {
       if (eventType === 'offer:accepted') {
         showSuccessMessage('Offer accepted, You can proceed to payment');
       }
       allOffers?.refetch();
+      queryClient.invalidateQueries({ queryKey: api.getUserServiceRequests().queryKey });
+      queryClient.invalidateQueries({ queryKey: api.getUserJobs().queryKey });
     },
   });
 
   React.useEffect(() => {
     joinServiceRequest(id);
-  }, []);
+  }, [isConnected]);
+
+  React.useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active') {
+        // App came to foreground
+        // Reconnect socket if disconnected
+        if (!isConnected) {
+          joinServiceRequest(id);
+        }
+
+        // Refetch all data
+        allOffers?.refetch();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [isConnected, id]);
 
   const uniqueOffersByArtisan = React.useMemo(() => {
     if (!allOffers?.data) return [];
@@ -52,8 +88,8 @@ export function OfferScreen() {
   return (
     <Layout
       useBackground
-      isRefreshing={allOffers?.isRefetching}
-      onRefresh={allOffers?.refetch}
+      isRefreshing={isRefreshing}
+      onRefresh={handleOnRefresh}
       stickyHeader={
         <View className="pb-4">
           <AuthHeader />

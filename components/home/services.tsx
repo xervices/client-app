@@ -18,7 +18,7 @@ export function Services() {
 
       {data && data?.length > 0 && (
         <LegendList
-          data={data}
+          data={data?.slice(0, 6)}
           numColumns={3}
           renderItem={({ item }) => (
             <Pressable

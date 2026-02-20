@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 interface Step1 {
   categoryId: string;
+  requiresDestination?: boolean;
 }
 
 interface Step2 {
@@ -12,6 +13,9 @@ interface Step2 {
 
 interface Step3 {
   serviceAddress: string;
+  destinationAddress?: string;
+  destinationLatitude?: number;
+  destinationLongitude?: number;
   latitude: number;
   longitude: number;
   contactPhone: string;
@@ -27,6 +31,7 @@ interface ServiceFormState extends Step1, Step2, Step3 {
 
 const initialState: Step1 & Step2 & Step3 = {
   categoryId: '',
+  requiresDestination: false,
   description: '',
   title: '',
   media: [],
@@ -46,12 +51,16 @@ export const useServiceStore = create<ServiceFormState>((set, get) => ({
     const state = get();
     return {
       categoryId: state.categoryId,
+      requiresDestination: state.requiresDestination,
       description: state.description,
       media: state.media,
       title: state.title,
       serviceAddress: state.serviceAddress,
       latitude: state.latitude,
       longitude: state.longitude,
+      destinationAddress: state.destinationAddress,
+      destinationLatitude: state.destinationLatitude,
+      destinationLongitude: state.destinationLongitude,
       contactPhone: state.contactPhone,
     };
   },

@@ -12,14 +12,44 @@ import {
 import { Text } from '@/components/ui/text';
 import { formatRelativeTime } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
-import { View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { AppState, View } from 'react-native';
 
 export default function Screen() {
   const { data, isLoading, isRefetching, refetch } = useQuery(api.getNotifications());
+  const unreadCount = useQuery(api.getUnreadNotificationCount());
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleOnRefresh = async () => {
+    setIsRefreshing(true);
+
+    try {
+      await Promise.all([refetch(), unreadCount?.refetch()]);
+    } catch (error) {
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active') {
+        refetch();
+        unreadCount?.refetch();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   return (
     <Layout
       useBackground
+      isRefreshing={isRefreshing}
+      onRefresh={handleOnRefresh}
       stickyHeader={
         <View className="pb-4">
           <AuthHeader title="Notifications" />

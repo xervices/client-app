@@ -79,6 +79,8 @@ export function CreateDisputeScreen() {
 
   const { isLoading, refetch, data, isRefetching } = useQuery(api.getJobDetail(id));
 
+  const jobs = useQuery(api.getUserJobs());
+
   const { mutate, isPending } = useMutation(api.createDispute());
 
   const [permission] = useCameraPermissions();
@@ -111,6 +113,7 @@ export function CreateDisputeScreen() {
       // @ts-ignore
       mutate(data, {
         onSuccess: (res) => {
+          jobs?.refetch();
           showSuccessMessage('Dispute created successfully');
           router.replace('/(tabs)/(home)');
         },
