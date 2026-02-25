@@ -104,6 +104,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/verify-device": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify new device
+         * @description Complete login from a new device by verifying the OTP code. Revokes sessions on other devices.
+         */
+        post: operations["AuthController_verifyDevice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/refresh": {
         parameters: {
             query?: never;
@@ -2259,6 +2279,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/cancellation-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all cancellation policy versions
+         * @description Get a paginated list of all cancellation policy versions
+         */
+        get: operations["AdminController_getAllCancellationPolicies"];
+        /**
+         * Update cancellation policy
+         * @description Create a new version or update an existing version of cancellation policy. Specify the version and content.
+         */
+        put: operations["AdminController_updateCancellationPolicy"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/cancellation-policy/active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get active cancellation policy
+         * @description Get the currently active cancellation policy
+         */
+        get: operations["AdminController_getActiveCancellationPolicy"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/cancellation-policy/{version}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get cancellation policy by version
+         * @description Get a specific version of cancellation policy
+         */
+        get: operations["AdminController_getCancellationPolicyByVersion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/settings/notifications": {
         parameters: {
             query?: never;
@@ -3059,6 +3143,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/users/customers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get customer detail
+         * @description Retrieve detailed information about a specific customer including profile, jobs, and spending.
+         */
+        get: operations["UsersManagementController_getCustomerDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/users/artisans/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan detail
+         * @description Retrieve detailed information about a specific artisan including profile, verification, ratings, wallet, and job stats.
+         */
+        get: operations["UsersManagementController_getArtisanDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/users/artisans/{id}/wallet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan wallet details
+         * @description Retrieve wallet balances and paginated transaction history for a specific artisan.
+         */
+        get: operations["UsersManagementController_getArtisanWallet"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/users/customers/{id}/status": {
         parameters: {
             query?: never;
@@ -3293,6 +3437,94 @@ export interface paths {
          * @description Returns the currently active privacy policy for display in the app.
          */
         get: operations["MobileTermsController_getActivePrivacyPolicy"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/cancellation-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get active cancellation policy
+         * @description Returns the currently active cancellation policy for display in the app.
+         */
+        get: operations["MobileTermsController_getActiveCancellationPolicy"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/featured-profiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List featured profiles
+         * @description Get paginated list of featured profiles with optional type and status filters.
+         */
+        get: operations["FeaturedProfilesController_findAll"];
+        put?: never;
+        /**
+         * Create a featured profile
+         * @description Create a new featured user or artisan profile. Upload image via "image" field.
+         */
+        post: operations["FeaturedProfilesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/featured-profiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get featured profile details
+         * @description Get details of a specific featured profile.
+         */
+        get: operations["FeaturedProfilesController_findOne"];
+        put?: never;
+        post?: never;
+        /**
+         * Deactivate a featured profile
+         * @description Deactivate (soft delete) a featured profile.
+         */
+        delete: operations["FeaturedProfilesController_deactivate"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/featured-profiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get active featured profiles
+         * @description Returns active featured profiles for display in the app. Optionally filter by type (user or artisan).
+         */
+        get: operations["MobileFeaturedProfilesController_getActiveProfiles"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3675,6 +3907,16 @@ export interface components {
              * @example Password123!
              */
             password: string;
+            /**
+             * @description Unique device identifier (UUID per device)
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            deviceId?: string;
+            /**
+             * @description Human-readable device name
+             * @example iPhone 15 Pro
+             */
+            deviceName?: string;
         };
         MfaVerifyDto: {
             /**
@@ -3687,6 +3929,25 @@ export interface components {
              * @example 123456
              */
             code: string;
+        };
+        VerifyDeviceDto: {
+            /** @description Device verification token received from login */
+            token: string;
+            /**
+             * @description 6-digit verification code sent via email/SMS
+             * @example 123456
+             */
+            code: string;
+            /**
+             * @description Unique device identifier (UUID per device)
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            deviceId?: string;
+            /**
+             * @description Human-readable device name
+             * @example iPhone 15 Pro
+             */
+            deviceName?: string;
         };
         RefreshTokenDto: {
             /**
@@ -5675,6 +5936,23 @@ export interface components {
              */
             currency: string;
         };
+        CommissionRateResponseDto: {
+            /**
+             * @description Commission value (percentage or flat amount)
+             * @example 10
+             */
+            commissionValue: number;
+            /**
+             * @description Whether the commission is a percentage
+             * @example true
+             */
+            isPercentage: boolean;
+            /**
+             * @description Human-readable commission description
+             * @example Default platform commission - 10%
+             */
+            description?: Record<string, never>;
+        };
         TransactionJobDetailsDto: {
             /**
              * @description Job unique identifier
@@ -5784,6 +6062,54 @@ export interface components {
              * @example ₦
              */
             currency: string;
+        };
+        PaginationDto: {
+            /**
+             * @description Current page number
+             * @example 1
+             */
+            page: number;
+            /**
+             * @description Items per page
+             * @example 20
+             */
+            limit: number;
+            /**
+             * @description Total number of items
+             * @example 100
+             */
+            total: number;
+            /**
+             * @description Total number of pages
+             * @example 5
+             */
+            totalPages: number;
+            /**
+             * @description Whether there is a next page
+             * @example true
+             */
+            hasNextPage: boolean;
+            /**
+             * @description Whether there is a previous page
+             * @example false
+             */
+            hasPreviousPage: boolean;
+        };
+        PaginatedTransactionResponseDto: {
+            /**
+             * @description Response status
+             * @example success
+             */
+            status: string;
+            /**
+             * @description Response message
+             * @example Transaction history retrieved successfully
+             */
+            message: string;
+            /** @description List of transactions */
+            data: components["schemas"]["TransactionItemDto"][];
+            /** @description Pagination metadata */
+            pagination: components["schemas"]["PaginationDto"];
         };
         PinOtpResponseDto: {
             /**
@@ -6440,6 +6766,36 @@ export interface components {
              */
             updatedAt: string;
         };
+        CancellationPolicyResponseDto: {
+            /** @description Cancellation policy ID */
+            id: string;
+            /**
+             * @description Version string
+             * @example 1.0
+             */
+            version: string;
+            /** @description Content of the cancellation policy */
+            content: string;
+            /** @description Title of this version */
+            title?: string;
+            /** @description Whether this version is active */
+            isActive: boolean;
+            /**
+             * Format: date-time
+             * @description Effective date
+             */
+            effectiveDate?: string;
+            /**
+             * Format: date-time
+             * @description Created timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated timestamp
+             */
+            updatedAt: string;
+        };
         ChangeDefaultPasswordDto: {
             /**
              * @description Current/default password for verification
@@ -6623,6 +6979,40 @@ export interface components {
             message: string;
             /** @description Updated privacy policy */
             data: components["schemas"]["PrivacyPolicyResponseDto"];
+        };
+        UpdateCancellationPolicyDto: {
+            /**
+             * @description Version string for the cancellation policy (e.g., "1.0", "2.0")
+             * @example 1.0
+             */
+            version: string;
+            /**
+             * @description Full content of the cancellation policy
+             * @example This cancellation policy describes the conditions under which a booking can be cancelled...
+             */
+            content: string;
+            /**
+             * @description Optional title for this version
+             * @example Cancellation Policy v1.0
+             */
+            title?: string;
+            /**
+             * @description Whether to activate this version immediately
+             * @default false
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * @description Date when this version becomes effective
+             * @example 2025-02-01T00:00:00Z
+             */
+            effectiveDate?: string;
+        };
+        UpdateCancellationPolicyResponseDto: {
+            /** @description Success message */
+            message: string;
+            /** @description Updated cancellation policy */
+            data: components["schemas"]["CancellationPolicyResponseDto"];
         };
         AdminNotificationSettingResponseDto: {
             /**
@@ -7281,6 +7671,39 @@ export interface components {
             /** @description Additional data for deep linking */
             data?: Record<string, never>;
         };
+        CreateFeaturedProfileDto: {
+            /**
+             * @description Name of the featured profile
+             * @example John Doe
+             */
+            name: string;
+            /**
+             * @description Type of profile
+             * @example artisan
+             * @enum {string}
+             */
+            type: "user" | "artisan";
+            /**
+             * @description Image URL (set automatically when uploading via multipart)
+             * @example https://storage.example.com/featured/image.jpg
+             */
+            imageUrl?: string;
+            /**
+             * @description Video link URL
+             * @example https://youtube.com/watch?v=abc123
+             */
+            videoLink?: string;
+            /**
+             * @description Whether the profile is active
+             * @default true
+             */
+            isActive: boolean;
+            /**
+             * @description Display order (lower = shown first)
+             * @default 0
+             */
+            displayOrder: number;
+        };
         CreateSupportTicketDto: {
             /**
              * @description Brief subject/title for the support ticket
@@ -7595,6 +8018,48 @@ export interface operations {
                 };
             };
             /** @description Invalid MFA token or code */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_verifyDevice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyDeviceDto"];
+            };
+        };
+        responses: {
+            /** @description Device verified and login successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponseDto"];
+                };
+            };
+            /** @description Invalid or expired verification code */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Invalid or expired device verification token */
             401: {
                 headers: {
                     [name: string]: unknown;
@@ -10887,7 +11352,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["CommissionRateResponseDto"];
+                };
             };
             /** @description Unauthorized */
             401: {
@@ -11019,7 +11486,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["PaginatedTransactionResponseDto"];
+                };
             };
             /** @description Unauthorized */
             401: {
@@ -12856,6 +13325,178 @@ export interface operations {
             };
         };
     };
+    AdminController_getAllCancellationPolicies: {
+        parameters: {
+            query?: {
+                /** @description Page number (default: 1) */
+                page?: number;
+                /** @description Items per page (default: 20) */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of cancellation policy versions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["CancellationPolicyResponseDto"][];
+                        pagination?: {
+                            page?: number;
+                            limit?: number;
+                            total?: number;
+                            totalPages?: number;
+                        };
+                    };
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_updateCancellationPolicy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCancellationPolicyDto"];
+            };
+        };
+        responses: {
+            /** @description Cancellation policy updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateCancellationPolicyResponseDto"];
+                };
+            };
+            /** @description Bad Request - Validation failed */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_getActiveCancellationPolicy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current active cancellation policy */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CancellationPolicyResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_getCancellationPolicyByVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Version string (e.g., "1.0", "2.0") */
+                version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Cancellation policy for the specified version */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CancellationPolicyResponseDto"];
+                };
+            };
+            /** @description Cancellation policy version not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     AdminController_getAdminNotificationSetting: {
         parameters: {
             query?: never;
@@ -14533,6 +15174,95 @@ export interface operations {
             };
         };
     };
+    UsersManagementController_getCustomerDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Customer user ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Customer detail retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Customer not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UsersManagementController_getArtisanDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Artisan user ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Artisan detail retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Artisan not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UsersManagementController_getArtisanWallet: {
+        parameters: {
+            query?: {
+                /** @description Page number (default: 1) */
+                page?: number;
+                /** @description Items per page (default: 20) */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                /** @description Artisan user ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Artisan wallet details retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Artisan not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     UsersManagementController_updateCustomerStatus: {
         parameters: {
             query?: never;
@@ -15000,6 +15730,180 @@ export interface operations {
                         /** @example Privacy policy retrieved */
                         message?: string;
                         data?: components["schemas"]["PrivacyPolicyResponseDto"];
+                    };
+                };
+            };
+        };
+    };
+    MobileTermsController_getActiveCancellationPolicy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active cancellation policy */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Cancellation policy retrieved */
+                        message?: string;
+                        data?: components["schemas"]["CancellationPolicyResponseDto"];
+                    };
+                };
+            };
+        };
+    };
+    FeaturedProfilesController_findAll: {
+        parameters: {
+            query?: {
+                /** @description Filter by profile type */
+                type?: "user" | "artisan";
+                /** @description Filter by status */
+                status?: "active" | "inactive";
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Featured profiles list retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeaturedProfilesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["CreateFeaturedProfileDto"];
+            };
+        };
+        responses: {
+            /** @description Featured profile created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request - Validation failed */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeaturedProfilesController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Featured profile ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Featured profile details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Featured profile not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeaturedProfilesController_deactivate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Featured profile ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Featured profile deactivated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Featured profile not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MobileFeaturedProfilesController_getActiveProfiles: {
+        parameters: {
+            query?: {
+                /** @description Filter by profile type */
+                type?: "user" | "artisan";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active featured profiles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Featured profiles retrieved successfully */
+                        message?: string;
+                        data?: {
+                            /** Format: uuid */
+                            id?: string;
+                            name?: string;
+                            /** @enum {string} */
+                            type?: "user" | "artisan";
+                            imageUrl?: string | null;
+                            videoLink?: string | null;
+                            displayOrder?: number;
+                        }[];
                     };
                 };
             };

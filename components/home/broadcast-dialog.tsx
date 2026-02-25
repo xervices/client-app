@@ -7,6 +7,7 @@ import { Button } from '../ui/button';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api';
 import { LoadingIndicator } from '../ui/loading-indicator';
+import * as Application from 'expo-application';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH;
@@ -96,12 +97,30 @@ interface BroadcastDialogItem {
     | 'safety_alert'
     | 'new_feature'
     | undefined;
-  data?: Record<string, never> | undefined;
+  data?: Record<string, any> | undefined;
 }
 
-function BroadcastDialogItem({ body, id, title, templateType }: BroadcastDialogItem) {
+function BroadcastDialogItem({ body, id, title, templateType, data }: BroadcastDialogItem) {
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation(api.dismissBroadcast(id));
+
+  useEffect(() => {
+    if (templateType === 'app_update' && data?.version === Application.nativeApplicationVersion) {
+      if (!isPending) {
+        mutate(undefined, {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: api.getActiveBroadcasts().queryKey,
+            });
+          },
+        });
+      }
+    }
+  }, [templateType, data?.version, mutate, queryClient, isPending]);
+
+  if (templateType === 'app_update' && data?.version === Application.nativeApplicationVersion) {
+    return null;
+  }
 
   return (
     <View style={{ width: CARD_WIDTH }} className="flex p-6">

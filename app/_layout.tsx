@@ -58,6 +58,7 @@ export default function RootLayout() {
                       <Stack.Screen name="login" options={{ headerShown: false }} />
                       <Stack.Screen name="register" options={{ headerShown: false }} />
                       <Stack.Screen name="verify-email" options={{ headerShown: false }} />
+                      <Stack.Screen name="verify-device" options={{ headerShown: false }} />
                       <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
                       <Stack.Screen name="forgot-password-otp" options={{ headerShown: false }} />
                       <Stack.Screen name="new-password" options={{ headerShown: false }} />
@@ -72,6 +73,7 @@ export default function RootLayout() {
                   <Toaster
                     theme="light"
                     richColors
+                    visibleToasts={3}
                     styles={{
                       title: {
                         fontFamily: 'CabinetGrotesk-Bold',

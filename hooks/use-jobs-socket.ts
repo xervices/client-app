@@ -11,6 +11,7 @@ import {
   SimpleResponse,
   JoinJobResponse,
 } from './types';
+import { AppState } from 'react-native';
 
 const SOCKET_URL = 'https://server-api-bibv.onrender.com';
 
@@ -56,6 +57,10 @@ export const useJobsSocket = ({
       }
       socket = io(`${SOCKET_URL}/jobs`, {
         transports: ['websocket'],
+        reconnection: true,
+        reconnectionAttempts: Infinity,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 10000,
         autoConnect: true,
         auth: { token },
       });
@@ -131,11 +136,27 @@ export const useJobsSocket = ({
 
     initSocket();
 
+    const handleAppStateChange = (nextAppState: string) => {
+      if (nextAppState === 'active') {
+        if (socketRef.current && !socketRef.current.connected) {
+          socketRef.current.connect();
+        }
+      } else if (nextAppState === 'background') {
+        if (socketRef.current && socketRef.current.connected) {
+          socketRef.current.disconnect();
+        }
+      }
+    };
+
+    const appStateSubscription = AppState.addEventListener('change', handleAppStateChange);
+
     return () => {
       if (socket) {
         socket.disconnect();
         socketRef.current = null;
       }
+
+      appStateSubscription.remove();
     };
   }, [autoConnect, jobId]);
 

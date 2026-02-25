@@ -33,21 +33,24 @@ export function DeleteAccountSheet() {
         {},
         {
           onSuccess: async () => {
-            let deleteSheet = await SheetManager.hide('delete-account-sheet');
+            SheetManager.hide('delete-account-sheet');
+            tokenStorage.clearTokens();
+            useAuthStore.getState().setLoginState(false);
+            // let deleteSheet = await SheetManager.hide('delete-account-sheet');
 
-            if (deleteSheet)
-              return await SheetManager.show('success-sheet', {
-                payload: {
-                  subtitle:
-                    'Your account has been deleted successfully. You will be redirected to the login page shortly',
-                  title: 'Account deleted successfully',
-                  useCheckImage: true,
-                  onRedirect: () => {
-                    tokenStorage.clearTokens();
-                    useAuthStore.getState().setLoginState(false);
-                  },
-                },
-              });
+            // if (deleteSheet)
+            //   return await SheetManager.show('success-sheet', {
+            //     payload: {
+            //       subtitle:
+            //         'Your account has been deleted successfully. You will be redirected to the login page shortly',
+            //       title: 'Account deleted successfully',
+            //       useCheckImage: true,
+            //       onRedirect: () => {
+            //         tokenStorage.clearTokens();
+            //         useAuthStore.getState().setLoginState(false);
+            //       },
+            //     },
+            //   });
           },
           onError: (err) => {
             showErrorMessage(err.message);

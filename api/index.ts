@@ -34,12 +34,35 @@ export const api = {
   login: () => {
     return {
       mutationFn: async (credentials: RequestBody<'/api/auth/login', 'post'>) => {
-        const { data, error } = await apiClient.POST('/api/auth/login', {
+        const { data, error } = await publicApiClient.POST('/api/auth/login', {
           body: credentials,
         });
 
         if (error) {
           throw new Error(getErrorMessage(error, 'Login failed'));
+        }
+
+        if (data?.tokens) {
+          await tokenStorage.setTokens(data.tokens.accessToken, data.tokens.refreshToken);
+        }
+
+        if (data.user) {
+          useAuthStore.getState().setUser(data.user);
+        }
+
+        return data;
+      },
+    };
+  },
+  verifyDevice: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/auth/verify-device', 'post'>) => {
+        const { data, error } = await publicApiClient.POST('/api/auth/verify-device', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Device verification failed'));
         }
 
         if (data?.tokens) {
@@ -448,6 +471,23 @@ export const api = {
       },
     };
   },
+
+  // featured profile endpoints
+  getActiveFeaturedProfiles: () =>
+    queryOptions({
+      queryKey: ['profiles', 'active', 'featured'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/featured-profiles', {
+          params: {
+            query: {
+              type: 'user',
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
 
   // Support tickets endpoints
   createSupportTicket: () => {
@@ -894,7 +934,7 @@ export const api = {
     }),
   markAllNotificationAsRead: () => {
     return {
-      mutationFn: async (credentials: RequestBody<'/api/notifications/mark-all-read', 'post'>) => {
+      mutationFn: async () => {
         const { data, error } = await apiClient.POST('/api/notifications/mark-all-read');
 
         if (error) {
@@ -1099,6 +1139,15 @@ export const api = {
       queryKey: ['terms'],
       queryFn: async () => {
         const { data } = await apiClient.GET('/api/terms-and-conditions');
+
+        return data;
+      },
+    }),
+  getCancellationPolicy: () =>
+    queryOptions({
+      queryKey: ['cancellation', 'policy'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/cancellation-policy');
 
         return data;
       },

@@ -282,6 +282,28 @@ export function ProScreen() {
             <Text>Accept offer - {formatCurrency(offer?.data?.amount)}</Text>
           </Button>
 
+          <Button
+            isLoading={acceptOffer?.isPending}
+            disabled={acceptOffer?.isPending}
+            onPress={() => {
+              acceptOffer?.mutate(
+                {
+                  action: 'reject',
+                },
+                {
+                  onError: (err) => {
+                    showErrorMessage(err?.message);
+                  },
+                  onSuccess: () => {
+                    router.back();
+                  },
+                }
+              );
+            }}
+            variant={'ghost'}>
+            Reject Offer
+          </Button>
+
           <View className="flex gap-2">
             <Text className="font-cabinet-bold text-[#737381]">Recent Reviews</Text>
 

@@ -19,10 +19,13 @@ import { GoogleSigninButton } from '@/components/google-signin-button';
 import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
 import { useAuthStore } from '@/store/auth-store';
+import { getDeviceInfo } from '@/lib/utils';
 
 const formSchema = z.object({
   emailOrPhone: z.string().min(1, 'Email or Phone is required.'),
   password: z.string().min(1, 'Password is required.'),
+  deviceId: z.string(),
+  deviceName: z.string(),
 });
 
 export default function Screen() {
@@ -44,11 +47,18 @@ export default function Screen() {
     defaultValues: {
       emailOrPhone: '',
       password: '',
+      deviceId: '',
+      deviceName: '',
     },
     validators: {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
+      const deviceInfo = await getDeviceInfo();
+
+      value.deviceId = deviceInfo?.deviceId || '';
+      value.deviceName = deviceInfo?.deviceName || '';
+
       mutate(value, {
         onSuccess: (res) => {
           if (!res.user.emailVerified) {
@@ -56,6 +66,13 @@ export default function Screen() {
               pathname: '/verify-email',
               params: {
                 email: value.emailOrPhone,
+              },
+            });
+          } else if (res?.requiresDeviceVerification) {
+            router.navigate({
+              pathname: '/verify-device',
+              params: {
+                token: res?.deviceVerificationToken,
               },
             });
           } else {

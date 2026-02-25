@@ -8,6 +8,8 @@ import isYesterday from 'dayjs/plugin/isYesterday';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 import { Linking, Platform } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
+import * as Application from 'expo-application';
+import * as Device from 'expo-device';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -474,4 +476,23 @@ export const copyToClipboard = async (text?: string) => {
       showErrorMessage('Failed to copy...');
     }
   }
+};
+
+interface DeviceInfo {
+  deviceId: string | null;
+  deviceName: string | null;
+}
+
+export const getDeviceInfo = async (): Promise<DeviceInfo> => {
+  const deviceName = Device.deviceName;
+
+  let deviceId: string | null = null;
+
+  if (Platform.OS === 'android') {
+    deviceId = Application.getAndroidId();
+  } else if (Platform.OS === 'ios') {
+    deviceId = await Application.getIosIdForVendorAsync();
+  }
+
+  return { deviceId, deviceName };
 };

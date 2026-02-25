@@ -189,7 +189,7 @@ export default function Screen() {
             )}
           </form.Field>
 
-          <Button onPress={form.handleSubmit} isLoading={isPending}>
+          <Button onPress={form.handleSubmit} isLoading={isPending} disabled={isPending}>
             Get Started
           </Button>
         </View>
@@ -220,13 +220,13 @@ export default function Screen() {
               </Text>
             </Pressable>
 
-            <Pressable onPress={() => router.navigate('/terms')}>
+            <Pressable className="pr-1.5" onPress={() => router.navigate('/terms')}>
               <Text className="leading-normal text-primary">Terms of Service</Text>
             </Pressable>
             <Pressable>
               <Text className="mx-1 leading-normal text-[#737381]">and</Text>
             </Pressable>
-            <Pressable onPress={() => router.navigate('/privacy')}>
+            <Pressable className="pl-1.5" onPress={() => router.navigate('/privacy')}>
               <Text className="leading-normal text-primary">Privacy Policy</Text>
             </Pressable>
           </Text>

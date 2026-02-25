@@ -9,6 +9,7 @@ import {
   UserTypingEvent,
   SendMessageResponse,
 } from './types';
+import { AppState } from 'react-native';
 
 const SOCKET_URL = 'https://server-api-bibv.onrender.com';
 
@@ -55,6 +56,10 @@ export const useChatSocket = ({
 
       socket = io(`${SOCKET_URL}/chat`, {
         transports: ['websocket'],
+        reconnection: true,
+        reconnectionAttempts: Infinity,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 10000,
         autoConnect: true,
         auth: { token },
       });
@@ -111,11 +116,27 @@ export const useChatSocket = ({
 
     initSocket();
 
+    const handleAppStateChange = (nextAppState: string) => {
+      if (nextAppState === 'active') {
+        if (socketRef.current && !socketRef.current.connected) {
+          socketRef.current.connect();
+        }
+      } else if (nextAppState === 'background') {
+        if (socketRef.current && socketRef.current.connected) {
+          socketRef.current.disconnect();
+        }
+      }
+    };
+
+    const appStateSubscription = AppState.addEventListener('change', handleAppStateChange);
+
     return () => {
       if (socket) {
         socket.disconnect();
         socketRef.current = null;
       }
+
+      appStateSubscription.remove();
     };
   }, [autoConnect, roomId]);
 

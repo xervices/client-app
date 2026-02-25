@@ -10,6 +10,7 @@ import { Camera, Video } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { RecordingIndicator } from '../recording-indicator';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { showErrorMessage } from '@/api/helpers';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -64,6 +65,20 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
 
     if (!result.canceled) {
       const asset = result.assets[0];
+
+      const isUnsupported =
+        asset.mimeType?.includes('heic') ||
+        asset.mimeType?.includes('heif') ||
+        asset.mimeType?.includes('avif') ||
+        asset.uri.toLowerCase().endsWith('.heic') ||
+        asset.uri.toLowerCase().endsWith('.heif') ||
+        asset.uri.toLowerCase().endsWith('.avif');
+
+      if (isUnsupported) {
+        showErrorMessage('The selected file format is not supported.');
+        return;
+      }
+
       if (asset.type === 'image') {
         setImageMedia({ uri: asset.uri, mimeType: asset.mimeType || 'image/png' });
       }

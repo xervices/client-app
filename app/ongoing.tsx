@@ -9,7 +9,7 @@ import { Image } from 'expo-image';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { ArrowLeft, BadgeCheck, PhoneCall } from 'lucide-react-native';
+import { ArrowLeft, BadgeCheck, PhoneCall, RefreshCw } from 'lucide-react-native';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { showErrorMessage } from '@/api/helpers';
@@ -17,6 +17,7 @@ import { getTravelTimeGoogle, makePhoneCall } from '@/lib/utils';
 import { useLocation } from 'solomo';
 import { useJobsSocket } from '@/hooks/use-jobs-socket';
 import { LoadingState } from '@/components/loading-state';
+import { LoadingIndicator } from '@/components/ui/loading-indicator';
 
 export default function Screen() {
   const { id }: { id: string } = useLocalSearchParams();
@@ -227,12 +228,6 @@ export default function Screen() {
   React.useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextAppState) => {
       if (nextAppState === 'active') {
-        // App came to foreground
-        // Reconnect socket if disconnected
-        if (!isConnected) {
-          startTracking();
-        }
-
         // Refetch all data
         refetch();
         jobs?.refetch();
@@ -243,7 +238,7 @@ export default function Screen() {
     return () => {
       subscription.remove();
     };
-  }, [isConnected, id]);
+  }, [id]);
 
   return (
     <Layout
@@ -408,6 +403,20 @@ export default function Screen() {
                       className="absolute left-0 h-8 w-8 justify-center">
                       <ArrowLeft size={24} color={'#B4B4BC'} />
                     </Pressable>
+
+                    <Pressable
+                      onPress={() => {
+                        refetch();
+                        jobs?.refetch();
+                        artisanLocation?.refetch();
+                      }}
+                      className="absolute right-0 h-8 w-8 justify-center">
+                      {isRefetching || jobs?.isRefetching || artisanLocation?.isRefetching ? (
+                        <LoadingIndicator size={24} />
+                      ) : (
+                        <RefreshCw size={24} color={'#FE6A00'} />
+                      )}
+                    </Pressable>
                   </View>
 
                   <View>
@@ -452,7 +461,7 @@ export default function Screen() {
                       </View>
                     </View>
 
-                    <View className="flex flex-1 justify-between">
+                    <View className="flex w-20 justify-between">
                       <Text
                         numberOfLines={1}
                         ellipsizeMode="tail"

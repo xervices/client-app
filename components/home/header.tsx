@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Text } from '../ui/text';
 import { useAuthStore } from '@/store/auth-store';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import { useEffect } from 'react';
 
@@ -13,6 +13,7 @@ export function Header() {
   const { user } = useAuthStore();
 
   const unreadNotifications = useQuery(api.getUnreadNotificationCount());
+  const markAllNotifications = useMutation(api.markAllNotificationAsRead());
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextAppState) => {
@@ -47,7 +48,14 @@ export function Header() {
       </View>
 
       <Pressable
-        onPress={() => router.navigate('/notification')}
+        onPress={() => {
+          markAllNotifications?.mutate(undefined, {
+            onSuccess: () => {
+              unreadNotifications?.refetch();
+            },
+          });
+          router.navigate('/notification');
+        }}
         className="relative flex h-6 w-6 items-center justify-center">
         <Bell fill={'#1B1B1E'} />
 
