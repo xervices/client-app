@@ -35,7 +35,7 @@ const formSchema = z.object({
   comment: z.string(),
 });
 
-export default function Screen() {
+export function RateScreen() {
   const { id }: { id: string } = useLocalSearchParams();
 
   const { isLoading, data, refetch, isRefetching } = useQuery(api.getJobDetail(id));

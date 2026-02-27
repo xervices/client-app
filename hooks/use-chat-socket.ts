@@ -34,12 +34,31 @@ export const useChatSocket = ({
 
   const onNewMessageRef = useRef(onNewMessage);
   const onTypingRef = useRef(onTyping);
+  // Keep roomId accessible in callbacks without re-running the main effect
+  const roomIdRef = useRef(roomId);
 
-  // Keep refs updated
   useEffect(() => {
     onNewMessageRef.current = onNewMessage;
     onTypingRef.current = onTyping;
   }, [onNewMessage, onTyping]);
+
+  useEffect(() => {
+    roomIdRef.current = roomId;
+  }, [roomId]);
+
+  // Extracted so it can be called both on initial connect and on foreground resume
+  const joinRoom = useCallback((socket: ChatSocket) => {
+    const currentRoomId = roomIdRef.current;
+    if (!currentRoomId) return;
+
+    socket.emit('join_room', { roomId: currentRoomId }, (response) => {
+      if (response.success) {
+        console.log(`Joined room: ${currentRoomId}`);
+      } else {
+        console.error(`Failed to join room ${currentRoomId}:`, response.error);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (!autoConnect) return;
@@ -69,15 +88,7 @@ export const useChatSocket = ({
       socket.on('connect', () => {
         console.log('✅ Connected to /chat');
         setIsConnected(true);
-        if (roomId) {
-          socket?.emit('join_room', { roomId }, (response) => {
-            if (response.success) {
-              console.log(`Joined room: ${roomId}`);
-            } else {
-              console.error(`Failed to join room ${roomId}:`, response.error);
-            }
-          });
-        }
+        joinRoom(socket!);
       });
 
       socket.on('disconnect', (reason) => {
@@ -91,22 +102,16 @@ export const useChatSocket = ({
 
       socket.on('new_message', (event) => {
         console.log('New Message:', event);
-        if (onNewMessageRef.current) {
-          onNewMessageRef.current(event.data);
-        }
+        onNewMessageRef.current?.(event.data);
       });
 
       socket.on('user_typing', (event) => {
-        // Update typing users list
         const { userId, isTyping } = event.data;
         setTypingUsers((prev) => {
           const others = prev.filter((u) => u.userId !== userId);
           return isTyping ? [...others, event.data] : others;
         });
-
-        if (onTypingRef.current) {
-          onTypingRef.current(event.data);
-        }
+        onTypingRef.current?.(event.data);
       });
 
       socket.on('messages_read', (event) => {
@@ -118,27 +123,31 @@ export const useChatSocket = ({
 
     const handleAppStateChange = (nextAppState: string) => {
       if (nextAppState === 'active') {
-        if (socketRef.current && !socketRef.current.connected) {
-          socketRef.current.connect();
-        }
-      } else if (nextAppState === 'background') {
-        if (socketRef.current && socketRef.current.connected) {
-          socketRef.current.disconnect();
+        const socket = socketRef.current;
+        if (!socket) return;
+
+        if (socket.connected) {
+          // Already connected — re-join the room in case the server dropped it
+          joinRoom(socket);
+        } else {
+          // Calling connect() resets the internal skipReconnect flag that
+          // gets set when disconnect() is called manually
+          socket.connect();
         }
       }
+      // Removed the background disconnect — manually calling disconnect() sets
+      // an internal skipReconnect flag that breaks foreground resume.
+      // Let the OS/network drop the connection naturally instead.
     };
 
     const appStateSubscription = AppState.addEventListener('change', handleAppStateChange);
 
     return () => {
-      if (socket) {
-        socket.disconnect();
-        socketRef.current = null;
-      }
-
+      socket?.disconnect();
+      socketRef.current = null;
       appStateSubscription.remove();
     };
-  }, [autoConnect, roomId]);
+  }, [autoConnect, joinRoom]);
 
   const sendMessage = useCallback((content: string, roomId: string) => {
     return new Promise<SendMessageResponse>((resolve, reject) => {

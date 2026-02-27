@@ -93,6 +93,7 @@ export default function Screen() {
           }}
           disabled={otpDisabled}
           onFilled={(value) => {
+            console.log(email);
             verifyCode.mutate(
               { code: value, email },
               {

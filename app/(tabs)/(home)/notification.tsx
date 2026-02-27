@@ -90,7 +90,7 @@ export default function Screen() {
           </Accordion>
         </View>
       ) : (
-        <EmptyState title="No Notifications" subtitle="You do not have any notifications ye" />
+        <EmptyState title="No Notifications" subtitle="You do not have any notifications yet." />
       )}
     </Layout>
   );

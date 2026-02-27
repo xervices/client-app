@@ -603,6 +603,289 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/referrals/withdraw-to-wallet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Withdraw referral bonus to main wallet */
+        post: operations["ReferralsController_withdrawToWallet"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/earnings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get earnings overview */
+        get: operations["EarningsController_getEarningsOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/earnings/commission-rate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get current platform commission rate
+         * @description Fetch the current commission percentage the platform charges on artisan earnings.
+         */
+        get: operations["EarningsController_getCommissionRate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/earnings/transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get transaction history with filters */
+        get: operations["EarningsController_getTransactionHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/earnings/breakdown": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get earnings breakdown
+         * @description Get detailed earnings breakdown by period (today, this week, this month, all time)
+         */
+        get: operations["EarningsController_getEarningsBreakdown"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get transaction history
+         * @description Fetch all transaction history for the authenticated user with filters for period, date range, type, and pagination.
+         */
+        get: operations["TransactionsController_getTransactions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/security/pin/request-otp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Request OTP for PIN creation
+         * @description Sends an OTP to the user email that must be provided when creating/updating the PIN
+         */
+        post: operations["SecurityController_requestPinOtp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/security/pin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create or update withdrawal PIN
+         * @description Create or update the withdrawal PIN. Requires OTP verification first (call /security/pin/request-otp)
+         */
+        post: operations["SecurityController_createOrUpdatePin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/security/verify-pin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Verify withdrawal PIN */
+        post: operations["SecurityController_verifyPin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/security/check-pin-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check if user has a PIN set */
+        post: operations["SecurityController_checkPinStatus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/withdrawals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get my withdrawal history */
+        get: operations["WithdrawalsController_getWithdrawals"];
+        put?: never;
+        /** Request a withdrawal */
+        post: operations["WithdrawalsController_createWithdrawal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payments/initialize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Initialize payment for a job
+         * @description Initialize a Paystack payment for a job. Returns authorization URL to redirect user for payment.
+         */
+        post: operations["PaymentsController_initializePayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payments/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify payment
+         * @description Verify a payment after user completes payment on Paystack.
+         */
+        post: operations["PaymentsController_verifyPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payments/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get payment by ID
+         * @description Get payment details by payment ID.
+         */
+        get: operations["PaymentsController_getPayment"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payments/job/{jobId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get payment for a job
+         * @description Get payment details for a specific job.
+         */
+        get: operations["PaymentsController_getPaymentByJob"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/artisans/onboard": {
         parameters: {
             query?: never;
@@ -1473,272 +1756,6 @@ export interface paths {
          * @description Returns the chat room associated with a specific job. Only the user or artisan involved in the job can access this.
          */
         get: operations["ChatController_getRoomByJob"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/earnings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get earnings overview */
-        get: operations["EarningsController_getEarningsOverview"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/earnings/commission-rate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get current platform commission rate
-         * @description Fetch the current commission percentage the platform charges on artisan earnings.
-         */
-        get: operations["EarningsController_getCommissionRate"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/earnings/transactions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get transaction history with filters */
-        get: operations["EarningsController_getTransactionHistory"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/earnings/breakdown": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get earnings breakdown
-         * @description Get detailed earnings breakdown by period (today, this week, this month, all time)
-         */
-        get: operations["EarningsController_getEarningsBreakdown"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/transactions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get transaction history
-         * @description Fetch all transaction history for the authenticated user with filters for period, date range, type, and pagination.
-         */
-        get: operations["TransactionsController_getTransactions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/security/pin/request-otp": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Request OTP for PIN creation
-         * @description Sends an OTP to the user email that must be provided when creating/updating the PIN
-         */
-        post: operations["SecurityController_requestPinOtp"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/security/pin": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create or update withdrawal PIN
-         * @description Create or update the withdrawal PIN. Requires OTP verification first (call /security/pin/request-otp)
-         */
-        post: operations["SecurityController_createOrUpdatePin"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/security/verify-pin": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Verify withdrawal PIN */
-        post: operations["SecurityController_verifyPin"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/security/check-pin-status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Check if user has a PIN set */
-        post: operations["SecurityController_checkPinStatus"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/withdrawals": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get my withdrawal history */
-        get: operations["WithdrawalsController_getWithdrawals"];
-        put?: never;
-        /** Request a withdrawal */
-        post: operations["WithdrawalsController_createWithdrawal"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/payments/initialize": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Initialize payment for a job
-         * @description Initialize a Paystack payment for a job. Returns authorization URL to redirect user for payment.
-         */
-        post: operations["PaymentsController_initializePayment"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/payments/verify": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Verify payment
-         * @description Verify a payment after user completes payment on Paystack.
-         */
-        post: operations["PaymentsController_verifyPayment"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/payments/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get payment by ID
-         * @description Get payment details by payment ID.
-         */
-        get: operations["PaymentsController_getPayment"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/payments/job/{jobId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get payment for a job
-         * @description Get payment details for a specific job.
-         */
-        get: operations["PaymentsController_getPaymentByJob"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3533,6 +3550,78 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/promotion-slides": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List promotion slides
+         * @description Get paginated list of promotion slides with optional filters.
+         */
+        get: operations["PromotionSlidesController_findAll"];
+        put?: never;
+        /**
+         * Create a promotion slide
+         * @description Create a new promotion slide with banner image. Upload image via "image" field.
+         */
+        post: operations["PromotionSlidesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/promotion-slides/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get promotion slide details
+         * @description Get details of a specific promotion slide.
+         */
+        get: operations["PromotionSlidesController_findOne"];
+        /**
+         * Update a promotion slide
+         * @description Update a promotion slide. Optionally upload a new image via "image" field.
+         */
+        put: operations["PromotionSlidesController_update"];
+        post?: never;
+        /**
+         * Delete a promotion slide
+         * @description Permanently delete a promotion slide.
+         */
+        delete: operations["PromotionSlidesController_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/promotion-slides": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get active promotion slides
+         * @description Returns active promotion slides for display in the app. Optionally filter by audience (users or artisans).
+         */
+        get: operations["MobilePromotionSlidesController_getActiveSlides"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/support/tickets": {
         parameters: {
             query?: never;
@@ -3965,15 +4054,20 @@ export interface components {
         };
         VerifyAccountDto: {
             /**
-             * @description User email address
+             * @description User email address (provide either email or phoneNumber)
              * @example user@example.com
              */
-            email: string;
+            email?: string;
+            /**
+             * @description User phone number (provide either email or phoneNumber)
+             * @example +2348012345678
+             */
+            phoneNumber?: string;
             /**
              * @description The 6-digit verification code sent to email and phone
              * @example 123456
              */
-            code: string;
+            code?: string;
         };
         ResendVerificationDto: {
             /**
@@ -3997,10 +4091,10 @@ export interface components {
         };
         ResetPasswordDto: {
             /**
-             * @description Password reset token from email/SMS
-             * @example abc123def456
+             * @description Password reset code from email/SMS
+             * @example 123456
              */
-            token: string;
+            code: string;
             /**
              * @description New password (min 8 chars, must contain uppercase, lowercase, number, and special character)
              * @example NewPassword123!
@@ -4369,6 +4463,420 @@ export interface components {
              */
             amount: number;
         };
+        WithdrawReferralBonusDto: {
+            /**
+             * @description Amount to withdraw from referral bonus to main wallet
+             * @example 25
+             */
+            amount: number;
+        };
+        EarningsOverviewResponseDto: {
+            /**
+             * @description Available balance that can be withdrawn
+             * @example 25000
+             */
+            availableBalance: number;
+            /**
+             * @description Pending balance (payments in escrow)
+             * @example 5000
+             */
+            pendingBalance: number;
+            /**
+             * @description Total amount earned all time
+             * @example 150000
+             */
+            totalEarned: number;
+            /**
+             * @description Total amount withdrawn all time
+             * @example 120000
+             */
+            totalWithdrawn: number;
+            /**
+             * @description Currency symbol
+             * @example ₦
+             */
+            currency: string;
+        };
+        CommissionRateResponseDto: {
+            /**
+             * @description Commission value (percentage or flat amount)
+             * @example 10
+             */
+            commissionValue: number;
+            /**
+             * @description Whether the commission is a percentage
+             * @example true
+             */
+            isPercentage: boolean;
+            /**
+             * @description Human-readable commission description
+             * @example Default platform commission - 10%
+             */
+            description?: Record<string, never>;
+        };
+        TransactionJobDetailsDto: {
+            /**
+             * @description Job unique identifier
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            jobId: string;
+            /**
+             * @description Customer's full name
+             * @example John Doe
+             */
+            customerName: string;
+            /**
+             * @description Service category name
+             * @example Plumbing
+             */
+            categoryName: string;
+            /**
+             * @description Commission charged by Xervices
+             * @example 750
+             */
+            xervicesCharge: number;
+            /**
+             * @description Gross amount before commission
+             * @example 5000
+             */
+            grossAmount: number;
+        };
+        TransactionItemDto: {
+            /**
+             * @description Transaction unique identifier
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Type of transaction
+             * @example payment_received
+             * @enum {string}
+             */
+            type: "payment_received" | "earning" | "withdrawal" | "refund" | "platform_fee" | "dispute_deduction" | "pending_credit" | "referral_bonus";
+            /**
+             * @description Transaction amount (positive for credit, negative for debit)
+             * @example 5000
+             */
+            amount: number;
+            /**
+             * @description Balance after this transaction
+             * @example 25000
+             */
+            balanceAfter: number;
+            /**
+             * @description Description of the transaction
+             * @example Payment for plumbing service
+             */
+            description?: string;
+            /**
+             * @description Type of referenced entity
+             * @example job
+             */
+            referenceType?: string;
+            /**
+             * @description ID of the referenced entity
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            referenceId?: string;
+            /** @description Job details (only present for payment transactions) */
+            jobDetails?: components["schemas"]["TransactionJobDetailsDto"];
+            /**
+             * Format: date-time
+             * @description When the transaction was created
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            createdAt: string;
+        };
+        PeriodBreakdownDto: {
+            /**
+             * @description Gross earnings before commission
+             * @example 10000
+             */
+            grossEarnings: number;
+            /**
+             * @description Commission paid to platform
+             * @example 1500
+             */
+            commission: number;
+            /**
+             * @description Net earnings after commission
+             * @example 8500
+             */
+            netEarnings: number;
+            /**
+             * @description Number of jobs completed
+             * @example 5
+             */
+            jobsCompleted: number;
+        };
+        EarningsBreakdownResponseDto: {
+            /** @description Today's earnings breakdown */
+            today: components["schemas"]["PeriodBreakdownDto"];
+            /** @description This week's earnings breakdown */
+            thisWeek: components["schemas"]["PeriodBreakdownDto"];
+            /** @description This month's earnings breakdown */
+            thisMonth: components["schemas"]["PeriodBreakdownDto"];
+            /** @description All time earnings breakdown */
+            allTime: components["schemas"]["PeriodBreakdownDto"];
+            /**
+             * @description Currency symbol
+             * @example ₦
+             */
+            currency: string;
+        };
+        PaginationDto: {
+            /**
+             * @description Current page number
+             * @example 1
+             */
+            page: number;
+            /**
+             * @description Items per page
+             * @example 20
+             */
+            limit: number;
+            /**
+             * @description Total number of items
+             * @example 100
+             */
+            total: number;
+            /**
+             * @description Total number of pages
+             * @example 5
+             */
+            totalPages: number;
+            /**
+             * @description Whether there is a next page
+             * @example true
+             */
+            hasNextPage: boolean;
+            /**
+             * @description Whether there is a previous page
+             * @example false
+             */
+            hasPreviousPage: boolean;
+        };
+        PaginatedTransactionResponseDto: {
+            /**
+             * @description Response status
+             * @example success
+             */
+            status: string;
+            /**
+             * @description Response message
+             * @example Transaction history retrieved successfully
+             */
+            message: string;
+            /** @description List of transactions */
+            data: components["schemas"]["TransactionItemDto"][];
+            /** @description Pagination metadata */
+            pagination: components["schemas"]["PaginationDto"];
+        };
+        PinOtpResponseDto: {
+            /**
+             * @description Operation success status
+             * @example true
+             */
+            success: boolean;
+            /**
+             * @description Response message
+             * @example OTP sent to your email address
+             */
+            message: string;
+        };
+        CreatePinDto: {
+            /**
+             * @description OTP code received via email
+             * @example 123456
+             */
+            otp: string;
+            /**
+             * @description New PIN (4-6 digits)
+             * @example 1234
+             */
+            pin: string;
+        };
+        PinResponseDto: {
+            /**
+             * @description Operation success status
+             * @example true
+             */
+            success: boolean;
+            /**
+             * @description Response message
+             * @example PIN set successfully
+             */
+            message: string;
+        };
+        VerifyPinDto: {
+            /**
+             * @description PIN to verify
+             * @example 1234
+             */
+            pin: string;
+        };
+        VerifyPinResponseDto: {
+            /**
+             * @description Whether PIN verification was successful
+             * @example true
+             */
+            success: boolean;
+            /**
+             * @description Response message
+             * @example PIN verified successfully
+             */
+            message: string;
+        };
+        PinStatusResponseDto: {
+            /**
+             * @description Whether the user has set a PIN
+             * @example true
+             */
+            hasPin: boolean;
+            /**
+             * @description Whether the account is locked due to failed attempts
+             * @example false
+             */
+            isLocked: boolean;
+        };
+        CreateWithdrawalDto: {
+            /**
+             * @description Bank account ID to withdraw to
+             * @example 123e4567-e89b-12d3-a456-426614174000
+             */
+            bankAccountId: string;
+            /**
+             * @description Amount to withdraw (Naira)
+             * @example 5000
+             */
+            amount: number;
+            /**
+             * @description Withdrawal PIN for verification
+             * @example 1234
+             */
+            pin: string;
+        };
+        InitializePaymentDto: {
+            /**
+             * @description Job ID to pay for
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            jobId: string;
+            /**
+             * @description Callback URL after payment completion
+             * @example https://app.xervices.com/payment/callback
+             */
+            callbackUrl?: string;
+        };
+        InitializePaymentResponseDto: {
+            /**
+             * @description Whether initialization was successful
+             * @example true
+             */
+            success: boolean;
+            /**
+             * @description Payment ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            paymentId: string;
+            /**
+             * @description Payment reference
+             * @example ref_1234567890
+             */
+            reference: string;
+            /**
+             * @description Authorization URL to redirect user for payment
+             * @example https://checkout.paystack.com/abc123
+             */
+            authorizationUrl: string;
+            /**
+             * @description Access code for inline payment
+             * @example abc123def456
+             */
+            accessCode: string;
+        };
+        VerifyPaymentDto: {
+            /**
+             * @description Payment reference from Paystack
+             * @example ref_1234567890
+             */
+            reference: string;
+        };
+        VerifyPaymentResponseDto: {
+            /**
+             * @description Whether verification was successful
+             * @example true
+             */
+            success: boolean;
+            /**
+             * @description Payment status
+             * @example successful
+             * @enum {string}
+             */
+            status: "pending" | "processing" | "successful" | "failed" | "refunded";
+            /**
+             * @description Response message
+             * @example Payment verified successfully
+             */
+            message: string;
+            /** @description Payment details */
+            payment?: Record<string, never>;
+        };
+        PaymentResponseDto: {
+            /**
+             * @description Payment ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * @description Job ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            jobId: string;
+            /**
+             * @description Total amount
+             * @example 25000
+             */
+            amount: number;
+            /**
+             * @description Platform fee
+             * @example 3750
+             */
+            platformFee: number;
+            /**
+             * @description Amount artisan will receive
+             * @example 21250
+             */
+            artisanAmount: number;
+            /**
+             * @description Payment status
+             * @example pending
+             * @enum {string}
+             */
+            status: "pending" | "processing" | "successful" | "failed" | "refunded";
+            /**
+             * @description Payment reference
+             * @example ref_1234567890
+             */
+            providerReference?: string;
+            /**
+             * @description Payment method
+             * @example card
+             */
+            paymentMethod?: string;
+            /**
+             * Format: date-time
+             * @description When payment was completed
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            paidAt?: string;
+            /**
+             * Format: date-time
+             * @description When payment was created
+             * @example 2025-12-07T10:00:00.000Z
+             */
+            createdAt: string;
+        };
         OnboardArtisanDto: {
             /**
              * @description Category IDs representing artisan skills/services
@@ -4432,6 +4940,7 @@ export interface components {
             professionalLicenseNumber?: string;
             /** Format: date-time */
             licenseIssueDate?: string;
+            licenseIssueState?: string;
             /** Format: date-time */
             licenseExpiryDate?: string;
             certificationUrls?: string[];
@@ -4555,6 +5064,11 @@ export interface components {
              * @example 2024-01-15
              */
             licenseIssueDate?: string;
+            /**
+             * @description State where license was issued
+             * @example Lagos
+             */
+            licenseIssueState?: string;
             /**
              * Format: date-time
              * @description License expiry date
@@ -4983,13 +5497,11 @@ export interface components {
             slug: string;
             /** @example All plumbing services */
             description?: string;
-            /** Format: binary */
-            icon?: string;
             /**
-             * @description URL of the icon (if not uploading file)
-             * @example https://example.com/icon.png
+             * Format: binary
+             * @description Icon image file for the category
              */
-            iconUrl?: string;
+            icon?: string;
             /**
              * @description Whether a destination is required for service requests in this category
              * @example false
@@ -5908,413 +6420,6 @@ export interface components {
              * @example 5
              */
             count: number;
-        };
-        EarningsOverviewResponseDto: {
-            /**
-             * @description Available balance that can be withdrawn
-             * @example 25000
-             */
-            availableBalance: number;
-            /**
-             * @description Pending balance (payments in escrow)
-             * @example 5000
-             */
-            pendingBalance: number;
-            /**
-             * @description Total amount earned all time
-             * @example 150000
-             */
-            totalEarned: number;
-            /**
-             * @description Total amount withdrawn all time
-             * @example 120000
-             */
-            totalWithdrawn: number;
-            /**
-             * @description Currency symbol
-             * @example ₦
-             */
-            currency: string;
-        };
-        CommissionRateResponseDto: {
-            /**
-             * @description Commission value (percentage or flat amount)
-             * @example 10
-             */
-            commissionValue: number;
-            /**
-             * @description Whether the commission is a percentage
-             * @example true
-             */
-            isPercentage: boolean;
-            /**
-             * @description Human-readable commission description
-             * @example Default platform commission - 10%
-             */
-            description?: Record<string, never>;
-        };
-        TransactionJobDetailsDto: {
-            /**
-             * @description Job unique identifier
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            jobId: string;
-            /**
-             * @description Customer's full name
-             * @example John Doe
-             */
-            customerName: string;
-            /**
-             * @description Service category name
-             * @example Plumbing
-             */
-            categoryName: string;
-            /**
-             * @description Commission charged by Xervices
-             * @example 750
-             */
-            xervicesCharge: number;
-            /**
-             * @description Gross amount before commission
-             * @example 5000
-             */
-            grossAmount: number;
-        };
-        TransactionItemDto: {
-            /**
-             * @description Transaction unique identifier
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            id: string;
-            /**
-             * @description Type of transaction
-             * @example payment_received
-             * @enum {string}
-             */
-            type: "payment_received" | "earning" | "withdrawal" | "refund" | "platform_fee" | "dispute_deduction" | "pending_credit";
-            /**
-             * @description Transaction amount (positive for credit, negative for debit)
-             * @example 5000
-             */
-            amount: number;
-            /**
-             * @description Balance after this transaction
-             * @example 25000
-             */
-            balanceAfter: number;
-            /**
-             * @description Description of the transaction
-             * @example Payment for plumbing service
-             */
-            description?: string;
-            /**
-             * @description Type of referenced entity
-             * @example job
-             */
-            referenceType?: string;
-            /**
-             * @description ID of the referenced entity
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            referenceId?: string;
-            /** @description Job details (only present for payment transactions) */
-            jobDetails?: components["schemas"]["TransactionJobDetailsDto"];
-            /**
-             * Format: date-time
-             * @description When the transaction was created
-             * @example 2025-12-07T10:00:00.000Z
-             */
-            createdAt: string;
-        };
-        PeriodBreakdownDto: {
-            /**
-             * @description Gross earnings before commission
-             * @example 10000
-             */
-            grossEarnings: number;
-            /**
-             * @description Commission paid to platform
-             * @example 1500
-             */
-            commission: number;
-            /**
-             * @description Net earnings after commission
-             * @example 8500
-             */
-            netEarnings: number;
-            /**
-             * @description Number of jobs completed
-             * @example 5
-             */
-            jobsCompleted: number;
-        };
-        EarningsBreakdownResponseDto: {
-            /** @description Today's earnings breakdown */
-            today: components["schemas"]["PeriodBreakdownDto"];
-            /** @description This week's earnings breakdown */
-            thisWeek: components["schemas"]["PeriodBreakdownDto"];
-            /** @description This month's earnings breakdown */
-            thisMonth: components["schemas"]["PeriodBreakdownDto"];
-            /** @description All time earnings breakdown */
-            allTime: components["schemas"]["PeriodBreakdownDto"];
-            /**
-             * @description Currency symbol
-             * @example ₦
-             */
-            currency: string;
-        };
-        PaginationDto: {
-            /**
-             * @description Current page number
-             * @example 1
-             */
-            page: number;
-            /**
-             * @description Items per page
-             * @example 20
-             */
-            limit: number;
-            /**
-             * @description Total number of items
-             * @example 100
-             */
-            total: number;
-            /**
-             * @description Total number of pages
-             * @example 5
-             */
-            totalPages: number;
-            /**
-             * @description Whether there is a next page
-             * @example true
-             */
-            hasNextPage: boolean;
-            /**
-             * @description Whether there is a previous page
-             * @example false
-             */
-            hasPreviousPage: boolean;
-        };
-        PaginatedTransactionResponseDto: {
-            /**
-             * @description Response status
-             * @example success
-             */
-            status: string;
-            /**
-             * @description Response message
-             * @example Transaction history retrieved successfully
-             */
-            message: string;
-            /** @description List of transactions */
-            data: components["schemas"]["TransactionItemDto"][];
-            /** @description Pagination metadata */
-            pagination: components["schemas"]["PaginationDto"];
-        };
-        PinOtpResponseDto: {
-            /**
-             * @description Operation success status
-             * @example true
-             */
-            success: boolean;
-            /**
-             * @description Response message
-             * @example OTP sent to your email address
-             */
-            message: string;
-        };
-        CreatePinDto: {
-            /**
-             * @description OTP code received via email
-             * @example 123456
-             */
-            otp: string;
-            /**
-             * @description New PIN (4-6 digits)
-             * @example 1234
-             */
-            pin: string;
-        };
-        PinResponseDto: {
-            /**
-             * @description Operation success status
-             * @example true
-             */
-            success: boolean;
-            /**
-             * @description Response message
-             * @example PIN set successfully
-             */
-            message: string;
-        };
-        VerifyPinDto: {
-            /**
-             * @description PIN to verify
-             * @example 1234
-             */
-            pin: string;
-        };
-        VerifyPinResponseDto: {
-            /**
-             * @description Whether PIN verification was successful
-             * @example true
-             */
-            success: boolean;
-            /**
-             * @description Response message
-             * @example PIN verified successfully
-             */
-            message: string;
-        };
-        PinStatusResponseDto: {
-            /**
-             * @description Whether the user has set a PIN
-             * @example true
-             */
-            hasPin: boolean;
-            /**
-             * @description Whether the account is locked due to failed attempts
-             * @example false
-             */
-            isLocked: boolean;
-        };
-        CreateWithdrawalDto: {
-            /**
-             * @description Bank account ID to withdraw to
-             * @example 123e4567-e89b-12d3-a456-426614174000
-             */
-            bankAccountId: string;
-            /**
-             * @description Amount to withdraw (Naira)
-             * @example 5000
-             */
-            amount: number;
-            /**
-             * @description Withdrawal PIN for verification
-             * @example 1234
-             */
-            pin: string;
-        };
-        InitializePaymentDto: {
-            /**
-             * @description Job ID to pay for
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            jobId: string;
-            /**
-             * @description Callback URL after payment completion
-             * @example https://app.xervices.com/payment/callback
-             */
-            callbackUrl?: string;
-        };
-        InitializePaymentResponseDto: {
-            /**
-             * @description Whether initialization was successful
-             * @example true
-             */
-            success: boolean;
-            /**
-             * @description Payment ID
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            paymentId: string;
-            /**
-             * @description Payment reference
-             * @example ref_1234567890
-             */
-            reference: string;
-            /**
-             * @description Authorization URL to redirect user for payment
-             * @example https://checkout.paystack.com/abc123
-             */
-            authorizationUrl: string;
-            /**
-             * @description Access code for inline payment
-             * @example abc123def456
-             */
-            accessCode: string;
-        };
-        VerifyPaymentDto: {
-            /**
-             * @description Payment reference from Paystack
-             * @example ref_1234567890
-             */
-            reference: string;
-        };
-        VerifyPaymentResponseDto: {
-            /**
-             * @description Whether verification was successful
-             * @example true
-             */
-            success: boolean;
-            /**
-             * @description Payment status
-             * @example successful
-             * @enum {string}
-             */
-            status: "pending" | "processing" | "successful" | "failed" | "refunded";
-            /**
-             * @description Response message
-             * @example Payment verified successfully
-             */
-            message: string;
-            /** @description Payment details */
-            payment?: Record<string, never>;
-        };
-        PaymentResponseDto: {
-            /**
-             * @description Payment ID
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            id: string;
-            /**
-             * @description Job ID
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            jobId: string;
-            /**
-             * @description Total amount
-             * @example 25000
-             */
-            amount: number;
-            /**
-             * @description Platform fee
-             * @example 3750
-             */
-            platformFee: number;
-            /**
-             * @description Amount artisan will receive
-             * @example 21250
-             */
-            artisanAmount: number;
-            /**
-             * @description Payment status
-             * @example pending
-             * @enum {string}
-             */
-            status: "pending" | "processing" | "successful" | "failed" | "refunded";
-            /**
-             * @description Payment reference
-             * @example ref_1234567890
-             */
-            providerReference?: string;
-            /**
-             * @description Payment method
-             * @example card
-             */
-            paymentMethod?: string;
-            /**
-             * Format: date-time
-             * @description When payment was completed
-             * @example 2025-12-07T10:00:00.000Z
-             */
-            paidAt?: string;
-            /**
-             * Format: date-time
-             * @description When payment was created
-             * @example 2025-12-07T10:00:00.000Z
-             */
-            createdAt: string;
         };
         VerifyBankAccountDto: {
             /**
@@ -7539,8 +7644,11 @@ export interface components {
              * @example Residential and commercial cleaning services
              */
             description?: string;
-            /** @description Icon URL for the service */
-            iconUrl?: string;
+            /**
+             * Format: binary
+             * @description Icon image file for the service
+             */
+            icon?: string;
             /**
              * @description Whether this service is featured
              * @default false
@@ -7561,8 +7669,11 @@ export interface components {
             category?: string;
             /** @description Service description */
             description?: string;
-            /** @description Icon URL */
-            iconUrl?: string;
+            /**
+             * Format: binary
+             * @description Icon image file for the service
+             */
+            icon?: string;
             /** @description Whether this service is featured */
             isFeatured?: boolean;
             /** @description Whether a destination is required for service requests in this category */
@@ -7703,6 +7814,78 @@ export interface components {
              * @default 0
              */
             displayOrder: number;
+        };
+        CreatePromotionSlideDto: {
+            /**
+             * @description Title of the promotion slide
+             * @example Summer Sale
+             */
+            title: string;
+            /**
+             * @description Description of the promotion
+             * @example Get 20% off all services
+             */
+            description?: string;
+            /** @description Image URL (set automatically when uploading via multipart) */
+            imageUrl?: string;
+            /**
+             * @description Deep link or external URL
+             * @example https://example.com/promo
+             */
+            linkUrl?: string;
+            /**
+             * @description Target audience
+             * @example all
+             * @enum {string}
+             */
+            audience: "all" | "users" | "artisans";
+            /**
+             * @description Slide status
+             * @default active
+             * @enum {string}
+             */
+            status: "active" | "inactive";
+            /**
+             * @description Display order (lower = shown first)
+             * @default 0
+             */
+            displayOrder: number;
+            /**
+             * @description Start date for scheduling
+             * @example 2026-03-01T00:00:00Z
+             */
+            startDate?: string;
+            /**
+             * @description End date for expiry
+             * @example 2026-04-01T00:00:00Z
+             */
+            endDate?: string;
+        };
+        UpdatePromotionSlideDto: {
+            /** @description Title of the promotion slide */
+            title?: string;
+            /** @description Description of the promotion */
+            description?: string;
+            /** @description Image URL (set automatically when uploading via multipart) */
+            imageUrl?: string;
+            /** @description Deep link or external URL */
+            linkUrl?: string;
+            /**
+             * @description Target audience
+             * @enum {string}
+             */
+            audience?: "all" | "users" | "artisans";
+            /**
+             * @description Slide status
+             * @enum {string}
+             */
+            status?: "active" | "inactive";
+            /** @description Display order (lower = shown first) */
+            displayOrder?: number;
+            /** @description Start date for scheduling */
+            startDate?: string;
+            /** @description End date for expiry */
+            endDate?: string;
         };
         CreateSupportTicketDto: {
             /**
@@ -8952,6 +9135,665 @@ export interface operations {
             };
             /** @description Unauthorized */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReferralsController_withdrawToWallet: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WithdrawReferralBonusDto"];
+            };
+        };
+        responses: {
+            /** @description Referral bonus withdrawn to wallet successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Insufficient referral reward balance or invalid amount */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    EarningsController_getEarningsOverview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Earnings summary retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EarningsOverviewResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    EarningsController_getCommissionRate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current commission rate retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommissionRateResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    EarningsController_getTransactionHistory: {
+        parameters: {
+            query?: {
+                /** @description Filter by period */
+                period?: "today" | "this_week" | "this_month" | "previous_month" | "this_year";
+                /** @description Start date (ISO format) */
+                startDate?: string;
+                /** @description End date (ISO format) */
+                endDate?: string;
+                /** @description Transaction type filter */
+                type?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Transaction history retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionItemDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    EarningsController_getEarningsBreakdown: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Earnings breakdown retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EarningsBreakdownResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    TransactionsController_getTransactions: {
+        parameters: {
+            query?: {
+                /** @description Filter by period */
+                period?: "today" | "this_week" | "this_month" | "previous_month" | "this_year";
+                /** @description Start date (ISO format) */
+                startDate?: string;
+                /** @description End date (ISO format) */
+                endDate?: string;
+                /** @description Page number */
+                page?: number;
+                /** @description Items per page */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Transaction history retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedTransactionResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    SecurityController_requestPinOtp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OTP sent successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PinOtpResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    SecurityController_createOrUpdatePin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePinDto"];
+            };
+        };
+        responses: {
+            /** @description PIN created/updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PinResponseDto"];
+                };
+            };
+            /** @description Invalid PIN format or OTP */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    SecurityController_verifyPin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyPinDto"];
+            };
+        };
+        responses: {
+            /** @description PIN verified successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerifyPinResponseDto"];
+                };
+            };
+            /** @description Invalid or incorrect PIN */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    SecurityController_checkPinStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PIN status retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PinStatusResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    WithdrawalsController_getWithdrawals: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Withdrawal history retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    WithdrawalsController_createWithdrawal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateWithdrawalDto"];
+            };
+        };
+        responses: {
+            /** @description Withdrawal request created and transfer initiated */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Insufficient balance or invalid PIN */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    PaymentsController_initializePayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InitializePaymentDto"];
+            };
+        };
+        responses: {
+            /** @description Payment initialized successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InitializePaymentResponseDto"];
+                };
+            };
+            /** @description Validation error or invalid job status */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Payment already exists for this job */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    PaymentsController_verifyPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyPaymentDto"];
+            };
+        };
+        responses: {
+            /** @description Payment verification result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerifyPaymentResponseDto"];
+                };
+            };
+            /** @description Invalid reference */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Payment not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    PaymentsController_getPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Payment details retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Payment not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    PaymentsController_getPaymentByJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Payment details retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job or payment not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11290,625 +12132,6 @@ export interface operations {
                 };
             };
             /** @description Chat room not found for this job */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    EarningsController_getEarningsOverview: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Earnings summary retrieved */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EarningsOverviewResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Artisan access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    EarningsController_getCommissionRate: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Current commission rate retrieved */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CommissionRateResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Artisan access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    EarningsController_getTransactionHistory: {
-        parameters: {
-            query?: {
-                /** @description Filter by period */
-                period?: "today" | "this_week" | "this_month" | "previous_month" | "this_year";
-                /** @description Start date (ISO format) */
-                startDate?: string;
-                /** @description End date (ISO format) */
-                endDate?: string;
-                /** @description Transaction type filter */
-                type?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Transaction history retrieved */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransactionItemDto"][];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Artisan access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    EarningsController_getEarningsBreakdown: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Earnings breakdown retrieved */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EarningsBreakdownResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Artisan access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    TransactionsController_getTransactions: {
-        parameters: {
-            query?: {
-                /** @description Filter by period */
-                period?: "today" | "this_week" | "this_month" | "previous_month" | "this_year";
-                /** @description Start date (ISO format) */
-                startDate?: string;
-                /** @description End date (ISO format) */
-                endDate?: string;
-                /** @description Page number */
-                page?: number;
-                /** @description Items per page */
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Transaction history retrieved */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedTransactionResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    SecurityController_requestPinOtp: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OTP sent successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PinOtpResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    SecurityController_createOrUpdatePin: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreatePinDto"];
-            };
-        };
-        responses: {
-            /** @description PIN created/updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PinResponseDto"];
-                };
-            };
-            /** @description Invalid PIN format or OTP */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    SecurityController_verifyPin: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["VerifyPinDto"];
-            };
-        };
-        responses: {
-            /** @description PIN verified successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["VerifyPinResponseDto"];
-                };
-            };
-            /** @description Invalid or incorrect PIN */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    SecurityController_checkPinStatus: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description PIN status retrieved */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PinStatusResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    WithdrawalsController_getWithdrawals: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Withdrawal history retrieved */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Artisan access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    WithdrawalsController_createWithdrawal: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateWithdrawalDto"];
-            };
-        };
-        responses: {
-            /** @description Withdrawal request created and transfer initiated */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Insufficient balance or invalid PIN */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Artisan access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    PaymentsController_initializePayment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InitializePaymentDto"];
-            };
-        };
-        responses: {
-            /** @description Payment initialized successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InitializePaymentResponseDto"];
-                };
-            };
-            /** @description Validation error or invalid job status */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Job not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Payment already exists for this job */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    PaymentsController_verifyPayment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["VerifyPaymentDto"];
-            };
-        };
-        responses: {
-            /** @description Payment verification result */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["VerifyPaymentResponseDto"];
-                };
-            };
-            /** @description Invalid reference */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Payment not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    PaymentsController_getPayment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Payment details retrieved */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaymentResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Payment not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    PaymentsController_getPaymentByJob: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                jobId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Payment details retrieved */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaymentResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Job or payment not found */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -15902,6 +16125,187 @@ export interface operations {
                             type?: "user" | "artisan";
                             imageUrl?: string | null;
                             videoLink?: string | null;
+                            displayOrder?: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    PromotionSlidesController_findAll: {
+        parameters: {
+            query?: {
+                /** @description Filter by audience */
+                audience?: "all" | "users" | "artisans";
+                /** @description Filter by status */
+                status?: "active" | "inactive";
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Promotion slides list retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromotionSlidesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["CreatePromotionSlideDto"];
+            };
+        };
+        responses: {
+            /** @description Promotion slide created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request - Validation failed or missing image */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromotionSlidesController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Promotion slide ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Promotion slide details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Promotion slide not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromotionSlidesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Promotion slide ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UpdatePromotionSlideDto"];
+            };
+        };
+        responses: {
+            /** @description Promotion slide updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Promotion slide not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromotionSlidesController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Promotion slide ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Promotion slide deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Promotion slide not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MobilePromotionSlidesController_getActiveSlides: {
+        parameters: {
+            query?: {
+                /** @description Filter by audience */
+                audience?: "all" | "users" | "artisans";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active promotion slides */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Promotion slides retrieved successfully */
+                        message?: string;
+                        data?: {
+                            /** Format: uuid */
+                            id?: string;
+                            title?: string;
+                            description?: string | null;
+                            imageUrl?: string;
+                            linkUrl?: string | null;
+                            /** @enum {string} */
+                            audience?: "all" | "users" | "artisans";
                             displayOrder?: number;
                         }[];
                     };

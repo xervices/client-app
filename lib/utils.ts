@@ -430,29 +430,40 @@ function formatDuration(minutes: number): string {
 }
 
 export const makePhoneCall = async (phoneNumber: string | undefined) => {
-  // Check if phoneNumber is undefined or empty
   if (!phoneNumber || phoneNumber.trim() === '') {
     showErrorMessage('Phone number is not available');
     return;
   }
 
-  // Remove any spaces, dashes, or parentheses
   const cleanNumber = phoneNumber.replace(/[^0-9+]/g, '');
 
-  // Check if we have a valid number after cleaning
   if (cleanNumber.length === 0) {
     showErrorMessage('Invalid phone number');
     return;
   }
 
-  const phoneUrl = `tel:${cleanNumber}`;
+  // Normalise to international format with Nigeria's +234 country code
+  let internationalNumber: string;
+  if (cleanNumber.startsWith('+')) {
+    // Already has a country code — use as-is
+    internationalNumber = cleanNumber;
+  } else if (cleanNumber.startsWith('234')) {
+    // Has country code digits but no leading +
+    internationalNumber = `+${cleanNumber}`;
+  } else if (cleanNumber.startsWith('0')) {
+    // Local format (e.g. 08012345678) — strip the leading 0 and prepend +234
+    internationalNumber = `+234${cleanNumber.slice(1)}`;
+  } else {
+    // Assume a bare local number with no leading 0 (e.g. 8012345678)
+    internationalNumber = `+234${cleanNumber}`;
+  }
+
+  const phoneUrl = `tel:${internationalNumber}`;
 
   try {
     if (Platform.OS === 'android') {
-      // Android: Just open directly, canOpenURL is unreliable for tel:
       await Linking.openURL(phoneUrl);
     } else {
-      // iOS: Check if supported first
       const supported = await Linking.canOpenURL(phoneUrl);
       if (supported) {
         await Linking.openURL(phoneUrl);

@@ -36,6 +36,8 @@ export function ProScreen() {
 
   const acceptOffer = useMutation(api.respondToOffer(offerId));
 
+  const [isRejectingOffer, setIsRejectingOffer] = React.useState(false);
+
   const fetchEta = async (
     origin: { latitude: number; longitude: number },
     destination: { latitude: number; longitude: number }
@@ -116,7 +118,9 @@ export function ProScreen() {
                     {offer?.data?.artisan?.profile?.fullName}
                   </Text>
 
-                  <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                  {offer?.data?.artisan?.profileVerified ? (
+                    <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                  ) : null}
                 </View>
 
                 <Text className="text-sm text-[#737381]">
@@ -279,30 +283,41 @@ export function ProScreen() {
                 );
               }
             }}>
-            <Text>Accept offer - {formatCurrency(offer?.data?.amount)}</Text>
+            {offer?.data?.status === 'accepted' ? (
+              <Text>Proceed to payment</Text>
+            ) : (
+              <Text>Accept offer - {formatCurrency(offer?.data?.amount)}</Text>
+            )}
           </Button>
 
-          <Button
-            isLoading={acceptOffer?.isPending}
-            disabled={acceptOffer?.isPending}
-            onPress={() => {
-              acceptOffer?.mutate(
-                {
-                  action: 'reject',
-                },
-                {
-                  onError: (err) => {
-                    showErrorMessage(err?.message);
+          {offer?.data?.status !== 'accepted' ? (
+            <Button
+              isLoading={isRejectingOffer}
+              disabled={acceptOffer?.isPending}
+              onPress={() => {
+                setIsRejectingOffer(true);
+                acceptOffer?.mutate(
+                  {
+                    action: 'reject',
                   },
-                  onSuccess: () => {
-                    router.back();
-                  },
-                }
-              );
-            }}
-            variant={'ghost'}>
-            Reject Offer
-          </Button>
+                  {
+                    onError: (err) => {
+                      showErrorMessage(err?.message);
+                    },
+                    onSuccess: () => {
+                      router.back();
+                    },
+                    onSettled: () => {
+                      setIsRejectingOffer(false);
+                    },
+                  }
+                );
+              }}
+              loadingIndicatorColor="#1B1B1E"
+              variant={'ghost'}>
+              Reject Offer
+            </Button>
+          ) : null}
 
           <View className="flex gap-2">
             <Text className="font-cabinet-bold text-[#737381]">Recent Reviews</Text>

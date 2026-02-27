@@ -13,7 +13,7 @@ import { ArrowLeft, BadgeCheck, PhoneCall, RefreshCw } from 'lucide-react-native
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { showErrorMessage } from '@/api/helpers';
-import { getTravelTimeGoogle, makePhoneCall } from '@/lib/utils';
+import { formatRelativeTime, getTravelTimeGoogle, makePhoneCall } from '@/lib/utils';
 import { useLocation } from 'solomo';
 import { useJobsSocket } from '@/hooks/use-jobs-socket';
 import { LoadingState } from '@/components/loading-state';
@@ -208,8 +208,13 @@ export default function Screen() {
         latitude: artisanLocation.data.latitude,
         longitude: artisanLocation.data.longitude,
       });
+    } else if (data) {
+      setArtisanCoords({
+        latitude: data?.artisanLastLatitude,
+        longitude: data?.artisanLastLongitude,
+      });
     }
-  }, [artisanLocation?.data]);
+  }, [artisanLocation?.data, data]);
 
   React.useEffect(() => {
     if (mapRef.current && artisanCoords) {
@@ -410,11 +415,11 @@ export default function Screen() {
                         jobs?.refetch();
                         artisanLocation?.refetch();
                       }}
-                      className="absolute right-0 h-8 w-8 justify-center">
+                      className="absolute right-0 justify-center">
                       {isRefetching || jobs?.isRefetching || artisanLocation?.isRefetching ? (
                         <LoadingIndicator size={24} />
                       ) : (
-                        <RefreshCw size={24} color={'#FE6A00'} />
+                        <Text className="font-cabinet-medium text-sm text-primary">Refresh</Text>
                       )}
                     </Pressable>
                   </View>
@@ -448,7 +453,9 @@ export default function Screen() {
                             {data?.artisan?.profile?.fullName}
                           </Text>
 
-                          <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                          {data?.artisan?.profileVerified ? (
+                            <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                          ) : null}
                         </View>
 
                         <Text className="text-xs text-[#1B1B1E]">
@@ -525,7 +532,9 @@ export default function Screen() {
                         <Text className="font-cabinet-bold text-sm text-[#1B1B1E]">
                           {data?.artisan?.profile?.fullName} has started driving to you
                         </Text>
-                        <Text className="text-sm leading-none text-[#737381]">2 minutes ago</Text>
+                        <Text className="text-sm leading-none text-[#737381]">
+                          {formatRelativeTime(data?.createdAt)}
+                        </Text>
                       </View>
                     </View>
 

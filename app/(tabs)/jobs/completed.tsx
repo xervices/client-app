@@ -60,7 +60,9 @@ export default function Screen() {
                     {data?.artisan?.profile?.fullName}
                   </Text>
 
-                  <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                  {data?.artisan?.profileVerified ? (
+                    <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                  ) : null}
                 </View>
 
                 <Text className="text-xs text-[#1B1B1E]">{data?.category?.name} Specialist</Text>
@@ -192,10 +194,10 @@ export default function Screen() {
               </View>
             </Pressable>
 
-            <View className="flex flex-row items-center justify-between">
+            {/* <View className="flex flex-row items-center justify-between">
               <Text className="text-sm leading-none text-[#737381]">Promos</Text>
               <Text className="text-sm leading-none text-[#FF6A00]">XS12334555</Text>
-            </View>
+            </View> */}
 
             <View className="mx-auto h-[1px] w-[92%] bg-[#F1F1F1]" />
 
@@ -208,10 +210,14 @@ export default function Screen() {
 
             <View className="mx-auto h-[1px] w-[92%] bg-[#F1F1F1]" />
 
-            <View className="flex flex-row items-center justify-between">
-              <Text className="text-sm leading-none text-[#737381]">Promo Discount</Text>
-              <Text className="text-sm leading-none text-[#FF6A00]">₦500</Text>
-            </View>
+            {data?.discountAmount && data?.discountAmount > 0 ? (
+              <View className="flex flex-row items-center justify-between">
+                <Text className="text-sm leading-none text-[#737381]">Promo Discount</Text>
+                <Text className="text-sm leading-none text-[#FF6A00]">
+                  {formatCurrency(data?.discountAmount)}
+                </Text>
+              </View>
+            ) : null}
 
             <View className="flex flex-row items-center justify-between">
               <Text className="text-sm leading-none text-[#737381]">Total Price</Text>
