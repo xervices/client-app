@@ -60,9 +60,9 @@ export default function Screen() {
                     {data?.artisan?.profile?.fullName}
                   </Text>
 
-                  {data?.artisan?.profileVerified ? (
-                    <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
-                  ) : null}
+                  {/* {data?.artisan?.profileVerified ? ( */}
+                  <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                  {/* ) : null} */}
                 </View>
 
                 <Text className="text-xs text-[#1B1B1E]">{data?.category?.name} Specialist</Text>

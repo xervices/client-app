@@ -489,6 +489,23 @@ export const api = {
       },
     }),
 
+  // news and promotions endpoints
+  getNewsAndPromotions: () =>
+    queryOptions({
+      queryKey: ['news', 'promotions'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/promotion-slides', {
+          params: {
+            query: {
+              audience: 'artisans',
+            },
+          },
+        });
+
+        return data;
+      },
+    }),
+
   // Support tickets endpoints
   createSupportTicket: () => {
     return {
@@ -654,7 +671,15 @@ export const api = {
     queryOptions({
       queryKey: ['user', 'jobs'],
       queryFn: async () => {
-        const { data } = await apiClient.GET('/api/jobs');
+        const { data, error } = await apiClient.GET('/api/jobs');
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to fetch jobs'));
+        }
+
+        if (!data) {
+          throw new Error('No job data returned');
+        }
 
         return data;
       },
@@ -663,13 +688,21 @@ export const api = {
     queryOptions({
       queryKey: ['job', id],
       queryFn: async () => {
-        const { data } = await apiClient.GET('/api/jobs/{id}', {
+        const { data, error } = await apiClient.GET('/api/jobs/{id}', {
           params: {
             path: {
               id,
             },
           },
         });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to fetch job details'));
+        }
+
+        if (!data) {
+          throw new Error('No job detail data returned');
+        }
 
         return data;
       },
@@ -717,13 +750,21 @@ export const api = {
     queryOptions({
       queryKey: ['job', 'artisan', 'location', id],
       queryFn: async () => {
-        const { data } = await apiClient.GET('/api/jobs/{id}/artisan-location', {
+        const { data, error } = await apiClient.GET('/api/jobs/{id}/artisan-location', {
           params: {
             path: {
               id,
             },
           },
         });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to fetch artisan location'));
+        }
+
+        if (!data) {
+          throw new Error('No artisan location data returned');
+        }
 
         return data;
       },

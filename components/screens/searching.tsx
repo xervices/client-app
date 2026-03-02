@@ -12,7 +12,6 @@ import { useQueries } from '@tanstack/react-query';
 import { api } from '@/api';
 import { LoadingState } from '@/components/loading-state';
 import { formatRelativeTime } from '@/lib/utils';
-import { useOffersSocket } from '@/hooks/use-offers-socket';
 import { useOffersContext } from '@/providers/offers-context';
 
 export function SearchingScreen() {
@@ -105,6 +104,14 @@ export function SearchingScreen() {
     }
   }, [isConnected]);
 
+  const uniqueViews = React.useMemo(
+    () =>
+      views?.filter(
+        (view, index, self) => self.findIndex((v) => v.artisanId === view.artisanId) === index
+      ),
+    [views]
+  );
+
   React.useEffect(() => {
     if (!artisans.isLoading && artisans.data !== undefined && artisans.data.length === 0) {
       const redirectTimeout = setTimeout(() => {
@@ -155,11 +162,12 @@ export function SearchingScreen() {
         <View className="flex-1 gap-2">
           <View className="flex flex-row items-center justify-between gap-2">
             <Text className="flex-1 text-sm text-[#737381]">
-              {views && views?.length > 0 ? views.length : 0} artisans viewed your request
+              {uniqueViews && uniqueViews?.length > 0 ? uniqueViews.length : 0} artisans viewed your
+              request
             </Text>
 
             <View className="flex-row">
-              {views?.slice(0, 6)?.map((profile) => (
+              {uniqueViews?.slice(0, 6)?.map((profile) => (
                 <Avatar
                   key={profile?.artisanId}
                   alt={profile?.artisanName}
@@ -173,13 +181,13 @@ export function SearchingScreen() {
                 </Avatar>
               ))}
 
-              {views && Math.max(0, views?.length - 6) > 0 && (
+              {uniqueViews && Math.max(0, uniqueViews?.length - 6) > 0 && (
                 <Avatar
                   alt="@evilrabbit"
                   className="-mr-2 h-6 w-6 border-2 border-background bg-[#F4F4F5] web:border-0 web:ring-2 web:ring-background">
                   <AvatarFallback>
                     <Text className="font-cabinet-bold text-xs">
-                      +{Math.max(0, views?.length - 6)}
+                      +{Math.max(0, uniqueViews?.length - 6)}
                     </Text>
                   </AvatarFallback>
                 </Avatar>

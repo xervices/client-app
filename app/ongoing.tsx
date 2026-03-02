@@ -14,7 +14,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { showErrorMessage } from '@/api/helpers';
 import { formatRelativeTime, getTravelTimeGoogle, makePhoneCall } from '@/lib/utils';
-import { useLocation } from 'solomo';
 import { useJobsSocket } from '@/hooks/use-jobs-socket';
 import { LoadingState } from '@/components/loading-state';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
@@ -33,8 +32,8 @@ export default function Screen() {
     []
   );
 
-  const beforeEvidence = data?.evidence?.filter((i) => i.evidenceType === 'before');
-  const afterEvidence = data?.evidence?.filter((i) => i.evidenceType === 'after');
+  const beforeEvidence = data?.evidence?.filter((i: any) => i.evidenceType === 'before') ?? [];
+  const afterEvidence = data?.evidence?.filter((i: any) => i.evidenceType === 'after') ?? [];
 
   const [artisanCoords, setArtisanCoords] = React.useState<{
     latitude: number;
@@ -203,16 +202,23 @@ export default function Screen() {
   }, [artisanCoords, data?.serviceRequest]);
 
   React.useEffect(() => {
-    if (artisanLocation?.data?.latitude && artisanLocation?.data?.longitude) {
+    if (
+      artisanLocation?.data?.latitude &&
+      artisanLocation?.data?.longitude &&
+      typeof artisanLocation.data.latitude === 'number' &&
+      typeof artisanLocation.data.longitude === 'number'
+    ) {
       setArtisanCoords({
         latitude: artisanLocation.data.latitude,
         longitude: artisanLocation.data.longitude,
       });
     } else if (data) {
-      setArtisanCoords({
-        latitude: data?.artisanLastLatitude,
-        longitude: data?.artisanLastLongitude,
-      });
+      if (data?.artisanLastLatitude && data?.artisanLastLongitude) {
+        setArtisanCoords({
+          latitude: data?.artisanLastLatitude,
+          longitude: data?.artisanLastLongitude,
+        });
+      }
     }
   }, [artisanLocation?.data, data]);
 
@@ -251,120 +257,128 @@ export default function Screen() {
       isRefreshing={isRefreshing}
       onRefresh={handleOnRefresh}
       horizontalPadding={false}
+      scrollable={false}
       bottomPadding={0}>
       {isLoading ? (
         <LoadingState title="Loading job activity..." />
       ) : (
         <View className="flex-1">
           <View className="relative flex flex-1 items-center justify-center">
-            <MapView
-              ref={mapRef}
-              provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
-              style={{ width: '100%', height: '100%' }}
-              initialRegion={{
-                latitude: data?.serviceRequest?.serviceLatitude || 4.7425431,
-                longitude: data?.serviceRequest?.serviceLongitude || 7.0379143,
-                latitudeDelta: 0.02,
-                longitudeDelta: 0.02,
-              }}>
-              {routeCoords.length > 0 && (
-                <Polyline
-                  coordinates={routeCoords}
-                  strokeColor="#FE6A00"
-                  strokeWidth={4}
-                  lineCap="round"
-                  lineJoin="round"
-                />
-              )}
-
-              <Marker
-                coordinate={{
-                  latitude: artisanCoords?.latitude || 4.7425431,
-                  longitude: artisanCoords?.longitude || 7.0379143,
+            {data?.serviceRequest?.serviceLatitude && data?.serviceRequest?.serviceLongitude ? (
+              <MapView
+                ref={mapRef}
+                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
+                style={{ width: '100%', height: '100%' }}
+                initialRegion={{
+                  latitude: Number(data?.serviceRequest?.serviceLatitude),
+                  longitude: Number(data?.serviceRequest?.serviceLongitude),
+                  latitudeDelta: 0.02,
+                  longitudeDelta: 0.02,
                 }}>
-                <View
-                  style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: 99999999,
-                    backgroundColor: '#FFDCC1',
-                    borderWidth: 1,
-                    borderColor: '#606D5D1F',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 4,
-                    elevation: 5,
-                  }}>
-                  <Image
-                    style={{ width: 16, height: 16 }}
-                    contentFit="contain"
-                    source={require('@/assets/icons/map-pin.svg')}
+                {routeCoords.length > 0 && (
+                  <Polyline
+                    coordinates={routeCoords}
+                    strokeColor="#FE6A00"
+                    strokeWidth={4}
+                    lineCap="round"
+                    lineJoin="round"
                   />
-                </View>
-              </Marker>
+                )}
 
-              {data?.serviceRequest?.destinationAddress &&
-              (data?.status === 'in_progress' || data?.status === 'completed') ? (
-                <Marker
-                  coordinate={{
-                    latitude: data?.serviceRequest?.destinationLatitude || 4.7425431,
-                    longitude: data?.serviceRequest?.destinationLongitude || 7.0379143,
-                  }}
-                  anchor={{ x: 0.5, y: 0.5 }}>
-                  <View
-                    style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: 99999999,
-                      backgroundColor: '#1B1B1E',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      shadowColor: '#000',
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.25,
-                      shadowRadius: 4,
-                      elevation: 5,
+                {artisanCoords?.latitude && artisanCoords?.longitude ? (
+                  <Marker
+                    coordinate={{
+                      latitude: Number(artisanCoords?.latitude),
+                      longitude: Number(artisanCoords?.longitude),
                     }}>
-                    <Image
-                      style={{ width: 16, height: 16 }}
-                      contentFit="contain"
-                      source={require('@/assets/icons/map-home.svg')}
-                    />
-                  </View>
-                </Marker>
-              ) : (
-                <Marker
-                  coordinate={{
-                    latitude: data?.serviceRequest?.serviceLatitude || 4.7425431,
-                    longitude: data?.serviceRequest?.serviceLongitude || 7.0379143,
-                  }}
-                  anchor={{ x: 0.5, y: 0.5 }}>
-                  <View
-                    style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: 99999999,
-                      backgroundColor: '#1B1B1E',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      shadowColor: '#000',
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.25,
-                      shadowRadius: 4,
-                      elevation: 5,
-                    }}>
-                    <Image
-                      style={{ width: 16, height: 16 }}
-                      contentFit="contain"
-                      source={require('@/assets/icons/map-home.svg')}
-                    />
-                  </View>
-                </Marker>
-              )}
-            </MapView>
+                    <View
+                      style={{
+                        width: 30,
+                        height: 30,
+                        borderRadius: 99999999,
+                        backgroundColor: '#FFDCC1',
+                        borderWidth: 1,
+                        borderColor: '#606D5D1F',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 4,
+                        elevation: 5,
+                      }}>
+                      <Image
+                        style={{ width: 16, height: 16 }}
+                        contentFit="contain"
+                        source={require('@/assets/icons/map-pin.svg')}
+                      />
+                    </View>
+                  </Marker>
+                ) : null}
+
+                {data?.serviceRequest?.destinationAddress &&
+                (data?.status === 'in_progress' || data?.status === 'completed') &&
+                data?.serviceRequest?.destinationLatitude &&
+                data?.serviceRequest?.destinationLongitude ? (
+                  <Marker
+                    coordinate={{
+                      latitude: Number(data?.serviceRequest?.destinationLatitude),
+                      longitude: Number(data?.serviceRequest?.destinationLongitude),
+                    }}
+                    anchor={{ x: 0.5, y: 0.5 }}>
+                    <View
+                      style={{
+                        width: 30,
+                        height: 30,
+                        borderRadius: 99999999,
+                        backgroundColor: '#1B1B1E',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 4,
+                        elevation: 5,
+                      }}>
+                      <Image
+                        style={{ width: 16, height: 16 }}
+                        contentFit="contain"
+                        source={require('@/assets/icons/map-home.svg')}
+                      />
+                    </View>
+                  </Marker>
+                ) : data?.serviceRequest?.serviceLatitude &&
+                  data?.serviceRequest?.serviceLatitude ? (
+                  <Marker
+                    coordinate={{
+                      latitude: data?.serviceRequest?.serviceLatitude || 4.7425431,
+                      longitude: data?.serviceRequest?.serviceLongitude || 7.0379143,
+                    }}
+                    anchor={{ x: 0.5, y: 0.5 }}>
+                    <View
+                      style={{
+                        width: 30,
+                        height: 30,
+                        borderRadius: 99999999,
+                        backgroundColor: '#1B1B1E',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 4,
+                        elevation: 5,
+                      }}>
+                      <Image
+                        style={{ width: 16, height: 16 }}
+                        contentFit="contain"
+                        source={require('@/assets/icons/map-home.svg')}
+                      />
+                    </View>
+                  </Marker>
+                ) : null}
+              </MapView>
+            ) : null}
 
             <View className="absolute top-7 flex h-[76px] w-[250px] items-center justify-center rounded-full border border-[#DFDFE1] bg-white">
               <Text className="text-center font-cabinet-bold text-xl text-[#1B1B1E]">
@@ -453,9 +467,9 @@ export default function Screen() {
                             {data?.artisan?.profile?.fullName}
                           </Text>
 
-                          {data?.artisan?.profileVerified ? (
-                            <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
-                          ) : null}
+                          {/* {data?.artisan?.profileVerified ? ( */}
+                          <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                          {/* ) : null} */}
                         </View>
 
                         <Text className="text-xs text-[#1B1B1E]">

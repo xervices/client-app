@@ -118,9 +118,9 @@ export function ProScreen() {
                     {offer?.data?.artisan?.profile?.fullName}
                   </Text>
 
-                  {offer?.data?.artisan?.profileVerified ? (
-                    <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
-                  ) : null}
+                  {/* {offer?.data?.artisan?.profileVerified ? ( */}
+                  <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                  {/* ) : null} */}
                 </View>
 
                 <Text className="text-sm text-[#737381]">

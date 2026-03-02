@@ -54,7 +54,7 @@ export default function Screen() {
           <AuthHeader title="Verify New Device" />
 
           <Text className="text-center text-[#737381]">
-            A verification code has been sent to email
+            A verification code has been sent to your email
           </Text>
 
           <Text className="text-center text-[#737381]">

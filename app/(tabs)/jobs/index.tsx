@@ -12,6 +12,7 @@ import { api } from '@/api';
 import { LoadingState } from '@/components/loading-state';
 import EmptyState from '@/components/empty-state';
 import { formatRelativeTime } from '@/lib/utils';
+import { AppState } from 'react-native';
 
 export default function Screen() {
   const [value, setValue] = React.useState('progress');
@@ -22,6 +23,18 @@ export default function Screen() {
     (i) => i.status === 'paid' || i.status === 'in_progress' || i.status === 'completed'
   );
   const completedJobs = data?.filter((i) => i.status === 'approved');
+
+  React.useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active') {
+        refetch();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   return (
     <Layout scrollable={false}>

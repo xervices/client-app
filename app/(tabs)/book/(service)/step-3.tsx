@@ -42,7 +42,8 @@ export default function Screen() {
     const { status } = await Contacts.requestPermissionsAsync();
     if (status === 'granted') {
       Contacts.presentContactPickerAsync().then((res) => {
-        setContactPhone(res?.phoneNumbers?.[0]?.number);
+        const phoneNumber = res?.phoneNumbers?.[0]?.number?.replace(/\s/g, '');
+        setContactPhone(phoneNumber);
       });
     }
   };

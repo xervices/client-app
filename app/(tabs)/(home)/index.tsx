@@ -22,8 +22,14 @@ export default function Screen() {
   const { mutateAsync: registerDevice } = useMutation(api.registerDeviceForPushNotification());
   const { mutateAsync: unregisterDevice } = useMutation(api.unregisterDeviceForPushNotification());
 
-  const [categories, requests, jobs] = useQueries({
-    queries: [api.getAllCategories(), api.getUserServiceRequests(), api.getUserJobs()],
+  const [categories, requests, jobs, userOfWeek, newsPromotions] = useQueries({
+    queries: [
+      api.getAllCategories(),
+      api.getUserServiceRequests(),
+      api.getUserJobs(),
+      api.getActiveFeaturedProfiles(),
+      api.getNewsAndPromotions(),
+    ],
   });
 
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -32,7 +38,13 @@ export default function Screen() {
     setIsRefreshing(true);
 
     try {
-      await Promise.all([categories.refetch(), requests?.refetch(), jobs?.refetch()]);
+      await Promise.all([
+        categories.refetch(),
+        requests?.refetch(),
+        jobs?.refetch(),
+        userOfWeek?.refetch(),
+        newsPromotions?.refetch(),
+      ]);
     } catch (error) {
     } finally {
       setIsRefreshing(false);
@@ -76,6 +88,8 @@ export default function Screen() {
         categories.refetch();
         requests?.refetch();
         jobs?.refetch();
+        userOfWeek?.refetch();
+        newsPromotions?.refetch();
       }
     });
 

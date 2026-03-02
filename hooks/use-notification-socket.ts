@@ -32,7 +32,7 @@ export const useNotificationSocket = ({
   const socketRef = useRef<NotificationSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [unreadCount, setUnreadCount] = useState<number>(0);
-  
+
   // Refs for callbacks to avoid reconnection on change
   const onNewNotificationRef = useRef(onNewNotification);
   const onNotificationReadRef = useRef(onNotificationRead);
@@ -48,13 +48,8 @@ export const useNotificationSocket = ({
     if (!autoConnect) return;
 
     const connectSocket = async () => {
-      const token = tokenStorage.getAccessToken(); // Assuming synchronous or handled async elsewhere, but storage is usually async in RN unless mmkv/sqlite sync method used. 
-      // Checking tokenStorage in api/token-storage to confirm sync/async.
-      // Based on previous file views, it seems to have setTokens (async) but let's check retrieval.
-      // For now assuming we can get it or passed via auth store. 
-      // Actually standard pattern here is often to rely on the fact that if we are logged in we have token.
-      
-       // Using the same URL base as other sockets
+      const token = await tokenStorage.getAccessToken();
+
       const socket: NotificationSocket = io(`${SOCKET_URL}/notifications`, {
         transports: ['websocket'],
         autoConnect: true,
@@ -82,36 +77,36 @@ export const useNotificationSocket = ({
         if (onNewNotificationRef.current) {
           onNewNotificationRef.current(event.data);
         }
-        // Ideally fetch count again or increment locally? 
+        // Ideally fetch count again or increment locally?
         // The server might send unread count update immediately after.
       });
 
       socket.on('notification:read', (event) => {
-         console.log('Notification Read:', event);
-         if (onNotificationReadRef.current) {
-            onNotificationReadRef.current(event.data);
-         }
+        console.log('Notification Read:', event);
+        if (onNotificationReadRef.current) {
+          onNotificationReadRef.current(event.data);
+        }
       });
 
       socket.on('notification:count', (event) => {
-          console.log('Unread Count:', event);
-          setUnreadCount(event.data.unreadCount);
-          if (onUnreadCountRef.current) {
-              onUnreadCountRef.current(event.data);
-          }
+        console.log('Unread Count:', event);
+        setUnreadCount(event.data.unreadCount);
+        if (onUnreadCountRef.current) {
+          onUnreadCountRef.current(event.data);
+        }
       });
 
       return () => {
-         socket.disconnect();
-         socketRef.current = null;
+        socket.disconnect();
+        socketRef.current = null;
       };
     };
 
     connectSocket();
-    
+
     return () => {
-        socketRef.current?.disconnect();
-        socketRef.current = null;
+      socketRef.current?.disconnect();
+      socketRef.current = null;
     };
   }, [autoConnect]);
 
@@ -124,8 +119,8 @@ export const useNotificationSocket = ({
   };
 
   const register = () => {
-      socketRef.current?.emit('register');
-  }
+    socketRef.current?.emit('register');
+  };
 
   return {
     socket: socketRef.current,
@@ -133,6 +128,6 @@ export const useNotificationSocket = ({
     unreadCount,
     markRead,
     getUnreadCount,
-    register
+    register,
   };
 };

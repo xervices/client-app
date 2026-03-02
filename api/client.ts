@@ -163,9 +163,11 @@ const authMiddleware: Middleware = {
         showErrorMessage('Session expired, please login again');
       } catch (error) {
         console.error('❌ Error handling 401:', error);
-        await tokenStorage.clearTokens();
-        useAuthStore.getState().setLoginState(false);
-        showErrorMessage('Session expired, please login again');
+        if (error?.error === 'Unauthorized') {
+          await tokenStorage.clearTokens();
+          useAuthStore.getState().setLoginState(false);
+          showErrorMessage('Session expired, please login again');
+        }
       }
     }
 

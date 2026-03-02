@@ -174,8 +174,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Verify account with code
-         * @description Verify user account using the 6-digit code sent to both email and phone. Marks both as verified and sends welcome email.
+         * Verify code
+         * @description Verify a 6-digit code. For account_verification: marks email/phone as verified. For password_reset: validates the code is correct (use reset-password endpoint to set the new password).
          */
         post: operations["AuthController_verifyAccount"];
         delete?: never;
@@ -3622,6 +3622,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/financial/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Financial overview metrics
+         * @description Fetch high-level financial metrics including total payments, escrow, platform revenue, withdrawals, and balances.
+         */
+        get: operations["FinancialManagementController_getOverviewMetrics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/financial/revenue-trend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Revenue trend by month
+         * @description Return monthly revenue data for chart display. Data grouped by month (Jan-Dec) based on payment completion date.
+         */
+        get: operations["FinancialManagementController_getRevenueTrend"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/financial/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Payment history
+         * @description Paginated list of all payments with sender/artisan names, service, amounts, and status. Supports filtering, search, and sorting.
+         */
+        get: operations["FinancialManagementController_getPaymentHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/financial/withdrawals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Withdrawal history
+         * @description Paginated list of all withdrawal requests with artisan details, bank info (masked account numbers), status, and balance after withdrawal.
+         */
+        get: operations["FinancialManagementController_getWithdrawalHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/support/tickets": {
         parameters: {
             query?: never;
@@ -4067,7 +4147,14 @@ export interface components {
              * @description The 6-digit verification code sent to email and phone
              * @example 123456
              */
-            code?: string;
+            code: string;
+            /**
+             * @description Type of code to verify. Defaults to account_verification.
+             * @default account_verification
+             * @example account_verification
+             * @enum {string}
+             */
+            type: "account_verification" | "password_reset";
         };
         ResendVerificationDto: {
             /**
@@ -8325,7 +8412,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Account verified successfully */
+            /** @description Code verified successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -16310,6 +16397,105 @@ export interface operations {
                         }[];
                     };
                 };
+            };
+        };
+    };
+    FinancialManagementController_getOverviewMetrics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Financial overview metrics */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialManagementController_getRevenueTrend: {
+        parameters: {
+            query?: {
+                /** @description Year for trend data (default: current year) */
+                year?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Monthly revenue trend data */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialManagementController_getPaymentHistory: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                status?: "pending" | "processing" | "successful" | "failed" | "refunded";
+                /** @description Search by sender/artisan name or payment reference */
+                search?: string;
+                /** @description Filter from date (ISO string) */
+                dateFrom?: string;
+                /** @description Filter to date (ISO string) */
+                dateTo?: string;
+                sortBy?: "createdAt" | "paidAt" | "amount" | "platformFee";
+                sortOrder?: "ASC" | "DESC";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated payment history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialManagementController_getWithdrawalHistory: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                status?: "pending" | "processing" | "completed" | "failed" | "cancelled";
+                /** @description Search by artisan name or withdrawal reference */
+                search?: string;
+                /** @description Filter from date (ISO string) */
+                dateFrom?: string;
+                /** @description Filter to date (ISO string) */
+                dateTo?: string;
+                sortBy?: "requestedAt" | "processedAt" | "amount";
+                sortOrder?: "ASC" | "DESC";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated withdrawal history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

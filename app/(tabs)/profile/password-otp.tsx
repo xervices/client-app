@@ -93,20 +93,35 @@ export default function Screen() {
           }}
           disabled={otpDisabled}
           onFilled={(value) => {
-            console.log(email);
-            verifyCode.mutate(
-              { code: value, email },
-              {
-                onSuccess: () => {
-                  router.navigate({
-                    pathname: '/profile/new-password',
-                    params: {
-                      code: value,
-                    },
-                  });
-                },
-              }
-            );
+            if (email?.includes('@')) {
+              verifyCode.mutate(
+                { code: value, email, type: 'password_reset' },
+                {
+                  onSuccess: () => {
+                    router.navigate({
+                      pathname: '/profile/new-password',
+                      params: {
+                        code: value,
+                      },
+                    });
+                  },
+                }
+              );
+            } else {
+              verifyCode.mutate(
+                { code: value, phoneNumber: email, type: 'password_reset' },
+                {
+                  onSuccess: () => {
+                    router.navigate({
+                      pathname: '/profile/new-password',
+                      params: {
+                        code: value,
+                      },
+                    });
+                  },
+                }
+              );
+            }
           }}
         />
 

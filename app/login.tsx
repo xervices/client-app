@@ -59,6 +59,8 @@ export default function Screen() {
       value.deviceId = deviceInfo?.deviceId || '';
       value.deviceName = deviceInfo?.deviceName || '';
 
+      console.log(value);
+
       mutate(value, {
         onSuccess: (res) => {
           if (!res.user.emailVerified) {

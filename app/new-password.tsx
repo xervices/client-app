@@ -19,7 +19,7 @@ import { showErrorMessage } from '@/api/helpers';
 
 const formSchema = z
   .object({
-    token: z.string().min(1, 'OTP is required.'),
+    code: z.string().min(1, 'OTP is required.'),
     newPassword: z.string().min(1, 'Password is required.'),
     confirmPassword: z.string().min(1, 'Password confirmation is required.'),
   })
@@ -35,7 +35,7 @@ export default function Screen() {
 
   const form = useForm({
     defaultValues: {
-      token: code,
+      code: code,
       newPassword: '',
       confirmPassword: '',
     },
