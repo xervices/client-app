@@ -16,6 +16,7 @@ import { useServiceStore } from '@/store/service-store';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import { SheetManager } from 'react-native-actions-sheet';
+import { formatPhoneNumber } from '@/lib/utils';
 
 export default function Screen() {
   const { user } = useAuthStore();
@@ -43,7 +44,7 @@ export default function Screen() {
     if (status === 'granted') {
       Contacts.presentContactPickerAsync().then((res) => {
         const phoneNumber = res?.phoneNumbers?.[0]?.number?.replace(/\s/g, '');
-        setContactPhone(phoneNumber);
+        setContactPhone(formatPhoneNumber(phoneNumber || ''));
       });
     }
   };

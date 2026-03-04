@@ -98,6 +98,22 @@ export interface OfferAcceptedEvent {
   };
   timestamp: string;
 }
+export interface OfferRejectedEvent {
+  type: 'OFFER_REJECTED';
+  data: {
+    offerId: string;
+    rejectedBy: string;
+  };
+  timestamp: string;
+}
+export interface OfferWithdrawnEvent {
+  type: 'OFFER_WITHDRAWN';
+  data: {
+    offerId: string;
+    artisanId: string;
+  };
+  timestamp: string;
+}
 export interface JoinServiceRequestPayload {
   serviceRequestId: string;
 }
@@ -107,6 +123,8 @@ export interface OffersServerToClientEvents {
   'offer:new': (payload: NewOfferEvent) => void;
   'offer:counter': (payload: CounterOfferEvent) => void;
   'offer:accepted': (payload: OfferAcceptedEvent) => void;
+  'offer:rejected': (payload: OfferRejectedEvent) => void;
+  'offer:withdrawn': (payload: OfferWithdrawnEvent) => void;
 }
 // Client -> Server Events
 export interface OffersClientToServerEvents {

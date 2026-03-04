@@ -1,4 +1,5 @@
 import { Text } from '@/components/ui/text';
+import { NotificationSocketProvider } from '@/providers/notification-socket-provider';
 import { OffersProvider } from '@/providers/offers-context';
 import { Image } from 'expo-image';
 import { Tabs } from 'expo-router';
@@ -8,34 +9,36 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabsLayout() {
   return (
-    <OffersProvider>
-      <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <MyTabBar {...props} />}>
-        <Tabs.Screen
-          name="(home)"
-          options={{
-            title: 'Home',
-          }}
-        />
-        <Tabs.Screen
-          name="jobs"
-          options={{
-            title: 'My Jobs',
-          }}
-        />
-        <Tabs.Screen
-          name="book"
-          options={{
-            title: 'Book a service',
-          }}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: 'Profile',
-          }}
-        />
-      </Tabs>
-    </OffersProvider>
+    <NotificationSocketProvider>
+      <OffersProvider>
+        <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <MyTabBar {...props} />}>
+          <Tabs.Screen
+            name="(home)"
+            options={{
+              title: 'Home',
+            }}
+          />
+          <Tabs.Screen
+            name="jobs"
+            options={{
+              title: 'My Jobs',
+            }}
+          />
+          <Tabs.Screen
+            name="book"
+            options={{
+              title: 'Book a service',
+            }}
+          />
+          <Tabs.Screen
+            name="profile"
+            options={{
+              title: 'Profile',
+            }}
+          />
+        </Tabs>
+      </OffersProvider>
+    </NotificationSocketProvider>
   );
 }
 

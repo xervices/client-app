@@ -688,47 +688,51 @@ export default function Screen() {
                         </Pressable>
 
                         <View className="flex flex-row gap-4">
-                          <Button
-                            isLoading={approveJob?.isPending}
-                            disabled={approveJob?.isPending}
-                            onPress={() => {
-                              approveJob?.mutate(
-                                {},
-                                {
-                                  onSuccess: (res) => {
-                                    refetch();
-                                    jobs?.refetch();
-                                    SheetManager.hideAll();
-                                    router.navigate({
-                                      pathname: '/rate',
-                                      params: {
-                                        id: id,
-                                      },
-                                    });
-                                  },
-                                  onError: (err) => {
-                                    showErrorMessage(err?.message);
-                                  },
-                                }
-                              );
-                            }}
-                            className="flex-1 px-0">
-                            Release Payment
-                          </Button>
+                          <View className="flex-1">
+                            <Button
+                              isLoading={approveJob?.isPending}
+                              disabled={approveJob?.isPending}
+                              onPress={() => {
+                                approveJob?.mutate(
+                                  {},
+                                  {
+                                    onSuccess: (res) => {
+                                      refetch();
+                                      jobs?.refetch();
+                                      SheetManager.hideAll();
+                                      router.navigate({
+                                        pathname: '/rate',
+                                        params: {
+                                          id: id,
+                                        },
+                                      });
+                                    },
+                                    onError: (err) => {
+                                      showErrorMessage(err?.message);
+                                    },
+                                  }
+                                );
+                              }}
+                              className="flex-1 px-0">
+                              Release Payment
+                            </Button>
+                          </View>
 
-                          <Button
-                            onPress={() => {
-                              SheetManager.hideAll();
-                              router.navigate({
-                                pathname: '/dispute',
-                                params: {
-                                  id: id,
-                                },
-                              });
-                            }}
-                            className="flex-1 border-[#1B1B1E] bg-white">
-                            <Text className="font-cabinet-bold text-[#1B1B1E]">Reject</Text>
-                          </Button>
+                          <View className="flex-1">
+                            <Button
+                              onPress={() => {
+                                SheetManager.hideAll();
+                                router.navigate({
+                                  pathname: '/dispute',
+                                  params: {
+                                    id: id,
+                                  },
+                                });
+                              }}
+                              className="flex-1 border-[#1B1B1E] bg-white">
+                              <Text className="font-cabinet-bold text-[#1B1B1E]">Reject</Text>
+                            </Button>
+                          </View>
                         </View>
                       </>
                     ) : null}

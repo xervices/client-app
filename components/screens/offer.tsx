@@ -46,9 +46,14 @@ export function OfferScreen() {
       if (eventType === 'offer:accepted') {
         showSuccessMessage('Offer accepted, You can proceed to payment');
       }
+
       allOffers?.refetch();
       queryClient.invalidateQueries({ queryKey: api.getUserServiceRequests().queryKey });
       queryClient.invalidateQueries({ queryKey: api.getUserJobs().queryKey });
+
+      // if (eventType === "offer:rejected" || eventType === "offer:withdrawn") {
+
+      // }
     },
   });
 
@@ -75,14 +80,18 @@ export function OfferScreen() {
     };
   }, [isConnected, id]);
 
+  const excludedStatuses = ['withdrawn', 'rejected', 'expired'];
+
   const uniqueOffersByArtisan = React.useMemo(() => {
     if (!allOffers?.data) return [];
     const seen = new Set();
-    return allOffers.data.filter((offer) => {
-      if (seen.has(offer.artisanId)) return false;
-      seen.add(offer.artisanId);
-      return true;
-    });
+    return allOffers.data
+      .filter((offer) => {
+        if (seen.has(offer.artisanId)) return false;
+        seen.add(offer.artisanId);
+        return true;
+      })
+      .filter((offer) => !excludedStatuses.includes(offer.status));
   }, [allOffers?.data]);
 
   return (
@@ -123,6 +132,9 @@ export function OfferScreen() {
                 avatarUrl={offer?.artisan?.profile?.avatarUrl}
                 name={offer?.artisan?.profile?.fullName}
                 onCounterOfferCallback={() => allOffers?.refetch()}
+                onRejectOfferCallback={() => {
+                  allOffers?.refetch();
+                }}
                 rating={offer?.artisanRating}
                 reviewCount={offer?.artisanReviewCount}
                 serviceLat={offer?.serviceRequest?.serviceLatitude}
@@ -147,6 +159,7 @@ interface OfferCardProps {
   reviewCount?: number;
   amount?: number;
   onCounterOfferCallback?: () => void;
+  onRejectOfferCallback?: () => void;
   serviceLat?: number | null;
   serviceLong?: number | null;
   artisanLat?: number | null | Record<string, never>;
@@ -163,12 +176,14 @@ function OfferCard({
   reviewCount,
   serviceRequestId,
   onCounterOfferCallback,
+  onRejectOfferCallback,
   artisanLat,
   artisanLong,
   serviceLat,
   serviceLong,
 }: OfferCardProps) {
   const sendCounterOffer = useMutation(api.createCounterOffer());
+  const rejectOffer = useMutation(api.respondToOffer(id));
 
   const pathname = usePathname();
 
@@ -288,8 +303,8 @@ function OfferCard({
 
       <View className="flex flex-row gap-4">
         <Button
-          isLoading={sendCounterOffer?.isPending}
-          disabled={sendCounterOffer?.isPending}
+          isLoading={sendCounterOffer?.isPending || rejectOffer?.isPending}
+          disabled={sendCounterOffer?.isPending || rejectOffer?.isPending}
           loadingIndicatorColor="#CC5600"
           onPress={() =>
             SheetManager.show('counter-offer-sheet', {
@@ -298,6 +313,22 @@ function OfferCard({
                 amount: amount,
                 name: name,
                 profileImage: avatarUrl,
+                onReject: () => {
+                  rejectOffer?.mutate(
+                    {
+                      action: 'reject',
+                    },
+                    {
+                      onSuccess: () => {
+                        onRejectOfferCallback?.();
+                        showSuccessMessage('Rejected offer successfully.');
+                      },
+                      onError: (err) => {
+                        showErrorMessage(err.message);
+                      },
+                    }
+                  );
+                },
                 onConfirm: (amount) => {
                   sendCounterOffer.mutate(
                     // @ts-ignore

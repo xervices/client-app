@@ -1,6 +1,5 @@
-import React, { createContext, useContext, ReactNode, useEffect, useRef } from 'react';
+import React, { createContext, useContext, ReactNode } from 'react';
 import { useNotificationSocket } from '@/hooks/use-notification-socket';
-import { NewNotificationEvent, NotificationReadEvent, NotificationCountEvent } from '@/hooks/notification-types';
 import { useAuthStore } from '@/store/auth-store';
 
 type NotificationSocketContextType = ReturnType<typeof useNotificationSocket>;
@@ -9,24 +8,15 @@ const NotificationSocketContext = createContext<NotificationSocketContextType | 
 
 interface NotificationSocketProviderProps {
   children: ReactNode;
-  onNewNotification?: (data: NewNotificationEvent['data']) => void;
-  onNotificationRead?: (data: NotificationReadEvent['data']) => void;
-  onUnreadCount?: (data: NotificationCountEvent['data']) => void;
 }
 
 export const NotificationSocketProvider: React.FC<NotificationSocketProviderProps> = ({
   children,
-  onNewNotification,
-  onNotificationRead,
-  onUnreadCount,
 }) => {
   const { isLoggedIn } = useAuthStore();
-  
+
   const socketData = useNotificationSocket({
-    autoConnect: isLoggedIn, // Only connect if logged in
-    onNewNotification,
-    onNotificationRead,
-    onUnreadCount,
+    autoConnect: isLoggedIn,
   });
 
   return (

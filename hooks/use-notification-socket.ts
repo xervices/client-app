@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import {
   NotificationClientToServerEvents,
@@ -8,6 +8,8 @@ import {
   NotificationCountEvent,
 } from './notification-types';
 import { tokenStorage } from '@/api/token-storage';
+import { AppState } from 'react-native';
+import { useQueryClient } from '@tanstack/react-query';
 
 const SOCKET_URL = 'https://server-api-bibv.onrender.com';
 
@@ -32,6 +34,7 @@ export const useNotificationSocket = ({
   const socketRef = useRef<NotificationSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [unreadCount, setUnreadCount] = useState<number>(0);
+  const queryClient = useQueryClient();
 
   // Refs for callbacks to avoid reconnection on change
   const onNewNotificationRef = useRef(onNewNotification);
@@ -44,14 +47,30 @@ export const useNotificationSocket = ({
     onUnreadCountRef.current = onUnreadCount;
   }, [onNewNotification, onNotificationRead, onUnreadCount]);
 
+  const invalidateNotificationQueries = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['user', 'notifications'] });
+    queryClient.invalidateQueries({ queryKey: ['user', 'notifications', 'unread'] });
+  }, [queryClient]);
+
   useEffect(() => {
     if (!autoConnect) return;
 
-    const connectSocket = async () => {
+    let socket: NotificationSocket | null = null;
+
+    const initSocket = async () => {
       const token = await tokenStorage.getAccessToken();
 
-      const socket: NotificationSocket = io(`${SOCKET_URL}/notifications`, {
+      if (!token) {
+        console.error('No access token found for notification socket');
+        return;
+      }
+
+      socket = io(`${SOCKET_URL}/notifications`, {
         transports: ['websocket'],
+        reconnection: true,
+        reconnectionAttempts: Infinity,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 10000,
         autoConnect: true,
         auth: { token },
       });
@@ -59,13 +78,29 @@ export const useNotificationSocket = ({
       socketRef.current = socket;
 
       socket.on('connect', () => {
-        console.log('Connected to /notifications');
+        console.log('✅ Connected to /notifications');
         setIsConnected(true);
+        // Invalidate queries on reconnection to get fresh state
+        invalidateNotificationQueries();
       });
 
-      socket.on('disconnect', () => {
-        console.log('Disconnected from /notifications');
+      socket.on('disconnect', (reason) => {
+        console.log('❌ Disconnected from /notifications:', reason);
         setIsConnected(false);
+      });
+
+      socket.on('connected', (event) => {
+        console.log('Registered for notifications:', event);
+      });
+
+      socket.on('connect_error', async (err) => {
+        console.error('Notification Socket Connection Error:', err);
+        // If connection fails due to auth, try refreshing the token
+        if (!socket) return;
+        const freshToken = await tokenStorage.getAccessToken();
+        if (freshToken) {
+          socket.auth = { token: freshToken };
+        }
       });
 
       socket.on('error', (err) => {
@@ -74,53 +109,67 @@ export const useNotificationSocket = ({
 
       socket.on('notification:new', (event) => {
         console.log('New Notification:', event);
-        if (onNewNotificationRef.current) {
-          onNewNotificationRef.current(event.data);
-        }
-        // Ideally fetch count again or increment locally?
-        // The server might send unread count update immediately after.
+        onNewNotificationRef.current?.(event.data);
+        invalidateNotificationQueries();
       });
 
       socket.on('notification:read', (event) => {
         console.log('Notification Read:', event);
-        if (onNotificationReadRef.current) {
-          onNotificationReadRef.current(event.data);
-        }
+        onNotificationReadRef.current?.(event.data);
+        invalidateNotificationQueries();
       });
 
       socket.on('notification:count', (event) => {
         console.log('Unread Count:', event);
         setUnreadCount(event.data.unreadCount);
-        if (onUnreadCountRef.current) {
-          onUnreadCountRef.current(event.data);
-        }
+        onUnreadCountRef.current?.(event.data);
+        invalidateNotificationQueries();
       });
-
-      return () => {
-        socket.disconnect();
-        socketRef.current = null;
-      };
     };
 
-    connectSocket();
+    initSocket();
+
+    const handleAppStateChange = async (nextAppState: string) => {
+      if (nextAppState === 'active') {
+        const socket = socketRef.current;
+        if (!socket) return;
+
+        // Always refresh the token so the socket uses the latest one
+        const freshToken = await tokenStorage.getAccessToken();
+        if (freshToken) {
+          socket.auth = { token: freshToken };
+        }
+
+        if (socket.connected) {
+          // Already connected — refresh notification data
+          invalidateNotificationQueries();
+        } else {
+          // Reconnect the socket with the fresh token
+          socket.connect();
+        }
+      }
+    };
+
+    const appStateSubscription = AppState.addEventListener('change', handleAppStateChange);
 
     return () => {
-      socketRef.current?.disconnect();
+      socket?.disconnect();
       socketRef.current = null;
+      appStateSubscription.remove();
     };
-  }, [autoConnect]);
+  }, [autoConnect, invalidateNotificationQueries]);
 
-  const markRead = (notificationIds: string[]) => {
+  const markRead = useCallback((notificationIds: string[]) => {
     socketRef.current?.emit('mark_read', { notificationIds });
-  };
+  }, []);
 
-  const getUnreadCount = () => {
+  const getUnreadCount = useCallback(() => {
     socketRef.current?.emit('get_unread_count');
-  };
+  }, []);
 
-  const register = () => {
+  const register = useCallback(() => {
     socketRef.current?.emit('register');
-  };
+  }, []);
 
   return {
     socket: socketRef.current,

@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
+import { SheetManager } from 'react-native-actions-sheet';
 
 export function NoResultScreen() {
   const { id }: { id: string } = useLocalSearchParams();
@@ -88,7 +89,15 @@ export function NoResultScreen() {
           </Button>
 
           <Button
-            onPress={mutate}
+            onPress={() => {
+              SheetManager?.show('cancel-service-sheet', {
+                payload: {
+                  onConfirm(reason) {
+                    mutate({ reason });
+                  },
+                },
+              });
+            }}
             isLoading={isPending}
             disabled={isPending}
             variant={'destructive'}>

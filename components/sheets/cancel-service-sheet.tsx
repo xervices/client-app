@@ -8,19 +8,12 @@ import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { InputError } from '../ui/input-error';
 import { Button } from '../ui/button';
-import { useMutation } from '@tanstack/react-query';
-import { api } from '@/api';
-import { tokenStorage } from '@/api/token-storage';
-import { useAuthStore } from '@/store/auth-store';
-import { showErrorMessage } from '@/api/helpers';
 
 const formSchema = z.object({
   reason: z.string().min(1, 'Reason is required.'),
 });
 
-export function DeleteAccountSheet() {
-  const { mutate, isPending } = useMutation(api.deleteAccount());
-
+export function CancelServiceSheet(props: SheetProps<'cancel-service-sheet'>) {
   const form = useForm({
     defaultValues: {
       reason: '',
@@ -29,31 +22,8 @@ export function DeleteAccountSheet() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      mutate(value, {
-        onSuccess: async () => {
-          SheetManager.hide('delete-account-sheet');
-          tokenStorage.clearTokens();
-          useAuthStore.getState().setLoginState(false);
-          // let deleteSheet = await SheetManager.hide('delete-account-sheet');
-
-          // if (deleteSheet)
-          //   return await SheetManager.show('success-sheet', {
-          //     payload: {
-          //       subtitle:
-          //         'Your account has been deleted successfully. You will be redirected to the login page shortly',
-          //       title: 'Account deleted successfully',
-          //       useCheckImage: true,
-          //       onRedirect: () => {
-          //         tokenStorage.clearTokens();
-          //         useAuthStore.getState().setLoginState(false);
-          //       },
-          //     },
-          //   });
-        },
-        onError: (err) => {
-          showErrorMessage(err.message);
-        },
-      });
+      props?.payload?.onConfirm?.(value.reason);
+      SheetManager?.hide('cancel-service-sheet');
     },
   });
 
@@ -69,25 +39,25 @@ export function DeleteAccountSheet() {
         height: 6,
         backgroundColor: '#FFF4EA',
       }}>
-      <View className="flex gap-6 p-6">
+      <View className="flex gap-6 p-6 pt-0">
         <View className="relative flex w-full flex-row items-center justify-center">
           <Pressable
             onPress={() => {
-              SheetManager.hide('delete-account-sheet');
+              SheetManager.hide('cancel-service-sheet');
             }}
             className="absolute left-0 h-8 w-8 justify-center">
             <ArrowLeft size={24} color={'#B4B4BC'} />
           </Pressable>
 
-          <Text className="text-center font-cabinet-bold text-[#1B1B1E]">Delete Account</Text>
+          <Text className="text-center font-cabinet-bold text-[#1B1B1E]">
+            Cancel Service Request
+          </Text>
         </View>
 
         <form.Field name="reason">
           {(field) => (
             <View className="flex gap-4">
-              <Label nativeID="reason">
-                We are sad to see you go. Can you tell us why you want to delete your account?
-              </Label>
+              <Label nativeID="reason">Can you tell us why you want to cancel this request?</Label>
               <View>
                 <Textarea
                   className="bg-white"
@@ -104,12 +74,8 @@ export function DeleteAccountSheet() {
           )}
         </form.Field>
 
-        <Button
-          onPress={form.handleSubmit}
-          isLoading={isPending}
-          disabled={isPending}
-          variant={'destructive'}>
-          Delete my account
+        <Button onPress={form.handleSubmit} variant={'destructive'}>
+          Cancel Request
         </Button>
       </View>
     </ActionSheet>

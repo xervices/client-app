@@ -9,6 +9,7 @@ import { AddPromoCodeSheet } from './add-promo-code-sheet';
 import { CameraSheet } from './camera-sheet';
 import { LocationSearchSheet } from './location-search-sheet';
 import { PaystackWebviewSheet, PaystackWebviewPayload } from './paystack-webview-sheet';
+import { CancelServiceSheet } from './cancel-service-sheet';
 
 interface CameraSheetPayload {
   url: string;
@@ -59,11 +60,17 @@ declare module 'react-native-actions-sheet' {
     'counter-offer-sheet': SheetDefinition<{
       payload: {
         onConfirm?: (amount: number) => void;
+        onReject?: () => void;
         type: 'offer' | 'counter';
         name?: string;
         profileImage?: string;
         amount?: number;
         counterAmount?: number;
+      };
+    }>;
+    'cancel-service-sheet': SheetDefinition<{
+      payload: {
+        onConfirm?: (reason?: string) => void;
       };
     }>;
     'paystack-webview-sheet': SheetDefinition<{
@@ -95,6 +102,7 @@ export const Sheets = () => {
         'camera-sheet': CameraSheet,
         'location-search-sheet': LocationSearchSheet,
         'paystack-webview-sheet': PaystackWebviewSheet,
+        'cancel-service-sheet': CancelServiceSheet,
       }}
     />
   );

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, type ReactNode } from 'react';
 
 import { useOffersSocket } from '@/hooks/use-offers-socket';
-import { NewOfferEvent, RequestViewedEvent } from '@/hooks/types';
+import { NewOfferEvent, RequestViewedEvent, OfferRejectedEvent, OfferWithdrawnEvent } from '@/hooks/types';
 
 // Define the shape of the context based on the hook's return type
 type OffersContextType = ReturnType<typeof useOffersSocket>;
@@ -17,6 +17,8 @@ interface OffersProviderProps {
   // Callbacks
   onViewed?: (data: RequestViewedEvent['data']) => void;
   onOffered?: (data: NewOfferEvent['data']) => void;
+  onOfferRejected?: (data: OfferRejectedEvent['data']) => void;
+  onOfferWithdrawn?: (data: OfferWithdrawnEvent['data']) => void;
 }
 
 export const OffersProvider: React.FC<OffersProviderProps> = ({
@@ -25,6 +27,8 @@ export const OffersProvider: React.FC<OffersProviderProps> = ({
   autoConnect = true,
   onViewed,
   onOffered,
+  onOfferRejected,
+  onOfferWithdrawn,
 }) => {
   const [activeServiceRequestId, setActiveServiceRequestId] = React.useState<string | undefined>(
     initialServiceRequestId
@@ -36,6 +40,8 @@ export const OffersProvider: React.FC<OffersProviderProps> = ({
     autoConnect: shouldConnect,
     onViewed,
     onOffered,
+    onOfferRejected,
+    onOfferWithdrawn,
   });
 
   const joinServiceRequest = React.useCallback((serviceRequestId: string) => {
@@ -102,6 +108,28 @@ export const useOffersContext = (options?: UseOffersContextOptions): OffersConte
       );
     }
   }, [context.acceptedOffers]);
+
+  // Trigger callback whenever rejected offers change
+  React.useEffect(() => {
+    if (!callbackRef.current) return;
+    if (context.rejectedOffers && context.rejectedOffers.length > 0) {
+      callbackRef.current(
+        'offer:rejected',
+        context.rejectedOffers[context.rejectedOffers.length - 1]
+      );
+    }
+  }, [context.rejectedOffers]);
+
+  // Trigger callback whenever withdrawn offers change
+  React.useEffect(() => {
+    if (!callbackRef.current) return;
+    if (context.withdrawnOffers && context.withdrawnOffers.length > 0) {
+      callbackRef.current(
+        'offer:withdrawn',
+        context.withdrawnOffers[context.withdrawnOffers.length - 1]
+      );
+    }
+  }, [context.withdrawnOffers]);
 
   return context;
 };

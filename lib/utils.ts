@@ -429,6 +429,27 @@ function formatDuration(minutes: number): string {
   return `${hours} hr ${mins} min`;
 }
 
+export function formatPhoneNumber(phoneNumber: string): string {
+  const cleanNumber = phoneNumber.replace(/[^0-9+]/g, '');
+
+  let internationalNumber: string;
+  if (cleanNumber.startsWith('+')) {
+    // Already has a country code — use as-is
+    internationalNumber = cleanNumber;
+  } else if (cleanNumber.startsWith('234')) {
+    // Has country code digits but no leading +
+    internationalNumber = `+${cleanNumber}`;
+  } else if (cleanNumber.startsWith('0')) {
+    // Local format (e.g. 08012345678) — strip the leading 0 and prepend +234
+    internationalNumber = `+234${cleanNumber.slice(1)}`;
+  } else {
+    // Assume a bare local number with no leading 0 (e.g. 8012345678)
+    internationalNumber = `+234${cleanNumber}`;
+  }
+
+  return internationalNumber;
+}
+
 export const makePhoneCall = async (phoneNumber: string | undefined) => {
   if (!phoneNumber || phoneNumber.trim() === '') {
     showErrorMessage('Phone number is not available');

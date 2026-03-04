@@ -16,6 +16,7 @@ import { GoogleSigninButton } from '@/components/google-signin-button';
 
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
+import { formatPhoneNumber } from '@/lib/utils';
 
 const formSchema = z
   .object({
@@ -57,6 +58,8 @@ export default function Screen() {
     },
     onSubmit: async ({ value }) => {
       const { confirmPassword, referralCode, ...registerData } = value;
+
+      registerData.phoneNumber = formatPhoneNumber(registerData.phoneNumber);
 
       mutate(registerData, {
         onSuccess: () => {

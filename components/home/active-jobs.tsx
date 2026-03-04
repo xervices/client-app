@@ -9,6 +9,7 @@ import { api } from '@/api';
 import React from 'react';
 import { LoadingIndicator } from '../ui/loading-indicator';
 import { showErrorMessage } from '@/api/helpers';
+import { SheetManager } from 'react-native-actions-sheet';
 
 export function ActiveJobs() {
   const { data, refetch } = useQuery(api.getUserServiceRequests());
@@ -161,17 +162,28 @@ function NegotiatingJobCard({ jobId, onCancelFn }: NegotiatingJobCardProp) {
 
   const { mutate, isPending } = useMutation(api.cancelServiceRequest(jobId));
 
+  const excludedStatuses = ['withdrawn', 'rejected', 'expired'];
+
   const uniqueOffersByArtisan = React.useMemo(() => {
     if (!data) return [];
     const seen = new Set();
-    return data.filter((offer) => {
-      if (seen.has(offer.artisanId)) return false;
-      seen.add(offer.artisanId);
-      return true;
-    });
+    return data
+      .filter((offer) => {
+        if (seen.has(offer.artisanId)) return false;
+        seen.add(offer.artisanId);
+        return true;
+      })
+      .filter((offer) => !excludedStatuses.includes(offer.status));
   }, [data]);
 
-  if (isLoading || !data || data?.length === 0) return null;
+  if (
+    isLoading ||
+    !data ||
+    data?.length === 0 ||
+    !uniqueOffersByArtisan ||
+    uniqueOffersByArtisan?.length === 0
+  )
+    return null;
 
   return (
     <View
@@ -193,17 +205,23 @@ function NegotiatingJobCard({ jobId, onCancelFn }: NegotiatingJobCardProp) {
         ) : (
           <Pressable
             onPress={() => {
-              mutate(
-                {},
-                {
-                  onError: (err) => {
-                    showErrorMessage(err?.message);
+              SheetManager?.show('cancel-service-sheet', {
+                payload: {
+                  onConfirm(reason) {
+                    mutate(
+                      { reason },
+                      {
+                        onError: (err) => {
+                          showErrorMessage(err?.message);
+                        },
+                        onSuccess: () => {
+                          onCancelFn?.();
+                        },
+                      }
+                    );
                   },
-                  onSuccess: () => {
-                    onCancelFn?.();
-                  },
-                }
-              );
+                },
+              });
             }}
             className="flex h-4 w-4 items-center justify-center">
             <X size={14} color={'#737381'} />
@@ -288,17 +306,25 @@ function RequestCard({ category, id, onCancelFn }: RequestCardProp) {
         ) : (
           <Pressable
             onPress={() => {
-              mutate(
-                {},
-                {
-                  onError: (err) => {
-                    showErrorMessage(err?.message);
+              SheetManager?.show('cancel-service-sheet', {
+                payload: {
+                  onConfirm(reason) {
+                    mutate(
+                      {
+                        reason,
+                      },
+                      {
+                        onError: (err) => {
+                          showErrorMessage(err?.message);
+                        },
+                        onSuccess: () => {
+                          onCancelFn?.();
+                        },
+                      }
+                    );
                   },
-                  onSuccess: () => {
-                    onCancelFn?.();
-                  },
-                }
-              );
+                },
+              });
             }}
             className="flex h-4 w-4 items-center justify-center">
             <X size={14} color={'#737381'} />
@@ -368,17 +394,25 @@ function PendingJobCard({
         ) : (
           <Pressable
             onPress={() => {
-              mutate(
-                {},
-                {
-                  onError: (err) => {
-                    showErrorMessage(err?.message);
+              SheetManager?.show('cancel-service-sheet', {
+                payload: {
+                  onConfirm(reason) {
+                    mutate(
+                      {
+                        note: reason,
+                      },
+                      {
+                        onError: (err) => {
+                          showErrorMessage(err?.message);
+                        },
+                        onSuccess: () => {
+                          onCancelFn?.();
+                        },
+                      }
+                    );
                   },
-                  onSuccess: () => {
-                    onCancelFn?.();
-                  },
-                }
-              );
+                },
+              });
             }}
             className="flex h-4 w-4 items-center justify-center">
             <X size={14} color={'#737381'} />

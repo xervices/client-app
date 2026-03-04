@@ -81,11 +81,43 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     undefined
   );
   const [error, setError] = useState<Error | null>(null);
+  const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
-    registerForPushNotificationsAsync()
-      .then((token) => setExpoPushToken(token))
-      .catch((error: any) => setError(error));
+    isMountedRef.current = true;
+
+    const attemptRegistration = async (retryDelay = 2000) => {
+      try {
+        const token = await registerForPushNotificationsAsync();
+
+        if (!isMountedRef.current) return;
+
+        if (token) {
+          setExpoPushToken(token);
+          setError(null);
+        } else {
+          // No token returned — check if permission was granted before retrying
+          const { status } = await Notifications.getPermissionsAsync();
+          if (status === 'granted' && isMountedRef.current) {
+            const nextDelay = Math.min(retryDelay * 2, 30000);
+            retryTimeoutRef.current = setTimeout(() => attemptRegistration(nextDelay), retryDelay);
+          }
+        }
+      } catch (err: any) {
+        if (!isMountedRef.current) return;
+        setError(err);
+
+        // Retry only if the user has already granted permission
+        const { status } = await Notifications.getPermissionsAsync();
+        if (status === 'granted' && isMountedRef.current) {
+          const nextDelay = Math.min(retryDelay * 2, 30000);
+          retryTimeoutRef.current = setTimeout(() => attemptRegistration(nextDelay), retryDelay);
+        }
+      }
+    };
+
+    attemptRegistration();
 
     const notificationListener = Notifications.addNotificationReceivedListener((notification) => {
       setNotification(notification);
@@ -96,6 +128,10 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     });
 
     return () => {
+      isMountedRef.current = false;
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+      }
       notificationListener.remove();
       responseListener.remove();
     };

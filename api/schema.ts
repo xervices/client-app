@@ -3160,6 +3160,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/users/deleted/customers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List deleted customers
+         * @description Retrieve paginated list of soft-deleted customers with search.
+         */
+        get: operations["UsersManagementController_getDeletedCustomers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/users/deleted/artisans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List deleted artisans
+         * @description Retrieve paginated list of soft-deleted artisans with search.
+         */
+        get: operations["UsersManagementController_getDeletedArtisans"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/users/customers/{id}": {
         parameters: {
             query?: never;
@@ -5577,6 +5617,10 @@ export interface components {
              */
             pushNotification?: boolean;
         };
+        DeleteAccountDto: {
+            /** @description Reason for deleting the account */
+            reason?: string;
+        };
         CreateCategoryDto: {
             /** @example Plumbing */
             name: string;
@@ -5844,6 +5888,10 @@ export interface components {
              * @example 5
              */
             yearsOfExperience?: Record<string, never> | null;
+        };
+        CancelServiceRequestDto: {
+            /** @description Reason for cancelling the service request */
+            reason?: string;
         };
         CreateOfferDto: {
             /**
@@ -10403,7 +10451,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteAccountDto"];
+            };
+        };
         responses: {
             /** @description Account deleted successfully */
             200: {
@@ -11002,7 +11054,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelServiceRequestDto"];
+            };
+        };
         responses: {
             /** @description Service request cancelled successfully */
             200: {
@@ -15476,6 +15532,52 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Paginated artisan list */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UsersManagementController_getDeletedCustomers: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                /** @description Search by name, email, or phone */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated deleted customer list */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UsersManagementController_getDeletedArtisans: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                /** @description Search by name, email, or phone */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated deleted artisan list */
             200: {
                 headers: {
                     [name: string]: unknown;

@@ -6,6 +6,8 @@ import type {
   NewOfferEvent,
   RequestViewedEvent,
   OfferAcceptedEvent,
+  OfferRejectedEvent,
+  OfferWithdrawnEvent,
   CounterOfferEvent,
 } from './types';
 
@@ -18,6 +20,8 @@ interface UseOffersOptions {
   onOffered?: (data: NewOfferEvent['data']) => void;
   onCounterOffer?: (data: CounterOfferEvent['data']) => void;
   onOfferAccepted?: (data: OfferAcceptedEvent['data']) => void;
+  onOfferRejected?: (data: OfferRejectedEvent['data']) => void;
+  onOfferWithdrawn?: (data: OfferWithdrawnEvent['data']) => void;
 }
 export const useOffersSocket = ({
   serviceRequestId,
@@ -26,6 +30,8 @@ export const useOffersSocket = ({
   onOffered,
   onCounterOffer,
   onOfferAccepted,
+  onOfferRejected,
+  onOfferWithdrawn,
 }: UseOffersOptions = {}) => {
   const socketRef = useRef<OffersSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -33,17 +39,27 @@ export const useOffersSocket = ({
   const [views, setViews] = useState<RequestViewedEvent['data'][]>([]);
   const [counterOffers, setCounterOffers] = useState<CounterOfferEvent['data'][]>([]);
   const [acceptedOffers, setAcceptedOffers] = useState<OfferAcceptedEvent['data'][]>([]);
+  const [rejectedOffers, setRejectedOffers] = useState<OfferRejectedEvent['data'][]>([]);
+  const [withdrawnOffers, setWithdrawnOffers] = useState<OfferWithdrawnEvent['data'][]>([]);
   const onViewedRef = useRef(onViewed);
   const onOfferedRef = useRef(onOffered);
   const onCounterOfferRef = useRef(onCounterOffer);
   const onOfferAcceptedRef = useRef(onOfferAccepted);
+  const onOfferRejectedRef = useRef(onOfferRejected);
+  const onOfferWithdrawnRef = useRef(onOfferWithdrawn);
   // Update refs when props change to avoid re-connecting socket
   useEffect(() => {
     onViewedRef.current = onViewed;
     onOfferedRef.current = onOffered;
     onCounterOfferRef.current = onCounterOffer;
     onOfferAcceptedRef.current = onOfferAccepted;
-  }, [onViewed, onOffered, onCounterOffer, onOfferAccepted]);
+    onOfferRejectedRef.current = onOfferRejected;
+    onOfferWithdrawnRef.current = onOfferWithdrawn;
+  }, [onViewed, onOffered, onCounterOffer, onOfferAccepted, onOfferRejected, onOfferWithdrawn]);
+  // Reset accumulated state when switching to a different service request
+  useEffect(() => {
+    setViews([]);
+  }, [serviceRequestId]);
   useEffect(() => {
     if (!autoConnect) return;
     const socket: OffersSocket = io(`${SOCKET_URL}/offers`, {
@@ -91,6 +107,20 @@ export const useOffersSocket = ({
         onOfferAcceptedRef.current(event.data);
       }
     });
+    socket.on('offer:rejected', (event: OfferRejectedEvent) => {
+      console.log('Offer Rejected:', event);
+      setRejectedOffers((prev) => [...prev, event.data]);
+      if (onOfferRejectedRef.current) {
+        onOfferRejectedRef.current(event.data);
+      }
+    });
+    socket.on('offer:withdrawn', (event: OfferWithdrawnEvent) => {
+      console.log('Offer Withdrawn:', event);
+      setWithdrawnOffers((prev) => [...prev, event.data]);
+      if (onOfferWithdrawnRef.current) {
+        onOfferWithdrawnRef.current(event.data);
+      }
+    });
     return () => {
       socket.disconnect();
       socketRef.current = null;
@@ -106,6 +136,8 @@ export const useOffersSocket = ({
     views,
     counterOffers,
     acceptedOffers,
+    rejectedOffers,
+    withdrawnOffers,
     joinServiceRequest,
   };
 };

@@ -27,44 +27,56 @@ export function CounterOfferSheet(props: SheetProps<'counter-offer-sheet'>) {
         backgroundColor: '#FFF4EA',
       }}>
       <View className="flex gap-4 p-6 pt-0">
-        <View className="relative flex w-full flex-row items-center gap-4">
+        <View className="flex flex-row items-center gap-4">
+          <View className="relative flex w-full flex-1 flex-row items-center gap-4">
+            <Pressable
+              onPress={() => {
+                SheetManager.hide('counter-offer-sheet');
+              }}
+              className="h-8 w-8 justify-center">
+              <ArrowLeft size={24} color={'#B4B4BC'} />
+            </Pressable>
+
+            <Text className="flex-1 font-cabinet-bold text-[18px] text-[#737381]">
+              {props.payload?.type === 'counter' ? 'Counteroffer' : 'Offer'} to{' '}
+              {props.payload?.name || ''}
+            </Text>
+          </View>
+
           <Pressable
             onPress={() => {
+              props?.payload?.onReject?.();
               SheetManager.hide('counter-offer-sheet');
-            }}
-            className="h-8 w-8 justify-center">
-            <ArrowLeft size={24} color={'#B4B4BC'} />
+            }}>
+            <Text className="font-cabinet-bold text-xs uppercase text-[#B3031E]">REJECT OFFER</Text>
           </Pressable>
-
-          <Text className="font-cabinet-bold text-[18px] text-[#737381]">
-            {props.payload?.type === 'counter' ? 'Counteroffer' : 'Offer'} to{' '}
-            {props.payload?.name || ''}
-          </Text>
         </View>
 
-        <View className="flex w-1/2 flex-row items-center gap-2">
-          <Avatar alt="User's Avatar" className="h-10 w-10">
-            <AvatarImage source={{ uri: props.payload?.profileImage }} />
-            <AvatarFallback className="bg-primary">
-              <Text className="font-cabinet-bold text-xs uppercase leading-none">
-                {props.payload?.name?.substring(0, 2)}
-              </Text>
-            </AvatarFallback>
-          </Avatar>
-
-          <View>
-            <Text className="font-cabinet-bold text-[18px] leading-none text-[#1B1B1E]">
-              {props.payload?.name}
-            </Text>
-
-            {props.payload?.counterAmount && (
-              <Text className="text-[#B4B4BC]">
-                {props.payload?.name} offer:{' '}
-                <Text className="text-[#FE6A00]">
-                  {formatCurrency(props.payload.counterAmount)}
+        <View className="flex flex-row gap-4">
+          <View className="flex flex-1 flex-row items-center gap-2">
+            <Avatar alt="User's Avatar" className="h-10 w-10">
+              <AvatarImage source={{ uri: props.payload?.profileImage }} />
+              <AvatarFallback className="bg-primary">
+                <Text className="font-cabinet-bold text-xs uppercase leading-none">
+                  {props.payload?.name?.substring(0, 2)}
                 </Text>
+              </AvatarFallback>
+            </Avatar>
+
+            <View>
+              <Text className="font-cabinet-bold text-[18px] leading-none text-[#1B1B1E]">
+                {props.payload?.name}
               </Text>
-            )}
+
+              {props.payload?.counterAmount && (
+                <Text className="text-[#B4B4BC]">
+                  {props.payload?.name} offer:{' '}
+                  <Text className="text-[#FE6A00]">
+                    {formatCurrency(props.payload.counterAmount)}
+                  </Text>
+                </Text>
+              )}
+            </View>
           </View>
         </View>
 
