@@ -8,6 +8,7 @@ import {
   ArrowUpRight,
   BadgeCheck,
   ChevronRight,
+  Info,
   Mail,
   MessageCircleMore,
 } from 'lucide-react-native';
@@ -185,6 +186,16 @@ export function CreateDisputeScreen() {
             <Text className="font-cabinet-bold text-sm text-[#737381]">
               {formatDateTime(data?.createdAt)}
             </Text>
+          </View>
+
+          <View className="flex flex-row gap-3 rounded-[8px] bg-[#EBF4FF] p-3">
+            <Info size={20} color="#0582F1" />
+            <View className="flex-1">
+              <Text className="font-cabinet-medium text-sm text-[#0582F1]">
+                After submitting your dispute, you can track the status and view responses in the
+                Disputes section of your Profile.
+              </Text>
+            </View>
           </View>
 
           <form.Field name="disputeType">

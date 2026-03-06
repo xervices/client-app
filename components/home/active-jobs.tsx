@@ -69,7 +69,7 @@ export function ActiveJobs() {
             id={search.id}
             offerId={search?.acceptedOfferId}
             serviceId={search.serviceRequestId}
-            category={search.serviceRequest?.category?.name}
+            category={search.category?.name}
             onCancelFn={() => {
               jobs?.refetch();
             }}
@@ -333,7 +333,7 @@ function RequestCard({ category, id, onCancelFn }: RequestCardProp) {
       </View>
 
       <Text className="text-sm text-[#737381]">
-        Your previous search for {category} was not complete. Click "continue search" to continue
+        Your previous search for "{category}" was not complete. Click "continue search" to continue
         your search.
       </Text>
 
@@ -421,7 +421,7 @@ function PendingJobCard({
       </View>
 
       <Text className="text-sm text-[#737381]">
-        Your previous search for {category} was not complete. Click "continue to payment" to
+        Your previous search for "{category}" was not complete. Click "continue to payment" to
         complete your request.
       </Text>
 

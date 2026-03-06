@@ -388,6 +388,8 @@ export default function Screen() {
               <Text className="text-center text-xs text-[#1B1B1E]">{data?.category?.name}</Text>
             </View>
 
+            <View className="h-[40%] w-full" />
+
             <BottomSheet
               ref={bottomSheetRef}
               index={0} // Start at first snap point (20% - peek)

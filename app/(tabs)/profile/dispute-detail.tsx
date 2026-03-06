@@ -45,7 +45,7 @@ export default function Screen() {
         <LoadingState title="Loading Dispute..." />
       ) : (
         <View className="flex-1 gap-4">
-          <View className="flex w-full flex-row">
+          <View className="flex w-full flex-row gap-4">
             <View className="flex w-1/2 flex-row items-center gap-2">
               <Avatar alt="User's Avatar" className="h-14 w-14">
                 <AvatarImage source={{ uri: job?.data?.artisan?.profile?.avatarUrl }} />
@@ -75,8 +75,10 @@ export default function Screen() {
               </View>
             </View>
 
-            <View className="flex w-1/2 justify-between">
-              <Text className="text-right text-xs text-[#FF6A00]">JOB ID ● {job?.data?.id}</Text>
+            <View className="flex w-1/2 flex-1 justify-between">
+              <Text numberOfLines={1} className="text-right text-xs text-[#FF6A00]">
+                JOB ID ● {job?.data?.id}
+              </Text>
 
               <Text className="text-right font-cabinet-bold text-[18px] text-[#FF6A00]">
                 {formatCurrency(job?.data?.finalAmount)}
