@@ -17,10 +17,15 @@ import { InputError } from '@/components/ui/input-error';
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
+import { emojiRegex } from '@/lib/utils';
 
 const formSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required.'),
-  newPassword: z.string().min(1, 'New Password is required.'),
+  newPassword: z
+    .string()
+    .min(1, 'New Password is required.')
+    .refine((val) => !/\s/.test(val), 'Password cannot contain spaces.')
+    .refine((val) => !emojiRegex.test(val), 'Password cannot contain emojis.'),
 });
 
 export default function Screen() {

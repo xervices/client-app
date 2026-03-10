@@ -31,9 +31,10 @@ import { useAuthStore } from '@/store/auth-store';
 import { NIGERIAN_STATES } from '@/store/data';
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
+import { emojiRegex } from '@/lib/utils';
 
 const formSchema = z.object({
-  fullName: z.string(),
+  fullName: z.string().refine((val) => !emojiRegex.test(val), 'Name cannot contain emojis.'),
   avatarUrl: z.string(),
   avatarMimeType: z.string(),
   state: z.string(),

@@ -528,3 +528,5 @@ export const getDeviceInfo = async (): Promise<DeviceInfo> => {
 
   return { deviceId, deviceName };
 };
+
+export const emojiRegex = /\p{Emoji_Presentation}|\p{Extended_Pictographic}/gu;

@@ -1,10 +1,10 @@
-import { Pressable, View } from 'react-native';
+import { Pressable, TextInput, View } from 'react-native';
 import ActionSheet, { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { Text } from '../ui/text';
 import { ArrowLeft, Minus, Plus } from 'lucide-react-native';
 import { Image } from 'expo-image';
 import { LoadingIndicator } from '../ui/loading-indicator';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { formatCurrency } from '@/lib/utils';
@@ -12,7 +12,15 @@ import { formatCurrency } from '@/lib/utils';
 export function CounterOfferSheet(props: SheetProps<'counter-offer-sheet'>) {
   const [amount, setAmount] = useState(props.payload?.amount ? props.payload?.amount : 0);
 
+  const [displayValue, setDisplayValue] = useState(String(amount));
+
   const [minAmount] = useState(amount ? amount - 0.2 * amount : 1000);
+
+  const isPressingButton = useRef(false);
+
+  useEffect(() => {
+    setDisplayValue(String(amount));
+  }, [amount]);
 
   return (
     <ActionSheet
@@ -91,25 +99,62 @@ export function CounterOfferSheet(props: SheetProps<'counter-offer-sheet'>) {
 
           <View className="flex flex-row items-center justify-center gap-4">
             <Pressable
+              onPressIn={() => {
+                isPressingButton.current = true;
+              }}
+              onPressOut={() => {
+                isPressingButton.current = false;
+              }}
               onPress={() => {
-                if (amount && amount > minAmount) {
-                  setAmount((prev) => {
-                    if (prev) {
-                      return prev - 100;
-                    }
-                    return prev;
-                  });
+                const current = Number(displayValue);
+                const base = !isNaN(current) && current > 0 ? current : amount;
+                if (base > minAmount) {
+                  setAmount(base - 100);
                 }
               }}
               className="flex h-8 w-12 items-center justify-center rounded-l-full bg-[#F4F4F5]">
               <Minus color={'#FF8733'} size={24} />
             </Pressable>
 
-            <Text className="font-cabinet-bold leading-none text-[#1B1B1E]">₦{String(amount)}</Text>
+            <View className="flex flex-row items-center">
+              <Text className="font-cabinet-bold leading-none text-[#1B1B1E]">₦</Text>
+
+              <TextInput
+                value={displayValue}
+                onChangeText={(text) => {
+                  // only allow digits
+                  const cleaned = text.replace(/[^0-9]/g, '');
+                  setDisplayValue(cleaned);
+                }}
+                onBlur={() => {
+                  if (isPressingButton.current) return;
+
+                  const parsed = Number(displayValue);
+                  if (!displayValue || isNaN(parsed) || parsed <= 0) {
+                    // reset to last valid amount if input is invalid
+                    setDisplayValue(String(amount));
+                  } else if (parsed < minAmount) {
+                    setAmount(minAmount);
+                  } else {
+                    setAmount(parsed);
+                  }
+                }}
+                keyboardType="number-pad"
+                className="font-cabinet-bold text-base leading-none text-[#1B1B1E]"
+              />
+            </View>
 
             <Pressable
+              onPressIn={() => {
+                isPressingButton.current = true;
+              }}
+              onPressOut={() => {
+                isPressingButton.current = false;
+              }}
               onPress={() => {
-                setAmount((prev) => Number(prev) + Number(100.0));
+                const current = Number(displayValue);
+                const base = !isNaN(current) && current > 0 ? current : amount;
+                setAmount(base + 100);
               }}
               className="flex h-8 w-12 items-center justify-center rounded-r-full bg-[#F4F4F5]">
               <Plus color={'#FF8733'} size={24} />
