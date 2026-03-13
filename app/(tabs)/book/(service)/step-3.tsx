@@ -195,7 +195,7 @@ export default function Screen() {
             <View className="flex gap-2">
               <Pressable
                 onPress={() =>
-                  SheetManager.show('location-search-sheet', {
+                  SheetManager.show('location-map-search-sheet', {
                     payload: {
                       onSelect: (location) => {
                         setDestinationLatitude(Number(location.latitude));

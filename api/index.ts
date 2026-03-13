@@ -533,6 +533,15 @@ export const api = {
       },
     };
   },
+  getWhatsappLinks: () =>
+    queryOptions({
+      queryKey: ['support', 'whatsapp'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/support/whatsapp-links');
+
+        return data;
+      },
+    }),
 
   // app ratings endpoints
   submitAppRating: () => {

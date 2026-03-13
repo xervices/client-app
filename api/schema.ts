@@ -1074,1016 +1074,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/users/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get current user
-         * @description Get the currently authenticated user with their profile and settings
-         */
-        get: operations["UsersController_getCurrentUser"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete account
-         * @description Soft delete the user account (can be recovered within 90 days)
-         */
-        delete: operations["UsersController_deleteAccount"];
-        options?: never;
-        head?: never;
-        /**
-         * Update profile
-         * @description Update user profile (name, avatar, bio, address, etc.)
-         */
-        patch: operations["UsersController_updateProfile"];
-        trace?: never;
-    };
-    "/api/users/location": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /**
-         * Update location
-         * @description Update user geographic location (latitude, longitude)
-         */
-        patch: operations["UsersController_updateLocation"];
-        trace?: never;
-    };
-    "/api/users/settings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /**
-         * Update notification settings
-         * @description Update notification preferences (email, SMS, push)
-         */
-        patch: operations["UsersController_updateSettings"];
-        trace?: never;
-    };
-    "/api/categories": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get all categories (Skills)
-         * @description Get all service categories/skills. Results are personalized and sorted by your recently viewed categories first, then by default display order.
-         */
-        get: operations["CategoriesController_findAll"];
-        put?: never;
-        /**
-         * Create a new category
-         * @description Admin can create a new service category/skill. Upload icon file via "icon" field.
-         */
-        post: operations["CategoriesController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/categories/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get category by ID
-         * @description Get details of a category. This action logs a view to personalize your future category lists.
-         */
-        get: operations["CategoriesController_findOne"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/categories/{id}/artisans": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get artisans by service/category ID
-         * @description Retrieve a list of verified and available artisans who provide a specific service. Optionally filter by location (latitude/longitude) to find nearby artisans sorted by distance.
-         */
-        get: operations["CategoriesController_findArtisansByService"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/service-requests": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get service requests
-         * @description For Users: Get all service requests created by the authenticated user. For Artisans: Get service requests matching their categories and location (requests sent to them).
-         */
-        get: operations["ServiceRequestsController_findMine"];
-        put?: never;
-        /**
-         * Create a service request
-         * @description Create a new service request for artisan services. Supports multipart/form-data for file uploads.
-         */
-        post: operations["ServiceRequestsController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/service-requests/browse/nearby": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Browse nearby service requests
-         * @description Get available service requests near the artisan's location that match their skills
-         */
-        get: operations["ServiceRequestsController_browseNearby"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/service-requests/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get service request by ID
-         * @description Get a single service request by its ID.
-         *
-         *     **WebSocket Notification:**
-         *     When an **Artisan** calls this endpoint, a `request:viewed` event is emitted to the `/offers` namespace.
-         *     The User must be joined to the `service_request:{id}` room to receive it.
-         */
-        get: operations["ServiceRequestsController_findOne"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/service-requests/{id}/matching-artisans": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get matching artisans
-         * @description Get artisans that match the service request category and location
-         */
-        get: operations["ServiceRequestsController_getMatchingArtisans"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/service-requests/{id}/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Cancel a service request
-         * @description Cancel an open service request
-         */
-        post: operations["ServiceRequestsController_cancel"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/offers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create a new offer
-         * @description Create a new offer for a service request.
-         *
-         *     **WebSocket Notification:**
-         *     Emits an `offer:new` event to the `/offers` namespace in the `service_request:{id}` room.
-         */
-        post: operations["OffersController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/offers/{id}/counter": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Make a counter-offer
-         * @description Create a counter-offer to an existing offer
-         */
-        post: operations["OffersController_counterOffer"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/offers/{id}/respond": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Respond to an offer
-         * @description Accept or reject an offer
-         */
-        post: operations["OffersController_respond"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/offers/{id}/withdraw": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Withdraw an offer
-         * @description Artisan withdraws/cancels their own pending offer.
-         *
-         *     **WebSocket Notification:**
-         *     Emits an `offer:withdrawn` event to the `/offers` namespace in the `service_request:{id}` room.
-         */
-        post: operations["OffersController_withdraw"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/offers/service-request/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get offers for a service request
-         * @description Get all offers for a specific service request. Returns offers with artisan profile, user profile, artisan ratings, and service location coordinates.
-         */
-        get: operations["OffersController_findByServiceRequest"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/offers/my-offers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get artisan offers
-         * @description Get all offers made by the authenticated artisan
-         */
-        get: operations["OffersController_findMyOffers"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/offers/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get offer details
-         * @description Get a single offer by ID
-         */
-        get: operations["OffersController_findOne"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/offers/{id}/history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get negotiation history
-         * @description Get all offers in the negotiation chain
-         */
-        get: operations["OffersController_getNegotiationHistory"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/jobs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get user jobs
-         * @description Get all jobs for the authenticated user or artisan
-         */
-        get: operations["JobsController_findMine"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/jobs/stats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get job statistics
-         * @description Get job statistics for the authenticated user or artisan
-         */
-        get: operations["JobsController_getStats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/jobs/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get job details
-         * @description Get a single job by ID
-         */
-        get: operations["JobsController_findOne"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/jobs/{id}/start": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Start a job
-         * @description Artisan marks the job as in progress. Optionally upload before photos.
-         */
-        post: operations["JobsController_startJob"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/jobs/{id}/complete": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Complete a job
-         * @description Artisan marks the job as completed. Optionally upload after photos.
-         */
-        post: operations["JobsController_completeJob"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/jobs/{id}/approve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Approve a job
-         * @description User approves the completed job
-         */
-        post: operations["JobsController_approveJob"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/jobs/{id}/artisan-location": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get artisan location
-         * @description Get the artisan current/last known location for a job. For real-time tracking, use the WebSocket /jobs namespace instead.
-         */
-        get: operations["JobsController_getArtisanLocation"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/jobs/{id}/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Cancel a job
-         * @description Cancel a pending or in-progress job
-         */
-        post: operations["JobsController_cancelJob"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/chat/rooms": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get all chat rooms for current user
-         * @description Returns all chat rooms where the current user is either the service requester or the artisan. Includes last message and unread count for each room.
-         */
-        get: operations["ChatController_getRooms"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/chat/rooms/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get chat room details
-         * @description Returns detailed information about a specific chat room including job, user, and artisan details.
-         */
-        get: operations["ChatController_getRoom"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/chat/rooms/{id}/messages": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get messages in a chat room
-         * @description Returns paginated messages for a chat room. Supports both page-based and cursor-based pagination, as well as date filters.
-         */
-        get: operations["ChatController_getMessages"];
-        put?: never;
-        /**
-         * Send a message in a chat room
-         * @description Sends a new message in the specified chat room. Only participants can send messages.
-         */
-        post: operations["ChatController_sendMessage"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/chat/rooms/{id}/messages/read": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /**
-         * Mark messages as read
-         * @description Marks specific messages as read. Only messages from the other participant can be marked as read.
-         */
-        patch: operations["ChatController_markRead"];
-        trace?: never;
-    };
-    "/api/chat/rooms/{id}/messages/read-all": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /**
-         * Mark all messages in room as read
-         * @description Marks all unread messages from the other participant as read.
-         */
-        patch: operations["ChatController_markAllRead"];
-        trace?: never;
-    };
-    "/api/chat/unread-count": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get total unread message count
-         * @description Returns the total number of unread messages across all chat rooms for the current user.
-         */
-        get: operations["ChatController_getUnreadCount"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/chat/jobs/{jobId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get chat room for a specific job
-         * @description Returns the chat room associated with a specific job. Only the user or artisan involved in the job can access this.
-         */
-        get: operations["ChatController_getRoomByJob"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/bank-accounts/verify": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Verify bank account
-         * @description Verify a bank account number with Paystack and get the account name. Use this before adding a bank account.
-         */
-        post: operations["BankAccountsController_verifyAccount"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/bank-accounts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get my bank accounts
-         * @description Get all bank accounts for the current user
-         */
-        get: operations["BankAccountsController_findAll"];
-        put?: never;
-        /**
-         * Add bank account
-         * @description Add a verified bank account for withdrawals. The account will be verified with Paystack before being saved.
-         */
-        post: operations["BankAccountsController_addAccount"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/bank-accounts/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get bank account
-         * @description Get a specific bank account by ID
-         */
-        get: operations["BankAccountsController_findOne"];
-        put?: never;
-        post?: never;
-        /**
-         * Remove bank account
-         * @description Remove a bank account
-         */
-        delete: operations["BankAccountsController_remove"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/bank-accounts/{id}/set-default": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Set as default
-         * @description Set a bank account as the default for withdrawals
-         */
-        post: operations["BankAccountsController_setAsDefault"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/disputes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List my disputes
-         * @description Get all disputes where the user is a participant
-         */
-        get: operations["DisputesController_getDisputes"];
-        put?: never;
-        /**
-         * Create a dispute
-         * @description Raise a dispute on a job. Only job participants can raise disputes. Supports multipart/form-data for file uploads.
-         */
-        post: operations["DisputesController_createDispute"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/disputes/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get dispute details
-         * @description Get a single dispute with all evidence. Only accessible by job participants.
-         */
-        get: operations["DisputesController_getDisputeById"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/disputes/{id}/evidence": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Add evidence to dispute
-         * @description Upload evidence for an open or under-review dispute. Only job participants can add evidence. Supports multipart/form-data for file uploads.
-         */
-        post: operations["DisputesController_addEvidence"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/reviews": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create a review
-         * @description Create a new review for a completed and approved job. Only the job owner can leave a review.
-         */
-        post: operations["ReviewsController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/reviews/artisan/{artisanId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get artisan reviews
-         * @description Get all reviews for a specific artisan with pagination
-         */
-        get: operations["ReviewsController_findByArtisan"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/reviews/my-reviews": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get my reviews
-         * @description Get all reviews created by the current user
-         */
-        get: operations["ReviewsController_findMyReviews"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/reviews/artisan/{artisanId}/stats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get artisan rating stats
-         * @description Get rating statistics for an artisan including average rating and distribution
-         */
-        get: operations["ReviewsController_getArtisanRatingStats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/reviews/can-review/{jobId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Check if can review
-         * @description Check if the current user can create a review for a specific job
-         */
-        get: operations["ReviewsController_canReview"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/reviews/job/{jobId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get review by job
-         * @description Get the review for a specific job if it exists
-         */
-        get: operations["ReviewsController_findByJobId"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/reviews/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get a review
-         * @description Get a single review by its ID
-         */
-        get: operations["ReviewsController_findOne"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete a review
-         * @description Delete a review (soft delete). Only the reviewer or admin can delete.
-         */
-        delete: operations["ReviewsController_remove"];
-        options?: never;
-        head?: never;
-        /**
-         * Update a review
-         * @description Update an existing review. Only the original reviewer can update.
-         */
-        patch: operations["ReviewsController_update"];
-        trace?: never;
-    };
     "/api/admin/change-password": {
         parameters: {
             query?: never;
@@ -2421,6 +1411,30 @@ export interface paths {
          * @description Update referral program configuration including enable/disable, referrer bonus amount, referred user bonus percentage, and referral expiry period.
          */
         put: operations["AdminController_updateReferralProgramSetting"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/settings/support": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get support settings
+         * @description Get the current support settings including WhatsApp links for customers and artisans.
+         */
+        get: operations["AdminController_getSupportSetting"];
+        /**
+         * Update support settings
+         * @description Update support configuration including WhatsApp links for customers and artisans.
+         */
+        put: operations["AdminController_updateSupportSetting"];
         post?: never;
         delete?: never;
         options?: never;
@@ -3844,6 +2858,1136 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/admin/audit-logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get audit logs
+         * @description Retrieve paginated audit logs with filtering by action, entity type, admin, date range, and search.
+         */
+        get: operations["AuditLogController_getAuditLogs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/audit-logs/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get distinct audit log actions
+         * @description Retrieve list of all distinct action types recorded in audit logs.
+         */
+        get: operations["AuditLogController_getDistinctActions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get active admin sessions
+         * @description Retrieve all active sessions for the current admin user.
+         */
+        get: operations["AdminSessionController_getActiveSessions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/sessions/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Revoke a specific session
+         * @description Terminate a specific admin session by ID. The session is immediately invalidated.
+         */
+        post: operations["AdminSessionController_revokeSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/sessions/revoke-all-others": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Revoke all other sessions
+         * @description Terminate all admin sessions except the current one. Requires the current session ID.
+         */
+        post: operations["AdminSessionController_revokeAllOtherSessions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/support/whatsapp-links": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get WhatsApp support links
+         * @description Returns the WhatsApp support links for customers and artisans. Used by mobile apps to display support contact options.
+         */
+        get: operations["MobileSupportController_getWhatsappLinks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get current user
+         * @description Get the currently authenticated user with their profile and settings
+         */
+        get: operations["UsersController_getCurrentUser"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete account
+         * @description Soft delete the user account (can be recovered within 90 days)
+         */
+        delete: operations["UsersController_deleteAccount"];
+        options?: never;
+        head?: never;
+        /**
+         * Update profile
+         * @description Update user profile (name, avatar, bio, address, etc.)
+         */
+        patch: operations["UsersController_updateProfile"];
+        trace?: never;
+    };
+    "/api/users/location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update location
+         * @description Update user geographic location (latitude, longitude)
+         */
+        patch: operations["UsersController_updateLocation"];
+        trace?: never;
+    };
+    "/api/users/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update notification settings
+         * @description Update notification preferences (email, SMS, push)
+         */
+        patch: operations["UsersController_updateSettings"];
+        trace?: never;
+    };
+    "/api/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all categories (Skills)
+         * @description Get all service categories/skills. Results are personalized and sorted by your recently viewed categories first, then by default display order.
+         */
+        get: operations["CategoriesController_findAll"];
+        put?: never;
+        /**
+         * Create a new category
+         * @description Admin can create a new service category/skill. Upload icon file via "icon" field.
+         */
+        post: operations["CategoriesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/categories/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get category by ID
+         * @description Get details of a category. This action logs a view to personalize your future category lists.
+         */
+        get: operations["CategoriesController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/categories/{id}/artisans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisans by service/category ID
+         * @description Retrieve a list of verified and available artisans who provide a specific service. Optionally filter by location (latitude/longitude) to find nearby artisans sorted by distance.
+         */
+        get: operations["CategoriesController_findArtisansByService"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/service-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get service requests
+         * @description For Users: Get all service requests created by the authenticated user. For Artisans: Get service requests matching their categories and location (requests sent to them).
+         */
+        get: operations["ServiceRequestsController_findMine"];
+        put?: never;
+        /**
+         * Create a service request
+         * @description Create a new service request for artisan services. Supports multipart/form-data for file uploads.
+         */
+        post: operations["ServiceRequestsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/service-requests/browse/nearby": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Browse nearby service requests
+         * @description Get available service requests near the artisan's location that match their skills
+         */
+        get: operations["ServiceRequestsController_browseNearby"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/service-requests/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get service request by ID
+         * @description Get a single service request by its ID.
+         *
+         *     **WebSocket Notification:**
+         *     When an **Artisan** calls this endpoint, a `request:viewed` event is emitted to the `/offers` namespace.
+         *     The User must be joined to the `service_request:{id}` room to receive it.
+         */
+        get: operations["ServiceRequestsController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/service-requests/{id}/matching-artisans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get matching artisans
+         * @description Get artisans that match the service request category and location
+         */
+        get: operations["ServiceRequestsController_getMatchingArtisans"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/service-requests/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel a service request
+         * @description Cancel an open service request
+         */
+        post: operations["ServiceRequestsController_cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/offers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a new offer
+         * @description Create a new offer for a service request.
+         *
+         *     **WebSocket Notification:**
+         *     Emits an `offer:new` event to the `/offers` namespace in the `service_request:{id}` room.
+         */
+        post: operations["OffersController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/offers/{id}/counter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Make a counter-offer
+         * @description Create a counter-offer to an existing offer
+         */
+        post: operations["OffersController_counterOffer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/offers/{id}/respond": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Respond to an offer
+         * @description Accept or reject an offer
+         */
+        post: operations["OffersController_respond"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/offers/{id}/withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Withdraw an offer
+         * @description Artisan withdraws/cancels their own pending offer.
+         *
+         *     **WebSocket Notification:**
+         *     Emits an `offer:withdrawn` event to the `/offers` namespace in the `service_request:{id}` room.
+         */
+        post: operations["OffersController_withdraw"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/offers/service-request/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get offers for a service request
+         * @description Get all offers for a specific service request. Returns offers with artisan profile, user profile, artisan ratings, and service location coordinates.
+         */
+        get: operations["OffersController_findByServiceRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/offers/my-offers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan offers
+         * @description Get all offers made by the authenticated artisan
+         */
+        get: operations["OffersController_findMyOffers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/offers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get offer details
+         * @description Get a single offer by ID
+         */
+        get: operations["OffersController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/offers/{id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get negotiation history
+         * @description Get all offers in the negotiation chain
+         */
+        get: operations["OffersController_getNegotiationHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get user jobs
+         * @description Get all jobs for the authenticated user or artisan
+         */
+        get: operations["JobsController_findMine"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get job statistics
+         * @description Get job statistics for the authenticated user or artisan
+         */
+        get: operations["JobsController_getStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get job details
+         * @description Get a single job by ID
+         */
+        get: operations["JobsController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/{id}/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start a job
+         * @description Artisan marks the job as in progress. Optionally upload before photos.
+         */
+        post: operations["JobsController_startJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/{id}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Complete a job
+         * @description Artisan marks the job as completed. Optionally upload after photos.
+         */
+        post: operations["JobsController_completeJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Approve a job
+         * @description User approves the completed job
+         */
+        post: operations["JobsController_approveJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/{id}/artisan-location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan location
+         * @description Get the artisan current/last known location for a job. For real-time tracking, use the WebSocket /jobs namespace instead.
+         */
+        get: operations["JobsController_getArtisanLocation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jobs/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel a job
+         * @description Cancel a pending or in-progress job
+         */
+        post: operations["JobsController_cancelJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/rooms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all chat rooms for current user
+         * @description Returns all chat rooms where the current user is either the service requester or the artisan. Includes last message and unread count for each room.
+         */
+        get: operations["ChatController_getRooms"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/rooms/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get chat room details
+         * @description Returns detailed information about a specific chat room including job, user, and artisan details.
+         */
+        get: operations["ChatController_getRoom"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/rooms/{id}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get messages in a chat room
+         * @description Returns paginated messages for a chat room. Supports both page-based and cursor-based pagination, as well as date filters.
+         */
+        get: operations["ChatController_getMessages"];
+        put?: never;
+        /**
+         * Send a message in a chat room
+         * @description Sends a new message in the specified chat room. Only participants can send messages.
+         */
+        post: operations["ChatController_sendMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/rooms/{id}/messages/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Mark messages as read
+         * @description Marks specific messages as read. Only messages from the other participant can be marked as read.
+         */
+        patch: operations["ChatController_markRead"];
+        trace?: never;
+    };
+    "/api/chat/rooms/{id}/messages/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Mark all messages in room as read
+         * @description Marks all unread messages from the other participant as read.
+         */
+        patch: operations["ChatController_markAllRead"];
+        trace?: never;
+    };
+    "/api/chat/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get total unread message count
+         * @description Returns the total number of unread messages across all chat rooms for the current user.
+         */
+        get: operations["ChatController_getUnreadCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/jobs/{jobId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get chat room for a specific job
+         * @description Returns the chat room associated with a specific job. Only the user or artisan involved in the job can access this.
+         */
+        get: operations["ChatController_getRoomByJob"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bank-accounts/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify bank account
+         * @description Verify a bank account number with Paystack and get the account name. Use this before adding a bank account.
+         */
+        post: operations["BankAccountsController_verifyAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bank-accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get my bank accounts
+         * @description Get all bank accounts for the current user
+         */
+        get: operations["BankAccountsController_findAll"];
+        put?: never;
+        /**
+         * Add bank account
+         * @description Add a verified bank account for withdrawals. The account will be verified with Paystack before being saved.
+         */
+        post: operations["BankAccountsController_addAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bank-accounts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get bank account
+         * @description Get a specific bank account by ID
+         */
+        get: operations["BankAccountsController_findOne"];
+        put?: never;
+        post?: never;
+        /**
+         * Remove bank account
+         * @description Remove a bank account
+         */
+        delete: operations["BankAccountsController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bank-accounts/{id}/set-default": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Set as default
+         * @description Set a bank account as the default for withdrawals
+         */
+        post: operations["BankAccountsController_setAsDefault"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/disputes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List my disputes
+         * @description Get all disputes where the user is a participant
+         */
+        get: operations["DisputesController_getDisputes"];
+        put?: never;
+        /**
+         * Create a dispute
+         * @description Raise a dispute on a job. Only job participants can raise disputes. Supports multipart/form-data for file uploads.
+         */
+        post: operations["DisputesController_createDispute"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/disputes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get dispute details
+         * @description Get a single dispute with all evidence. Only accessible by job participants.
+         */
+        get: operations["DisputesController_getDisputeById"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/disputes/{id}/evidence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add evidence to dispute
+         * @description Upload evidence for an open or under-review dispute. Only job participants can add evidence. Supports multipart/form-data for file uploads.
+         */
+        post: operations["DisputesController_addEvidence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a review
+         * @description Create a new review for a completed and approved job. Only the job owner can leave a review.
+         */
+        post: operations["ReviewsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/artisan/{artisanId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan reviews
+         * @description Get all reviews for a specific artisan with pagination
+         */
+        get: operations["ReviewsController_findByArtisan"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/my-reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get my reviews
+         * @description Get all reviews created by the current user
+         */
+        get: operations["ReviewsController_findMyReviews"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/artisan/{artisanId}/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisan rating stats
+         * @description Get rating statistics for an artisan including average rating and distribution
+         */
+        get: operations["ReviewsController_getArtisanRatingStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/can-review/{jobId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Check if can review
+         * @description Check if the current user can create a review for a specific job
+         */
+        get: operations["ReviewsController_canReview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/job/{jobId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get review by job
+         * @description Get the review for a specific job if it exists
+         */
+        get: operations["ReviewsController_findByJobId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a review
+         * @description Get a single review by its ID
+         */
+        get: operations["ReviewsController_findOne"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete a review
+         * @description Delete a review (soft delete). Only the reviewer or admin can delete.
+         */
+        delete: operations["ReviewsController_remove"];
+        options?: never;
+        head?: never;
+        /**
+         * Update a review
+         * @description Update an existing review. Only the original reviewer can update.
+         */
+        patch: operations["ReviewsController_update"];
         trace?: never;
     };
     "/api/support/tickets": {
@@ -5629,6 +5773,1165 @@ export interface components {
             /** @description Verification details */
             data?: components["schemas"]["NinVerificationDataDto"];
         };
+        TermsAndConditionsResponseDto: {
+            /**
+             * @description Terms and conditions ID
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            id: string;
+            /**
+             * @description Version string
+             * @example 1.0
+             */
+            version: string;
+            /** @description Content of the terms */
+            content: string;
+            /**
+             * @description Title of this version
+             * @example Terms of Service v1.0
+             */
+            title?: string;
+            /**
+             * @description Whether this version is active
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * Format: date-time
+             * @description Effective date
+             */
+            effectiveDate?: string;
+            /**
+             * Format: date-time
+             * @description Created timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated timestamp
+             */
+            updatedAt: string;
+        };
+        PrivacyPolicyResponseDto: {
+            /** @description Privacy policy ID */
+            id: string;
+            /**
+             * @description Version string
+             * @example 1.0
+             */
+            version: string;
+            /** @description Content of the privacy policy */
+            content: string;
+            /** @description Title of this version */
+            title?: string;
+            /** @description Whether this version is active */
+            isActive: boolean;
+            /**
+             * Format: date-time
+             * @description Effective date
+             */
+            effectiveDate?: string;
+            /**
+             * Format: date-time
+             * @description Created timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated timestamp
+             */
+            updatedAt: string;
+        };
+        CancellationPolicyResponseDto: {
+            /** @description Cancellation policy ID */
+            id: string;
+            /**
+             * @description Version string
+             * @example 1.0
+             */
+            version: string;
+            /** @description Content of the cancellation policy */
+            content: string;
+            /** @description Title of this version */
+            title?: string;
+            /** @description Whether this version is active */
+            isActive: boolean;
+            /**
+             * Format: date-time
+             * @description Effective date
+             */
+            effectiveDate?: string;
+            /**
+             * Format: date-time
+             * @description Created timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated timestamp
+             */
+            updatedAt: string;
+        };
+        ChangeDefaultPasswordDto: {
+            /**
+             * @description Current/default password for verification
+             * @example DefaultPass123!
+             */
+            currentPassword: string;
+            /**
+             * @description New password (min 8 chars, must contain uppercase, lowercase, number, and special character)
+             * @example NewSecurePass123!
+             */
+            newPassword: string;
+            /**
+             * @description Password confirmation - must match newPassword
+             * @example NewSecurePass123!
+             */
+            confirmPassword: string;
+        };
+        ChangeDefaultPasswordResponseDto: {
+            /**
+             * @description Success message
+             * @example Password changed successfully
+             */
+            message: string;
+        };
+        VerifyArtisanDto: {
+            /**
+             * @description The ID of the artisan to verify
+             * @example 123e4567-e89b-12d3-a456-426614174000
+             */
+            artisanId: string;
+            /**
+             * @description Verification status to set
+             * @default true
+             * @example true
+             */
+            isVerified: boolean;
+            /**
+             * @description Optional note about the verification
+             * @example Verified via manual document review
+             */
+            note?: string;
+        };
+        VerifyArtisanResponseDto: {
+            message: string;
+            artisanId: string;
+            isVerified: boolean;
+            /** Format: date-time */
+            verifiedAt: string;
+        };
+        CommissionSettingResponseDto: {
+            /**
+             * @description Commission setting ID
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            id: string;
+            /**
+             * @description Commission value
+             * @example 10
+             */
+            commissionValue: number;
+            /**
+             * @description Whether this is a percentage
+             * @example true
+             */
+            isPercentage: boolean;
+            /**
+             * @description Description
+             * @example Platform commission for service fees
+             */
+            description?: string;
+            /**
+             * @description Whether this setting is active
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * Format: date-time
+             * @description Created timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated timestamp
+             */
+            updatedAt: string;
+        };
+        UpdateCommissionSettingDto: {
+            /**
+             * @description Commission value - percentage or fixed amount
+             * @example 10
+             */
+            commissionValue: number;
+            /**
+             * @description Whether the commission is a percentage (true) or fixed amount (false)
+             * @default true
+             * @example true
+             */
+            isPercentage: boolean;
+            /**
+             * @description Optional description for this commission setting
+             * @example Platform commission for service fees
+             */
+            description?: string;
+        };
+        UpdateCommissionSettingResponseDto: {
+            /**
+             * @description Success message
+             * @example Commission settings updated successfully
+             */
+            message: string;
+            /** @description Updated commission setting */
+            data: components["schemas"]["CommissionSettingResponseDto"];
+        };
+        UpdateTermsAndConditionsDto: {
+            /**
+             * @description Version string for the terms (e.g., "1.0", "2.0")
+             * @example 1.0
+             */
+            version: string;
+            /**
+             * @description Full content of the terms and conditions
+             * @example By using this platform, you agree to...
+             */
+            content: string;
+            /**
+             * @description Optional title for this version
+             * @example Terms of Service v1.0
+             */
+            title?: string;
+            /**
+             * @description Whether to activate this version immediately
+             * @default false
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * @description Date when this version becomes effective
+             * @example 2025-02-01T00:00:00Z
+             */
+            effectiveDate?: string;
+        };
+        UpdateTermsAndConditionsResponseDto: {
+            /**
+             * @description Success message
+             * @example Terms and conditions updated successfully
+             */
+            message: string;
+            /** @description Updated terms and conditions */
+            data: components["schemas"]["TermsAndConditionsResponseDto"];
+        };
+        UpdatePrivacyPolicyDto: {
+            /**
+             * @description Version string for the privacy policy (e.g., "1.0", "2.0")
+             * @example 1.0
+             */
+            version: string;
+            /**
+             * @description Full content of the privacy policy
+             * @example This privacy policy describes how we collect and use your data...
+             */
+            content: string;
+            /**
+             * @description Optional title for this version
+             * @example Privacy Policy v1.0
+             */
+            title?: string;
+            /**
+             * @description Whether to activate this version immediately
+             * @default false
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * @description Date when this version becomes effective
+             * @example 2025-02-01T00:00:00Z
+             */
+            effectiveDate?: string;
+        };
+        UpdatePrivacyPolicyResponseDto: {
+            /** @description Success message */
+            message: string;
+            /** @description Updated privacy policy */
+            data: components["schemas"]["PrivacyPolicyResponseDto"];
+        };
+        UpdateCancellationPolicyDto: {
+            /**
+             * @description Version string for the cancellation policy (e.g., "1.0", "2.0")
+             * @example 1.0
+             */
+            version: string;
+            /**
+             * @description Full content of the cancellation policy
+             * @example This cancellation policy describes the conditions under which a booking can be cancelled...
+             */
+            content: string;
+            /**
+             * @description Optional title for this version
+             * @example Cancellation Policy v1.0
+             */
+            title?: string;
+            /**
+             * @description Whether to activate this version immediately
+             * @default false
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * @description Date when this version becomes effective
+             * @example 2025-02-01T00:00:00Z
+             */
+            effectiveDate?: string;
+        };
+        UpdateCancellationPolicyResponseDto: {
+            /** @description Success message */
+            message: string;
+            /** @description Updated cancellation policy */
+            data: components["schemas"]["CancellationPolicyResponseDto"];
+        };
+        AdminNotificationSettingResponseDto: {
+            /**
+             * @description Notification setting ID
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            id: string;
+            /**
+             * @description Admin user ID
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            adminId: string;
+            /**
+             * @description Notify when new disputes are opened
+             * @example true
+             */
+            notifyNewDisputes: boolean;
+            /**
+             * @description Notify for high-value transactions
+             * @example true
+             */
+            notifyHighValueTransactions: boolean;
+            /**
+             * @description Threshold amount for high-value transaction alerts
+             * @example 1000
+             */
+            highValueThreshold: number;
+            /**
+             * @description Notify when artisans request withdrawals
+             * @example true
+             */
+            notifyWithdrawalRequests: boolean;
+            /**
+             * @description Notify when new artisans submit for verification
+             * @example true
+             */
+            notifyNewArtisanVerification: boolean;
+            /**
+             * @description Notify when artisans update job status
+             * @example true
+             */
+            notifyArtisanStatusChanges: boolean;
+            /**
+             * @description Enable real-time WebSocket updates
+             * @example true
+             */
+            realtimeWebsocketUpdates: boolean;
+            /**
+             * Format: date-time
+             * @description Created timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated timestamp
+             */
+            updatedAt: string;
+        };
+        UpdateAdminNotificationSettingDto: {
+            /**
+             * @description Receive notifications when new disputes are opened
+             * @default true
+             * @example true
+             */
+            notifyNewDisputes: boolean;
+            /**
+             * @description Receive notifications for high-value transactions
+             * @default true
+             * @example true
+             */
+            notifyHighValueTransactions: boolean;
+            /**
+             * @description Threshold amount for high-value transaction alerts
+             * @example 1000
+             */
+            highValueThreshold?: number;
+            /**
+             * @description Receive notifications when artisans request withdrawals
+             * @default true
+             * @example true
+             */
+            notifyWithdrawalRequests: boolean;
+            /**
+             * @description Receive notifications when new artisans submit for verification
+             * @default true
+             * @example true
+             */
+            notifyNewArtisanVerification: boolean;
+            /**
+             * @description Receive real-time notifications when artisans update job status
+             * @default true
+             * @example true
+             */
+            notifyArtisanStatusChanges: boolean;
+            /**
+             * @description Enable real-time WebSocket updates without page refresh
+             * @default true
+             * @example true
+             */
+            realtimeWebsocketUpdates: boolean;
+        };
+        UpdateAdminNotificationSettingResponseDto: {
+            /**
+             * @description Success message
+             * @example Notification settings updated successfully
+             */
+            message: string;
+            /** @description Updated notification settings */
+            data: components["schemas"]["AdminNotificationSettingResponseDto"];
+        };
+        ReferralProgramSettingResponseDto: {
+            /**
+             * @description Referral program setting ID
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            id: string;
+            /**
+             * @description Whether the referral program is enabled
+             * @example true
+             */
+            isEnabled: boolean;
+            /**
+             * @description Amount given to the person who refers
+             * @example 25
+             */
+            referrerBonus: number;
+            /**
+             * @description Percentage bonus given to the new user
+             * @example 15
+             */
+            referredUserBonus: number;
+            /**
+             * @description Days to complete required jobs for referral bonus
+             * @example 90
+             */
+            referralExpiryDays: number;
+            /**
+             * @description Minimum completed jobs required for referral bonus
+             * @example 1
+             */
+            minJobsRequired: number;
+            /**
+             * @description Maximum referral bonuses a user can earn
+             * @example 0
+             */
+            maxReferralsPerUser: number;
+            /**
+             * @description Description or notes
+             * @example Holiday promotion referral program
+             */
+            description?: string;
+            /**
+             * @description Whether this setting is active
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * Format: date-time
+             * @description Created timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated timestamp
+             */
+            updatedAt: string;
+        };
+        UpdateReferralProgramSettingDto: {
+            /**
+             * @description Enable or disable the referral program
+             * @default true
+             * @example true
+             */
+            isEnabled: boolean;
+            /**
+             * @description Amount given to the person who refers (in base currency)
+             * @example 25
+             */
+            referrerBonus?: number;
+            /**
+             * @description Percentage bonus given to the new user
+             * @example 15
+             */
+            referredUserBonus?: number;
+            /**
+             * @description Number of days the referred user has to complete required jobs
+             * @example 90
+             */
+            referralExpiryDays?: number;
+            /**
+             * @description Minimum number of completed jobs required for referral bonus
+             * @example 1
+             */
+            minJobsRequired?: number;
+            /**
+             * @description Maximum referral bonuses a user can earn (0 = unlimited)
+             * @example 0
+             */
+            maxReferralsPerUser?: number;
+            /**
+             * @description Optional description or notes about current referral program
+             * @example Holiday promotion referral program
+             */
+            description?: string;
+        };
+        UpdateReferralProgramSettingResponseDto: {
+            /**
+             * @description Success message
+             * @example Referral program settings updated successfully
+             */
+            message: string;
+            /** @description Updated referral program settings */
+            data: components["schemas"]["ReferralProgramSettingResponseDto"];
+        };
+        SupportSettingResponseDto: {
+            id: string;
+            customerWhatsappLink: Record<string, never> | null;
+            artisanWhatsappLink: Record<string, never> | null;
+            isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateSupportSettingDto: {
+            /**
+             * @description WhatsApp support link for customers
+             * @example https://wa.me/2348001234567
+             */
+            customerWhatsappLink?: string;
+            /**
+             * @description WhatsApp support link for artisans
+             * @example https://wa.me/2348007654321
+             */
+            artisanWhatsappLink?: string;
+        };
+        UpdateSupportSettingResponseDto: {
+            message: string;
+            data: components["schemas"]["SupportSettingResponseDto"];
+        };
+        RequestAdminOtpDto: {
+            /**
+             * @description Purpose of the OTP (e.g., "sensitive_action", "login_verification"). Defaults to "verification".
+             * @default verification
+             * @example sensitive_action
+             */
+            purpose: string;
+        };
+        AdminOtpSentResponseDto: {
+            /**
+             * @description Success message
+             * @example OTP sent successfully
+             */
+            message: string;
+            /**
+             * @description Email where OTP was sent (masked)
+             * @example a***n@xervices.com
+             */
+            emailSentTo: string;
+            /**
+             * @description Phone number where OTP was sent (masked)
+             * @example +234***7890
+             */
+            phoneSentTo: string;
+            /**
+             * @description OTP expiry time in minutes
+             * @example 15
+             */
+            expiresInMinutes: number;
+        };
+        VerifyAdminOtpDto: {
+            /**
+             * @description The 6-digit OTP code sent to admin email/phone
+             * @example 123456
+             */
+            code: string;
+        };
+        AdminOtpVerifiedResponseDto: {
+            /**
+             * @description Success message
+             * @example OTP verified successfully
+             */
+            message: string;
+            /**
+             * @description Whether the OTP was valid
+             * @example true
+             */
+            verified: boolean;
+            /**
+             * @description Session token for authorized action (if applicable)
+             * @example abc123xyz...
+             */
+            sessionToken?: string;
+        };
+        CreateAdminDto: {
+            /**
+             * Format: email
+             * @description Admin email address
+             * @example admin@xervices.com
+             */
+            email: string;
+            /**
+             * @description Phone number in international or local format
+             * @example 08012345678
+             */
+            phoneNumber: string;
+            /**
+             * @description Admin full name
+             * @example John Admin
+             */
+            fullName: string;
+            /**
+             * @description Admin role
+             * @example admin
+             * @enum {string}
+             */
+            adminRole: "super_admin" | "admin" | "finance" | "support";
+        };
+        UpdateAdminDto: {
+            /**
+             * @description Admin role
+             * @enum {string}
+             */
+            adminRole?: "super_admin" | "admin" | "finance" | "support";
+            /**
+             * @description Admin status
+             * @enum {string}
+             */
+            status?: "active" | "inactive" | "disabled";
+            /** @description Admin full name */
+            fullName?: string;
+        };
+        StartImpersonationDto: {
+            /**
+             * @description Reason for impersonation
+             * @example Investigating support ticket #12345
+             */
+            reason: string;
+        };
+        MfaSetupResponseDto: {
+            /**
+             * @description Base32 encoded TOTP secret (for manual entry)
+             * @example JBSWY3DPEHPK3PXP
+             */
+            secret: string;
+            /**
+             * @description QR code as data URL for scanning with authenticator app
+             * @example data:image/png;base64,...
+             */
+            qrCodeDataUrl: string;
+            /**
+             * @description Backup codes for account recovery
+             * @example [
+             *       "XXXX-XXXX",
+             *       "YYYY-YYYY"
+             *     ]
+             */
+            backupCodes: string[];
+        };
+        EnableMfaDto: {
+            /**
+             * @description TOTP code from authenticator app (6 digits)
+             * @example 123456
+             */
+            code: string;
+        };
+        DisableMfaDto: {
+            /**
+             * @description Current TOTP code to verify
+             * @example 123456
+             */
+            code: string;
+        };
+        RegenerateBackupCodesDto: {
+            /**
+             * @description Current TOTP code to verify
+             * @example 123456
+             */
+            code: string;
+        };
+        BackupCodesResponseDto: {
+            /** @description New backup codes (only shown once) */
+            backupCodes: string[];
+        };
+        MfaStatusResponseDto: {
+            /** @description Whether MFA is enabled */
+            mfaEnabled: boolean;
+            /** @description Number of backup codes remaining */
+            backupCodesRemaining: number;
+            /** @description Whether MFA is required for this admin role */
+            mfaRequired: boolean;
+        };
+        BroadcastResponseDto: {
+            /** @description Broadcast ID */
+            id: string;
+            /** @description Notification title */
+            title: string;
+            /** @description Notification body */
+            body: string;
+            /**
+             * @description Template type
+             * @enum {string}
+             */
+            templateType?: "app_update" | "maintenance" | "promotion" | "policy_update" | "safety_alert" | "new_feature";
+            /**
+             * @description Target audience
+             * @enum {string}
+             */
+            targetAudience: "all_users" | "customers" | "artisans";
+            /**
+             * @description Target platform
+             * @enum {string}
+             */
+            platform: "all" | "android" | "ios" | "web";
+            /**
+             * @description Broadcast status
+             * @enum {string}
+             */
+            status: "draft" | "scheduled" | "sending" | "completed" | "failed" | "cancelled";
+            /** @description Additional data */
+            data?: Record<string, never>;
+            /** @description Total recipient count */
+            recipientCount: number;
+            /** @description Delivered count */
+            deliveredCount: number;
+            /** @description Failed count */
+            failedCount: number;
+            /** @description Scheduled send time */
+            scheduledAt?: Record<string, never>;
+            /** @description Actual send time */
+            sentAt?: Record<string, never>;
+            /** @description Completion time */
+            completedAt?: Record<string, never>;
+            /** @description Creator ID */
+            createdBy: string;
+            /** @description Creator name */
+            createdByName: string;
+            /**
+             * Format: date-time
+             * @description Created at timestamp
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Updated at timestamp
+             */
+            updatedAt: string;
+        };
+        CreateBroadcastDto: {
+            /**
+             * @description Notification title
+             * @example New Feature Available
+             */
+            title: string;
+            /**
+             * @description Notification body
+             * @example Check out our latest update with exciting new features!
+             */
+            body: string;
+            /**
+             * @description Template type to use as base
+             * @enum {string}
+             */
+            templateType?: "app_update" | "maintenance" | "promotion" | "policy_update" | "safety_alert" | "new_feature";
+            /**
+             * @description Target audience
+             * @default all_users
+             * @enum {string}
+             */
+            targetAudience: "all_users" | "customers" | "artisans";
+            /**
+             * @description Target platform
+             * @default all
+             * @enum {string}
+             */
+            platform: "all" | "android" | "ios" | "web";
+            /**
+             * @description Additional data for deep linking
+             * @example {
+             *       "screen": "promotions",
+             *       "promotionId": "123"
+             *     }
+             */
+            data?: Record<string, never>;
+            /**
+             * @description Schedule send time (ISO 8601 format)
+             * @example 2025-01-15T10:00:00Z
+             */
+            scheduledAt?: string;
+        };
+        BroadcastListResponseDto: {
+            data: components["schemas"]["BroadcastResponseDto"][];
+            /** @description Total count */
+            total: number;
+            /** @description Current page */
+            page: number;
+            /** @description Items per page */
+            limit: number;
+        };
+        BroadcastTemplatesResponseDto: {
+            /**
+             * @description Available templates
+             * @example {
+             *       "app_update": {
+             *         "title": "App Update Available",
+             *         "body": "A new version..."
+             *       }
+             *     }
+             */
+            templates: Record<string, never>;
+        };
+        UpdateBroadcastDto: {
+            /** @description Notification title */
+            title?: string;
+            /** @description Notification body */
+            body?: string;
+            /**
+             * @description Target audience
+             * @enum {string}
+             */
+            targetAudience?: "all_users" | "customers" | "artisans";
+            /**
+             * @description Target platform
+             * @enum {string}
+             */
+            platform?: "all" | "android" | "ios" | "web";
+            /** @description Additional data for deep linking */
+            data?: Record<string, never>;
+            /** @description Schedule send time (ISO 8601 format, null to unschedule) */
+            scheduledAt?: Record<string, never>;
+        };
+        CreateServiceDto: {
+            /**
+             * @description Service name
+             * @example Home Cleaning
+             */
+            name: string;
+            /**
+             * @description URL-friendly slug (auto-generated from name if not provided)
+             * @example home-cleaning
+             */
+            slug?: string;
+            /**
+             * @description Service category/group
+             * @example Cleaning
+             */
+            category: string;
+            /**
+             * @description Service description
+             * @example Residential and commercial cleaning services
+             */
+            description?: string;
+            /**
+             * Format: binary
+             * @description Icon image file for the service
+             */
+            icon?: string;
+            /**
+             * @description Whether this service is featured
+             * @default false
+             */
+            isFeatured: boolean;
+            /**
+             * @description Whether a destination is required for service requests in this category
+             * @default false
+             */
+            isDestinationRequired: boolean;
+        };
+        UpdateServiceDto: {
+            /** @description Service name */
+            name?: string;
+            /** @description URL-friendly slug */
+            slug?: string;
+            /** @description Service category/group */
+            category?: string;
+            /** @description Service description */
+            description?: string;
+            /**
+             * Format: binary
+             * @description Icon image file for the service
+             */
+            icon?: string;
+            /** @description Whether this service is featured */
+            isFeatured?: boolean;
+            /** @description Whether a destination is required for service requests in this category */
+            isDestinationRequired?: boolean;
+        };
+        UpdateUserStatusDto: {
+            /** @enum {string} */
+            status: "active" | "suspended";
+        };
+        ReviewDisputeDto: {
+            /** @enum {string} */
+            priority?: "low" | "medium" | "high";
+        };
+        ResolveDisputeDto: {
+            /** @enum {string} */
+            resolutionType: "full_refund" | "partial_refund" | "no_refund" | "full_payment" | "partial_payment";
+            /** @description Resolution explanation */
+            resolution: string;
+            /** @description Refund amount (required for partial refund/payment) */
+            refundAmount?: number;
+        };
+        CreatePromoCodeDto: {
+            /**
+             * @description Promo code string
+             * @example SAVE20
+             */
+            code: string;
+            /**
+             * @description Code description
+             * @example 20% off platform fee
+             */
+            description?: string;
+            /**
+             * @description Discount type
+             * @enum {string}
+             */
+            discountType: "percentage" | "fixed";
+            /**
+             * @description Discount value (percentage 0-100 or fixed amount)
+             * @example 20
+             */
+            discountValue: number;
+            /**
+             * @description Maximum discount amount (for percentage type)
+             * @example 500
+             */
+            maxDiscountAmount?: number;
+            /**
+             * @description Minimum order amount to use code
+             * @example 5000
+             */
+            minOrderAmount?: number;
+            /**
+             * @description Total usage limit across all users
+             * @example 100
+             */
+            usageLimit?: number;
+            /**
+             * @description Usage limit per user
+             * @default 1
+             * @example 1
+             */
+            perUserLimit: number;
+            /** @description Code validity start date (ISO 8601) */
+            validFrom?: string;
+            /** @description Code validity end date (ISO 8601) */
+            validUntil?: string;
+        };
+        UpdatePromoCodeDto: {
+            /** @description Code description */
+            description?: string;
+            /**
+             * @description Discount type
+             * @enum {string}
+             */
+            discountType?: "percentage" | "fixed";
+            /** @description Discount value */
+            discountValue?: number;
+            /** @description Maximum discount amount */
+            maxDiscountAmount?: number;
+            /** @description Minimum order amount */
+            minOrderAmount?: number;
+            /** @description Total usage limit */
+            usageLimit?: number;
+            /** @description Usage limit per user */
+            perUserLimit?: number;
+            /** @description Code validity start date (ISO 8601) */
+            validFrom?: string;
+            /** @description Code validity end date (ISO 8601) */
+            validUntil?: string;
+            /** @description Whether code is active */
+            isActive?: boolean;
+        };
+        ActiveBroadcastResponseDto: {
+            /** @description Broadcast ID */
+            id: string;
+            /** @description Notification title */
+            title: string;
+            /** @description Notification body */
+            body: string;
+            /**
+             * @description Template type
+             * @enum {string}
+             */
+            templateType?: "app_update" | "maintenance" | "promotion" | "policy_update" | "safety_alert" | "new_feature";
+            /** @description Additional data for deep linking */
+            data?: Record<string, never>;
+        };
+        CreateFeaturedProfileDto: {
+            /**
+             * @description Name of the featured profile
+             * @example John Doe
+             */
+            name: string;
+            /**
+             * @description Type of profile
+             * @example artisan
+             * @enum {string}
+             */
+            type: "user" | "artisan";
+            /**
+             * @description Image URL (set automatically when uploading via multipart)
+             * @example https://storage.example.com/featured/image.jpg
+             */
+            imageUrl?: string;
+            /**
+             * @description Video link URL
+             * @example https://youtube.com/watch?v=abc123
+             */
+            videoLink?: string;
+            /**
+             * @description Whether the profile is active
+             * @default true
+             */
+            isActive: boolean;
+            /**
+             * @description Display order (lower = shown first)
+             * @default 0
+             */
+            displayOrder: number;
+        };
+        UpdateFeaturedProfileDto: {
+            /**
+             * @description Name of the featured profile
+             * @example John Doe
+             */
+            name?: string;
+            /**
+             * @description Type of profile
+             * @example artisan
+             * @enum {string}
+             */
+            type?: "user" | "artisan";
+            /**
+             * @description Image URL (set automatically when uploading via multipart)
+             * @example https://storage.example.com/featured/image.jpg
+             */
+            imageUrl?: string;
+            /**
+             * @description Video link URL
+             * @example https://youtube.com/watch?v=abc123
+             */
+            videoLink?: string;
+            /** @description Whether the profile is active */
+            isActive?: boolean;
+            /** @description Display order (lower = shown first) */
+            displayOrder?: number;
+        };
+        CreatePromotionSlideDto: {
+            /**
+             * @description Title of the promotion slide
+             * @example Summer Sale
+             */
+            title: string;
+            /**
+             * @description Description of the promotion
+             * @example Get 20% off all services
+             */
+            description?: string;
+            /** @description Image URL (set automatically when uploading via multipart) */
+            imageUrl?: string;
+            /**
+             * @description Deep link or external URL
+             * @example https://example.com/promo
+             */
+            linkUrl?: string;
+            /**
+             * @description Target audience
+             * @example all
+             * @enum {string}
+             */
+            audience: "all" | "users" | "artisans";
+            /**
+             * @description Slide status
+             * @default active
+             * @enum {string}
+             */
+            status: "active" | "inactive";
+            /**
+             * @description Display order (lower = shown first)
+             * @default 0
+             */
+            displayOrder: number;
+            /**
+             * @description Start date for scheduling
+             * @example 2026-03-01T00:00:00Z
+             */
+            startDate?: string;
+            /**
+             * @description End date for expiry
+             * @example 2026-04-01T00:00:00Z
+             */
+            endDate?: string;
+        };
+        UpdatePromotionSlideDto: {
+            /** @description Title of the promotion slide */
+            title?: string;
+            /** @description Description of the promotion */
+            description?: string;
+            /** @description Image URL (set automatically when uploading via multipart) */
+            imageUrl?: string;
+            /** @description Deep link or external URL */
+            linkUrl?: string;
+            /**
+             * @description Target audience
+             * @enum {string}
+             */
+            audience?: "all" | "users" | "artisans";
+            /**
+             * @description Slide status
+             * @enum {string}
+             */
+            status?: "active" | "inactive";
+            /** @description Display order (lower = shown first) */
+            displayOrder?: number;
+            /** @description Start date for scheduling */
+            startDate?: string;
+            /** @description End date for expiry */
+            endDate?: string;
+        };
+        UpdateArtisanLevelDto: {
+            /**
+             * @description Human-readable display name for the level
+             * @example Starter
+             */
+            displayName?: string;
+            /**
+             * @description Minimum number of completed jobs required to reach this level
+             * @example 10
+             */
+            minJobsRequired?: number;
+            /**
+             * @description Standard commission percentage for this level
+             * @example 10
+             */
+            commissionPercent?: number;
+        };
+        RevokeSessionDto: {
+            /** @description ID of the session to revoke */
+            sessionId: string;
+        };
         UserSettingsResponseDto: {
             notificationEnabled: boolean;
             emailNotification: boolean;
@@ -7040,1135 +8343,6 @@ export interface components {
              * @example Good work overall, but could improve on communication.
              */
             comment?: string;
-        };
-        TermsAndConditionsResponseDto: {
-            /**
-             * @description Terms and conditions ID
-             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
-             */
-            id: string;
-            /**
-             * @description Version string
-             * @example 1.0
-             */
-            version: string;
-            /** @description Content of the terms */
-            content: string;
-            /**
-             * @description Title of this version
-             * @example Terms of Service v1.0
-             */
-            title?: string;
-            /**
-             * @description Whether this version is active
-             * @example true
-             */
-            isActive: boolean;
-            /**
-             * Format: date-time
-             * @description Effective date
-             */
-            effectiveDate?: string;
-            /**
-             * Format: date-time
-             * @description Created timestamp
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description Updated timestamp
-             */
-            updatedAt: string;
-        };
-        PrivacyPolicyResponseDto: {
-            /** @description Privacy policy ID */
-            id: string;
-            /**
-             * @description Version string
-             * @example 1.0
-             */
-            version: string;
-            /** @description Content of the privacy policy */
-            content: string;
-            /** @description Title of this version */
-            title?: string;
-            /** @description Whether this version is active */
-            isActive: boolean;
-            /**
-             * Format: date-time
-             * @description Effective date
-             */
-            effectiveDate?: string;
-            /**
-             * Format: date-time
-             * @description Created timestamp
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description Updated timestamp
-             */
-            updatedAt: string;
-        };
-        CancellationPolicyResponseDto: {
-            /** @description Cancellation policy ID */
-            id: string;
-            /**
-             * @description Version string
-             * @example 1.0
-             */
-            version: string;
-            /** @description Content of the cancellation policy */
-            content: string;
-            /** @description Title of this version */
-            title?: string;
-            /** @description Whether this version is active */
-            isActive: boolean;
-            /**
-             * Format: date-time
-             * @description Effective date
-             */
-            effectiveDate?: string;
-            /**
-             * Format: date-time
-             * @description Created timestamp
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description Updated timestamp
-             */
-            updatedAt: string;
-        };
-        ChangeDefaultPasswordDto: {
-            /**
-             * @description Current/default password for verification
-             * @example DefaultPass123!
-             */
-            currentPassword: string;
-            /**
-             * @description New password (min 8 chars, must contain uppercase, lowercase, number, and special character)
-             * @example NewSecurePass123!
-             */
-            newPassword: string;
-            /**
-             * @description Password confirmation - must match newPassword
-             * @example NewSecurePass123!
-             */
-            confirmPassword: string;
-        };
-        ChangeDefaultPasswordResponseDto: {
-            /**
-             * @description Success message
-             * @example Password changed successfully
-             */
-            message: string;
-        };
-        VerifyArtisanDto: {
-            /**
-             * @description The ID of the artisan to verify
-             * @example 123e4567-e89b-12d3-a456-426614174000
-             */
-            artisanId: string;
-            /**
-             * @description Verification status to set
-             * @default true
-             * @example true
-             */
-            isVerified: boolean;
-            /**
-             * @description Optional note about the verification
-             * @example Verified via manual document review
-             */
-            note?: string;
-        };
-        VerifyArtisanResponseDto: {
-            message: string;
-            artisanId: string;
-            isVerified: boolean;
-            /** Format: date-time */
-            verifiedAt: string;
-        };
-        CommissionSettingResponseDto: {
-            /**
-             * @description Commission setting ID
-             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
-             */
-            id: string;
-            /**
-             * @description Commission value
-             * @example 10
-             */
-            commissionValue: number;
-            /**
-             * @description Whether this is a percentage
-             * @example true
-             */
-            isPercentage: boolean;
-            /**
-             * @description Description
-             * @example Platform commission for service fees
-             */
-            description?: string;
-            /**
-             * @description Whether this setting is active
-             * @example true
-             */
-            isActive: boolean;
-            /**
-             * Format: date-time
-             * @description Created timestamp
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description Updated timestamp
-             */
-            updatedAt: string;
-        };
-        UpdateCommissionSettingDto: {
-            /**
-             * @description Commission value - percentage or fixed amount
-             * @example 10
-             */
-            commissionValue: number;
-            /**
-             * @description Whether the commission is a percentage (true) or fixed amount (false)
-             * @default true
-             * @example true
-             */
-            isPercentage: boolean;
-            /**
-             * @description Optional description for this commission setting
-             * @example Platform commission for service fees
-             */
-            description?: string;
-        };
-        UpdateCommissionSettingResponseDto: {
-            /**
-             * @description Success message
-             * @example Commission settings updated successfully
-             */
-            message: string;
-            /** @description Updated commission setting */
-            data: components["schemas"]["CommissionSettingResponseDto"];
-        };
-        UpdateTermsAndConditionsDto: {
-            /**
-             * @description Version string for the terms (e.g., "1.0", "2.0")
-             * @example 1.0
-             */
-            version: string;
-            /**
-             * @description Full content of the terms and conditions
-             * @example By using this platform, you agree to...
-             */
-            content: string;
-            /**
-             * @description Optional title for this version
-             * @example Terms of Service v1.0
-             */
-            title?: string;
-            /**
-             * @description Whether to activate this version immediately
-             * @default false
-             * @example true
-             */
-            isActive: boolean;
-            /**
-             * @description Date when this version becomes effective
-             * @example 2025-02-01T00:00:00Z
-             */
-            effectiveDate?: string;
-        };
-        UpdateTermsAndConditionsResponseDto: {
-            /**
-             * @description Success message
-             * @example Terms and conditions updated successfully
-             */
-            message: string;
-            /** @description Updated terms and conditions */
-            data: components["schemas"]["TermsAndConditionsResponseDto"];
-        };
-        UpdatePrivacyPolicyDto: {
-            /**
-             * @description Version string for the privacy policy (e.g., "1.0", "2.0")
-             * @example 1.0
-             */
-            version: string;
-            /**
-             * @description Full content of the privacy policy
-             * @example This privacy policy describes how we collect and use your data...
-             */
-            content: string;
-            /**
-             * @description Optional title for this version
-             * @example Privacy Policy v1.0
-             */
-            title?: string;
-            /**
-             * @description Whether to activate this version immediately
-             * @default false
-             * @example true
-             */
-            isActive: boolean;
-            /**
-             * @description Date when this version becomes effective
-             * @example 2025-02-01T00:00:00Z
-             */
-            effectiveDate?: string;
-        };
-        UpdatePrivacyPolicyResponseDto: {
-            /** @description Success message */
-            message: string;
-            /** @description Updated privacy policy */
-            data: components["schemas"]["PrivacyPolicyResponseDto"];
-        };
-        UpdateCancellationPolicyDto: {
-            /**
-             * @description Version string for the cancellation policy (e.g., "1.0", "2.0")
-             * @example 1.0
-             */
-            version: string;
-            /**
-             * @description Full content of the cancellation policy
-             * @example This cancellation policy describes the conditions under which a booking can be cancelled...
-             */
-            content: string;
-            /**
-             * @description Optional title for this version
-             * @example Cancellation Policy v1.0
-             */
-            title?: string;
-            /**
-             * @description Whether to activate this version immediately
-             * @default false
-             * @example true
-             */
-            isActive: boolean;
-            /**
-             * @description Date when this version becomes effective
-             * @example 2025-02-01T00:00:00Z
-             */
-            effectiveDate?: string;
-        };
-        UpdateCancellationPolicyResponseDto: {
-            /** @description Success message */
-            message: string;
-            /** @description Updated cancellation policy */
-            data: components["schemas"]["CancellationPolicyResponseDto"];
-        };
-        AdminNotificationSettingResponseDto: {
-            /**
-             * @description Notification setting ID
-             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
-             */
-            id: string;
-            /**
-             * @description Admin user ID
-             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
-             */
-            adminId: string;
-            /**
-             * @description Notify when new disputes are opened
-             * @example true
-             */
-            notifyNewDisputes: boolean;
-            /**
-             * @description Notify for high-value transactions
-             * @example true
-             */
-            notifyHighValueTransactions: boolean;
-            /**
-             * @description Threshold amount for high-value transaction alerts
-             * @example 1000
-             */
-            highValueThreshold: number;
-            /**
-             * @description Notify when artisans request withdrawals
-             * @example true
-             */
-            notifyWithdrawalRequests: boolean;
-            /**
-             * @description Notify when new artisans submit for verification
-             * @example true
-             */
-            notifyNewArtisanVerification: boolean;
-            /**
-             * @description Notify when artisans update job status
-             * @example true
-             */
-            notifyArtisanStatusChanges: boolean;
-            /**
-             * @description Enable real-time WebSocket updates
-             * @example true
-             */
-            realtimeWebsocketUpdates: boolean;
-            /**
-             * Format: date-time
-             * @description Created timestamp
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description Updated timestamp
-             */
-            updatedAt: string;
-        };
-        UpdateAdminNotificationSettingDto: {
-            /**
-             * @description Receive notifications when new disputes are opened
-             * @default true
-             * @example true
-             */
-            notifyNewDisputes: boolean;
-            /**
-             * @description Receive notifications for high-value transactions
-             * @default true
-             * @example true
-             */
-            notifyHighValueTransactions: boolean;
-            /**
-             * @description Threshold amount for high-value transaction alerts
-             * @example 1000
-             */
-            highValueThreshold?: number;
-            /**
-             * @description Receive notifications when artisans request withdrawals
-             * @default true
-             * @example true
-             */
-            notifyWithdrawalRequests: boolean;
-            /**
-             * @description Receive notifications when new artisans submit for verification
-             * @default true
-             * @example true
-             */
-            notifyNewArtisanVerification: boolean;
-            /**
-             * @description Receive real-time notifications when artisans update job status
-             * @default true
-             * @example true
-             */
-            notifyArtisanStatusChanges: boolean;
-            /**
-             * @description Enable real-time WebSocket updates without page refresh
-             * @default true
-             * @example true
-             */
-            realtimeWebsocketUpdates: boolean;
-        };
-        UpdateAdminNotificationSettingResponseDto: {
-            /**
-             * @description Success message
-             * @example Notification settings updated successfully
-             */
-            message: string;
-            /** @description Updated notification settings */
-            data: components["schemas"]["AdminNotificationSettingResponseDto"];
-        };
-        ReferralProgramSettingResponseDto: {
-            /**
-             * @description Referral program setting ID
-             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
-             */
-            id: string;
-            /**
-             * @description Whether the referral program is enabled
-             * @example true
-             */
-            isEnabled: boolean;
-            /**
-             * @description Amount given to the person who refers
-             * @example 25
-             */
-            referrerBonus: number;
-            /**
-             * @description Percentage bonus given to the new user
-             * @example 15
-             */
-            referredUserBonus: number;
-            /**
-             * @description Days to complete required jobs for referral bonus
-             * @example 90
-             */
-            referralExpiryDays: number;
-            /**
-             * @description Minimum completed jobs required for referral bonus
-             * @example 1
-             */
-            minJobsRequired: number;
-            /**
-             * @description Maximum referral bonuses a user can earn
-             * @example 0
-             */
-            maxReferralsPerUser: number;
-            /**
-             * @description Description or notes
-             * @example Holiday promotion referral program
-             */
-            description?: string;
-            /**
-             * @description Whether this setting is active
-             * @example true
-             */
-            isActive: boolean;
-            /**
-             * Format: date-time
-             * @description Created timestamp
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description Updated timestamp
-             */
-            updatedAt: string;
-        };
-        UpdateReferralProgramSettingDto: {
-            /**
-             * @description Enable or disable the referral program
-             * @default true
-             * @example true
-             */
-            isEnabled: boolean;
-            /**
-             * @description Amount given to the person who refers (in base currency)
-             * @example 25
-             */
-            referrerBonus?: number;
-            /**
-             * @description Percentage bonus given to the new user
-             * @example 15
-             */
-            referredUserBonus?: number;
-            /**
-             * @description Number of days the referred user has to complete required jobs
-             * @example 90
-             */
-            referralExpiryDays?: number;
-            /**
-             * @description Minimum number of completed jobs required for referral bonus
-             * @example 1
-             */
-            minJobsRequired?: number;
-            /**
-             * @description Maximum referral bonuses a user can earn (0 = unlimited)
-             * @example 0
-             */
-            maxReferralsPerUser?: number;
-            /**
-             * @description Optional description or notes about current referral program
-             * @example Holiday promotion referral program
-             */
-            description?: string;
-        };
-        UpdateReferralProgramSettingResponseDto: {
-            /**
-             * @description Success message
-             * @example Referral program settings updated successfully
-             */
-            message: string;
-            /** @description Updated referral program settings */
-            data: components["schemas"]["ReferralProgramSettingResponseDto"];
-        };
-        RequestAdminOtpDto: {
-            /**
-             * @description Purpose of the OTP (e.g., "sensitive_action", "login_verification"). Defaults to "verification".
-             * @default verification
-             * @example sensitive_action
-             */
-            purpose: string;
-        };
-        AdminOtpSentResponseDto: {
-            /**
-             * @description Success message
-             * @example OTP sent successfully
-             */
-            message: string;
-            /**
-             * @description Email where OTP was sent (masked)
-             * @example a***n@xervices.com
-             */
-            emailSentTo: string;
-            /**
-             * @description Phone number where OTP was sent (masked)
-             * @example +234***7890
-             */
-            phoneSentTo: string;
-            /**
-             * @description OTP expiry time in minutes
-             * @example 15
-             */
-            expiresInMinutes: number;
-        };
-        VerifyAdminOtpDto: {
-            /**
-             * @description The 6-digit OTP code sent to admin email/phone
-             * @example 123456
-             */
-            code: string;
-        };
-        AdminOtpVerifiedResponseDto: {
-            /**
-             * @description Success message
-             * @example OTP verified successfully
-             */
-            message: string;
-            /**
-             * @description Whether the OTP was valid
-             * @example true
-             */
-            verified: boolean;
-            /**
-             * @description Session token for authorized action (if applicable)
-             * @example abc123xyz...
-             */
-            sessionToken?: string;
-        };
-        CreateAdminDto: {
-            /**
-             * Format: email
-             * @description Admin email address
-             * @example admin@xervices.com
-             */
-            email: string;
-            /**
-             * @description Phone number in international or local format
-             * @example 08012345678
-             */
-            phoneNumber: string;
-            /**
-             * @description Admin full name
-             * @example John Admin
-             */
-            fullName: string;
-            /**
-             * @description Admin role
-             * @example admin
-             * @enum {string}
-             */
-            adminRole: "super_admin" | "admin" | "finance" | "support";
-        };
-        UpdateAdminDto: {
-            /**
-             * @description Admin role
-             * @enum {string}
-             */
-            adminRole?: "super_admin" | "admin" | "finance" | "support";
-            /**
-             * @description Admin status
-             * @enum {string}
-             */
-            status?: "active" | "inactive" | "disabled";
-            /** @description Admin full name */
-            fullName?: string;
-        };
-        StartImpersonationDto: {
-            /**
-             * @description Reason for impersonation
-             * @example Investigating support ticket #12345
-             */
-            reason: string;
-        };
-        MfaSetupResponseDto: {
-            /**
-             * @description Base32 encoded TOTP secret (for manual entry)
-             * @example JBSWY3DPEHPK3PXP
-             */
-            secret: string;
-            /**
-             * @description QR code as data URL for scanning with authenticator app
-             * @example data:image/png;base64,...
-             */
-            qrCodeDataUrl: string;
-            /**
-             * @description Backup codes for account recovery
-             * @example [
-             *       "XXXX-XXXX",
-             *       "YYYY-YYYY"
-             *     ]
-             */
-            backupCodes: string[];
-        };
-        EnableMfaDto: {
-            /**
-             * @description TOTP code from authenticator app (6 digits)
-             * @example 123456
-             */
-            code: string;
-        };
-        DisableMfaDto: {
-            /**
-             * @description Current TOTP code to verify
-             * @example 123456
-             */
-            code: string;
-        };
-        RegenerateBackupCodesDto: {
-            /**
-             * @description Current TOTP code to verify
-             * @example 123456
-             */
-            code: string;
-        };
-        BackupCodesResponseDto: {
-            /** @description New backup codes (only shown once) */
-            backupCodes: string[];
-        };
-        MfaStatusResponseDto: {
-            /** @description Whether MFA is enabled */
-            mfaEnabled: boolean;
-            /** @description Number of backup codes remaining */
-            backupCodesRemaining: number;
-            /** @description Whether MFA is required for this admin role */
-            mfaRequired: boolean;
-        };
-        BroadcastResponseDto: {
-            /** @description Broadcast ID */
-            id: string;
-            /** @description Notification title */
-            title: string;
-            /** @description Notification body */
-            body: string;
-            /**
-             * @description Template type
-             * @enum {string}
-             */
-            templateType?: "app_update" | "maintenance" | "promotion" | "policy_update" | "safety_alert" | "new_feature";
-            /**
-             * @description Target audience
-             * @enum {string}
-             */
-            targetAudience: "all_users" | "customers" | "artisans";
-            /**
-             * @description Target platform
-             * @enum {string}
-             */
-            platform: "all" | "android" | "ios" | "web";
-            /**
-             * @description Broadcast status
-             * @enum {string}
-             */
-            status: "draft" | "scheduled" | "sending" | "completed" | "failed" | "cancelled";
-            /** @description Additional data */
-            data?: Record<string, never>;
-            /** @description Total recipient count */
-            recipientCount: number;
-            /** @description Delivered count */
-            deliveredCount: number;
-            /** @description Failed count */
-            failedCount: number;
-            /** @description Scheduled send time */
-            scheduledAt?: Record<string, never>;
-            /** @description Actual send time */
-            sentAt?: Record<string, never>;
-            /** @description Completion time */
-            completedAt?: Record<string, never>;
-            /** @description Creator ID */
-            createdBy: string;
-            /** @description Creator name */
-            createdByName: string;
-            /**
-             * Format: date-time
-             * @description Created at timestamp
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description Updated at timestamp
-             */
-            updatedAt: string;
-        };
-        CreateBroadcastDto: {
-            /**
-             * @description Notification title
-             * @example New Feature Available
-             */
-            title: string;
-            /**
-             * @description Notification body
-             * @example Check out our latest update with exciting new features!
-             */
-            body: string;
-            /**
-             * @description Template type to use as base
-             * @enum {string}
-             */
-            templateType?: "app_update" | "maintenance" | "promotion" | "policy_update" | "safety_alert" | "new_feature";
-            /**
-             * @description Target audience
-             * @default all_users
-             * @enum {string}
-             */
-            targetAudience: "all_users" | "customers" | "artisans";
-            /**
-             * @description Target platform
-             * @default all
-             * @enum {string}
-             */
-            platform: "all" | "android" | "ios" | "web";
-            /**
-             * @description Additional data for deep linking
-             * @example {
-             *       "screen": "promotions",
-             *       "promotionId": "123"
-             *     }
-             */
-            data?: Record<string, never>;
-            /**
-             * @description Schedule send time (ISO 8601 format)
-             * @example 2025-01-15T10:00:00Z
-             */
-            scheduledAt?: string;
-        };
-        BroadcastListResponseDto: {
-            data: components["schemas"]["BroadcastResponseDto"][];
-            /** @description Total count */
-            total: number;
-            /** @description Current page */
-            page: number;
-            /** @description Items per page */
-            limit: number;
-        };
-        BroadcastTemplatesResponseDto: {
-            /**
-             * @description Available templates
-             * @example {
-             *       "app_update": {
-             *         "title": "App Update Available",
-             *         "body": "A new version..."
-             *       }
-             *     }
-             */
-            templates: Record<string, never>;
-        };
-        UpdateBroadcastDto: {
-            /** @description Notification title */
-            title?: string;
-            /** @description Notification body */
-            body?: string;
-            /**
-             * @description Target audience
-             * @enum {string}
-             */
-            targetAudience?: "all_users" | "customers" | "artisans";
-            /**
-             * @description Target platform
-             * @enum {string}
-             */
-            platform?: "all" | "android" | "ios" | "web";
-            /** @description Additional data for deep linking */
-            data?: Record<string, never>;
-            /** @description Schedule send time (ISO 8601 format, null to unschedule) */
-            scheduledAt?: Record<string, never>;
-        };
-        CreateServiceDto: {
-            /**
-             * @description Service name
-             * @example Home Cleaning
-             */
-            name: string;
-            /**
-             * @description URL-friendly slug (auto-generated from name if not provided)
-             * @example home-cleaning
-             */
-            slug?: string;
-            /**
-             * @description Service category/group
-             * @example Cleaning
-             */
-            category: string;
-            /**
-             * @description Service description
-             * @example Residential and commercial cleaning services
-             */
-            description?: string;
-            /**
-             * Format: binary
-             * @description Icon image file for the service
-             */
-            icon?: string;
-            /**
-             * @description Whether this service is featured
-             * @default false
-             */
-            isFeatured: boolean;
-            /**
-             * @description Whether a destination is required for service requests in this category
-             * @default false
-             */
-            isDestinationRequired: boolean;
-        };
-        UpdateServiceDto: {
-            /** @description Service name */
-            name?: string;
-            /** @description URL-friendly slug */
-            slug?: string;
-            /** @description Service category/group */
-            category?: string;
-            /** @description Service description */
-            description?: string;
-            /**
-             * Format: binary
-             * @description Icon image file for the service
-             */
-            icon?: string;
-            /** @description Whether this service is featured */
-            isFeatured?: boolean;
-            /** @description Whether a destination is required for service requests in this category */
-            isDestinationRequired?: boolean;
-        };
-        UpdateUserStatusDto: {
-            /** @enum {string} */
-            status: "active" | "suspended";
-        };
-        ReviewDisputeDto: {
-            /** @enum {string} */
-            priority?: "low" | "medium" | "high";
-        };
-        ResolveDisputeDto: {
-            /** @enum {string} */
-            resolutionType: "full_refund" | "partial_refund" | "no_refund" | "full_payment" | "partial_payment";
-            /** @description Resolution explanation */
-            resolution: string;
-            /** @description Refund amount (required for partial refund/payment) */
-            refundAmount?: number;
-        };
-        CreatePromoCodeDto: {
-            /**
-             * @description Promo code string
-             * @example SAVE20
-             */
-            code: string;
-            /**
-             * @description Code description
-             * @example 20% off platform fee
-             */
-            description?: string;
-            /**
-             * @description Discount type
-             * @enum {string}
-             */
-            discountType: "percentage" | "fixed";
-            /**
-             * @description Discount value (percentage 0-100 or fixed amount)
-             * @example 20
-             */
-            discountValue: number;
-            /**
-             * @description Maximum discount amount (for percentage type)
-             * @example 500
-             */
-            maxDiscountAmount?: number;
-            /**
-             * @description Minimum order amount to use code
-             * @example 5000
-             */
-            minOrderAmount?: number;
-            /**
-             * @description Total usage limit across all users
-             * @example 100
-             */
-            usageLimit?: number;
-            /**
-             * @description Usage limit per user
-             * @default 1
-             * @example 1
-             */
-            perUserLimit: number;
-            /** @description Code validity start date (ISO 8601) */
-            validFrom?: string;
-            /** @description Code validity end date (ISO 8601) */
-            validUntil?: string;
-        };
-        UpdatePromoCodeDto: {
-            /** @description Code description */
-            description?: string;
-            /**
-             * @description Discount type
-             * @enum {string}
-             */
-            discountType?: "percentage" | "fixed";
-            /** @description Discount value */
-            discountValue?: number;
-            /** @description Maximum discount amount */
-            maxDiscountAmount?: number;
-            /** @description Minimum order amount */
-            minOrderAmount?: number;
-            /** @description Total usage limit */
-            usageLimit?: number;
-            /** @description Usage limit per user */
-            perUserLimit?: number;
-            /** @description Code validity start date (ISO 8601) */
-            validFrom?: string;
-            /** @description Code validity end date (ISO 8601) */
-            validUntil?: string;
-            /** @description Whether code is active */
-            isActive?: boolean;
-        };
-        ActiveBroadcastResponseDto: {
-            /** @description Broadcast ID */
-            id: string;
-            /** @description Notification title */
-            title: string;
-            /** @description Notification body */
-            body: string;
-            /**
-             * @description Template type
-             * @enum {string}
-             */
-            templateType?: "app_update" | "maintenance" | "promotion" | "policy_update" | "safety_alert" | "new_feature";
-            /** @description Additional data for deep linking */
-            data?: Record<string, never>;
-        };
-        CreateFeaturedProfileDto: {
-            /**
-             * @description Name of the featured profile
-             * @example John Doe
-             */
-            name: string;
-            /**
-             * @description Type of profile
-             * @example artisan
-             * @enum {string}
-             */
-            type: "user" | "artisan";
-            /**
-             * @description Image URL (set automatically when uploading via multipart)
-             * @example https://storage.example.com/featured/image.jpg
-             */
-            imageUrl?: string;
-            /**
-             * @description Video link URL
-             * @example https://youtube.com/watch?v=abc123
-             */
-            videoLink?: string;
-            /**
-             * @description Whether the profile is active
-             * @default true
-             */
-            isActive: boolean;
-            /**
-             * @description Display order (lower = shown first)
-             * @default 0
-             */
-            displayOrder: number;
-        };
-        UpdateFeaturedProfileDto: {
-            /**
-             * @description Name of the featured profile
-             * @example John Doe
-             */
-            name?: string;
-            /**
-             * @description Type of profile
-             * @example artisan
-             * @enum {string}
-             */
-            type?: "user" | "artisan";
-            /**
-             * @description Image URL (set automatically when uploading via multipart)
-             * @example https://storage.example.com/featured/image.jpg
-             */
-            imageUrl?: string;
-            /**
-             * @description Video link URL
-             * @example https://youtube.com/watch?v=abc123
-             */
-            videoLink?: string;
-            /** @description Whether the profile is active */
-            isActive?: boolean;
-            /** @description Display order (lower = shown first) */
-            displayOrder?: number;
-        };
-        CreatePromotionSlideDto: {
-            /**
-             * @description Title of the promotion slide
-             * @example Summer Sale
-             */
-            title: string;
-            /**
-             * @description Description of the promotion
-             * @example Get 20% off all services
-             */
-            description?: string;
-            /** @description Image URL (set automatically when uploading via multipart) */
-            imageUrl?: string;
-            /**
-             * @description Deep link or external URL
-             * @example https://example.com/promo
-             */
-            linkUrl?: string;
-            /**
-             * @description Target audience
-             * @example all
-             * @enum {string}
-             */
-            audience: "all" | "users" | "artisans";
-            /**
-             * @description Slide status
-             * @default active
-             * @enum {string}
-             */
-            status: "active" | "inactive";
-            /**
-             * @description Display order (lower = shown first)
-             * @default 0
-             */
-            displayOrder: number;
-            /**
-             * @description Start date for scheduling
-             * @example 2026-03-01T00:00:00Z
-             */
-            startDate?: string;
-            /**
-             * @description End date for expiry
-             * @example 2026-04-01T00:00:00Z
-             */
-            endDate?: string;
-        };
-        UpdatePromotionSlideDto: {
-            /** @description Title of the promotion slide */
-            title?: string;
-            /** @description Description of the promotion */
-            description?: string;
-            /** @description Image URL (set automatically when uploading via multipart) */
-            imageUrl?: string;
-            /** @description Deep link or external URL */
-            linkUrl?: string;
-            /**
-             * @description Target audience
-             * @enum {string}
-             */
-            audience?: "all" | "users" | "artisans";
-            /**
-             * @description Slide status
-             * @enum {string}
-             */
-            status?: "active" | "inactive";
-            /** @description Display order (lower = shown first) */
-            displayOrder?: number;
-            /** @description Start date for scheduling */
-            startDate?: string;
-            /** @description End date for expiry */
-            endDate?: string;
-        };
-        UpdateArtisanLevelDto: {
-            /**
-             * @description Human-readable display name for the level
-             * @example Starter
-             */
-            displayName?: string;
-            /**
-             * @description Minimum number of completed jobs required to reach this level
-             * @example 10
-             */
-            minJobsRequired?: number;
-            /**
-             * @description Standard commission percentage for this level
-             * @example 10
-             */
-            commissionPercent?: number;
         };
         CreateSupportTicketDto: {
             /**
@@ -10608,2610 +10782,6 @@ export interface operations {
             };
         };
     };
-    UsersController_getCurrentUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description User retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    UsersController_deleteAccount: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DeleteAccountDto"];
-            };
-        };
-        responses: {
-            /** @description Account deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    UsersController_updateProfile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": components["schemas"]["UpdateProfileDto"];
-            };
-        };
-        responses: {
-            /** @description Profile updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserProfileResponseDto"];
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    UsersController_updateLocation: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateLocationDto"];
-            };
-        };
-        responses: {
-            /** @description Location updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponseDto"];
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    UsersController_updateSettings: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateSettingsDto"];
-            };
-        };
-        responses: {
-            /** @description Settings updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserSettingsResponseDto"];
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    CategoriesController_findAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of categories sorted by user preference */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CategoryResponseDto"][];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    CategoriesController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": components["schemas"]["CreateCategoryDto"];
-            };
-        };
-        responses: {
-            /** @description Category created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CategoryResponseDto"];
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Admin access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    CategoriesController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Category details */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CategoryResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Category not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    CategoriesController_findArtisansByService: {
-        parameters: {
-            query?: {
-                /** @description Latitude of the user location for proximity filtering */
-                latitude?: number;
-                /** @description Longitude of the user location for proximity filtering */
-                longitude?: number;
-                /** @description Search radius in kilometers (default: 50km) */
-                radiusKm?: number;
-                /** @description Page number for pagination (default: 1) */
-                page?: number;
-                /** @description Number of results per page (default: 20, max: 100) */
-                limit?: number;
-            };
-            header?: never;
-            path: {
-                /** @description Service/Category ID (UUID) */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of artisans for the service */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FindArtisansByServiceResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Service/Category not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ServiceRequestsController_findMine: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Service requests retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ServiceRequestResponseDto"][];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ServiceRequestsController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Service request data with optional media files */
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    /**
-                     * Format: uuid
-                     * @description Category ID for the type of service needed
-                     */
-                    categoryId: string;
-                    /** @description Brief title/summary of the service request */
-                    title: string;
-                    /** @description Detailed description of the service needed */
-                    description: string;
-                    /** @description Full address where service is needed */
-                    serviceAddress: string;
-                    /** @description Latitude of service location */
-                    latitude: number;
-                    /** @description Longitude of service location */
-                    longitude: number;
-                    /** @description Destination address (for services that require travel) */
-                    destinationAddress?: string;
-                    /** @description Latitude of destination location */
-                    destinationLatitude?: number;
-                    /** @description Longitude of destination location */
-                    destinationLongitude?: number;
-                    /** @description Contact phone number for this service */
-                    contactPhone: string;
-                    /** @description Minimum budget (in Naira) */
-                    budgetMin?: number;
-                    /** @description Maximum budget (in Naira) */
-                    budgetMax?: number;
-                    /**
-                     * Format: date-time
-                     * @description Preferred date/time for the service (ISO format)
-                     */
-                    preferredDate?: string;
-                    /** @description Photos/videos related to the service request (max 10 files) */
-                    media?: string[];
-                };
-            };
-        };
-        responses: {
-            /** @description Service request created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateServiceRequestResponseDto"];
-                };
-            };
-            /** @description Validation error or invalid category */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - User access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Category not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ServiceRequestsController_browseNearby: {
-        parameters: {
-            query?: {
-                /** @description Page number */
-                page?: string;
-                /** @description Items per page (max 50) */
-                limit?: string;
-                /** @description Filter by specific category ID (optional) */
-                categoryId?: string;
-                /** @description Search radius in kilometers (defaults to artisan service radius) */
-                radiusKm?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Nearby service requests retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedServiceRequestsResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Artisan access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Artisan profile not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ServiceRequestsController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Service request retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ServiceRequestResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Service request not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ServiceRequestsController_getMatchingArtisans: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Matching artisans retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MatchingArtisanResponseDto"][];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - User access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Service request not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ServiceRequestsController_cancel: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CancelServiceRequestDto"];
-            };
-        };
-        responses: {
-            /** @description Service request cancelled successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ServiceRequestResponseDto"];
-                };
-            };
-            /** @description Service request cannot be cancelled */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - User access required or not authorized to cancel */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Service request not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    OffersController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateOfferDto"];
-            };
-        };
-        responses: {
-            /** @description Offer created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OfferResponseDto"];
-                };
-            };
-            /** @description Invalid data or already have pending offer */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Artisan access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Service request not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    OffersController_counterOffer: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CounterOfferDto"];
-            };
-        };
-        responses: {
-            /** @description Counter-offer created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OfferResponseDto"];
-                };
-            };
-            /** @description Validation error or cannot counter this offer */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Offer not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    OffersController_respond: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RespondOfferDto"];
-            };
-        };
-        responses: {
-            /** @description Offer responded successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OfferResponseDto"];
-                };
-            };
-            /** @description Cannot respond to this offer (expired or already responded) */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Not authorized to respond to this offer */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Offer not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    OffersController_withdraw: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Offer withdrawn successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OfferResponseDto"];
-                };
-            };
-            /** @description Cannot withdraw this offer (not pending) */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Can only withdraw your own offers */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Offer not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    OffersController_findByServiceRequest: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Offers retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OfferResponseDto"][];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Service request not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    OffersController_findMyOffers: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Offers retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OfferResponseDto"][];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Artisan access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    OffersController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Offer retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OfferResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Offer not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    OffersController_getNegotiationHistory: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Negotiation history retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OfferResponseDto"][];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Offer not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    JobsController_findMine: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Jobs retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["JobResponseDto"][];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    JobsController_getStats: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Statistics retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["JobStatsResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    JobsController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Job retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["JobResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Job not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    JobsController_startJob: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    /** @description Before photos (max 5) */
-                    beforePhotos?: string[];
-                    /** @description Optional notes */
-                    notes?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Job started successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["JobResponseDto"];
-                };
-            };
-            /** @description Job cannot be started (invalid status) */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Artisan access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Job not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    JobsController_completeJob: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    /** @description After photos (max 5) */
-                    afterPhotos?: string[];
-                    /** @description Optional notes */
-                    notes?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Job marked as completed */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["JobResponseDto"];
-                };
-            };
-            /** @description Job cannot be completed (invalid status) */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - Artisan access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Job not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    JobsController_approveJob: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Job approved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["JobResponseDto"];
-                };
-            };
-            /** @description Job cannot be approved (invalid status) */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - User access required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Job not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    JobsController_getArtisanLocation: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Artisan location retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ArtisanLocationResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Not authorized to view this location */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Job not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    JobsController_cancelJob: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CancelJobDto"];
-            };
-        };
-        responses: {
-            /** @description Job cancelled successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["JobResponseDto"];
-                };
-            };
-            /** @description Job cannot be cancelled (invalid status) */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Not authorized to cancel this job */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Job not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ChatController_getRooms: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of chat rooms with last message and unread count */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChatRoomResponseDto"][];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ChatController_getRoom: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Chat room ID (UUID) */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Chat room details */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChatRoomResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Not authorized to access this room */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Chat room not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ChatController_getMessages: {
-        parameters: {
-            query?: {
-                /** @description Page number (1-based) */
-                page?: number;
-                /** @description Number of messages per page */
-                limit?: number;
-                /** @description Cursor for cursor-based pagination (message ID) */
-                cursor?: string;
-                /** @description Filter messages before this date */
-                before?: string;
-                /** @description Filter messages after this date */
-                after?: string;
-            };
-            header?: never;
-            path: {
-                /** @description Chat room ID (UUID) */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Paginated messages with sender info */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedMessagesResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Not authorized to access this room */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Chat room not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ChatController_sendMessage: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Chat room ID (UUID) */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SendMessageDto"];
-            };
-        };
-        responses: {
-            /** @description Message sent successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChatMessageResponseDto"];
-                };
-            };
-            /** @description Chat room is not active */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Not authorized to send messages in this room */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Chat room not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ChatController_markRead: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Chat room ID (UUID) */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["MarkReadDto"];
-            };
-        };
-        responses: {
-            /** @description Number of messages marked as read */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarkReadResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Not authorized to access this room */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Chat room not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ChatController_markAllRead: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Chat room ID (UUID) */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Number of messages marked as read */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarkReadResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Not authorized to access this room */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Chat room not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ChatController_getUnreadCount: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Total unread message count */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UnreadCountResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ChatController_getRoomByJob: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Job ID (UUID) */
-                jobId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Chat room for the job */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChatRoomResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Not authorized to access this chat */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Chat room not found for this job */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    BankAccountsController_verifyAccount: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["VerifyBankAccountDto"];
-            };
-        };
-        responses: {
-            /** @description Account verified successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["VerifyBankAccountResponseDto"];
-                };
-            };
-            /** @description Invalid account number or bank code */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    BankAccountsController_findAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Bank accounts retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BankAccountResponseDto"][];
-                };
-            };
-        };
-    };
-    BankAccountsController_addAccount: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AddBankAccountDto"];
-            };
-        };
-        responses: {
-            /** @description Bank account added successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BankAccountResponseDto"];
-                };
-            };
-            /** @description Invalid account details or account already exists */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    BankAccountsController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Bank account ID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Bank account retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BankAccountResponseDto"];
-                };
-            };
-            /** @description Bank account not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    BankAccountsController_remove: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Bank account ID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Bank account removed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponseDto"];
-                };
-            };
-            /** @description Bank account not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    BankAccountsController_setAsDefault: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Bank account ID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Bank account set as default */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BankAccountResponseDto"];
-                };
-            };
-            /** @description Bank account not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    DisputesController_getDisputes: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of disputes */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DisputeResponseDto"][];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    DisputesController_createDispute: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Dispute data with optional media files */
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    /**
-                     * Format: uuid
-                     * @description ID of the job to dispute
-                     */
-                    jobId: string;
-                    /**
-                     * @description Type of dispute
-                     * @enum {string}
-                     */
-                    disputeType: "service_quality" | "payment" | "behavior" | "cancellation" | "other";
-                    /** @description Detailed description of the dispute */
-                    description: string;
-                    /** @description Evidence files (images/videos) - max 10 files */
-                    media?: string[];
-                };
-            };
-        };
-        responses: {
-            /** @description Dispute created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DisputeResponseDto"];
-                };
-            };
-            /** @description Cannot dispute this job or dispute already exists */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Not authorized to dispute this job */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Job not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    DisputesController_getDisputeById: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Dispute details with evidence */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DisputeResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Not authorized to view this dispute */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Dispute not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    DisputesController_addEvidence: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        /** @description Evidence file with optional description */
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    /**
-                     * Format: binary
-                     * @description Evidence file (image or video)
-                     */
-                    media: string;
-                    /** @description Optional description of the evidence */
-                    description?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Evidence added successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DisputeEvidenceResponseDto"];
-                };
-            };
-            /** @description Dispute is not accepting evidence or no file provided */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Not authorized to add evidence */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Dispute not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ReviewsController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateReviewDto"];
-            };
-        };
-        responses: {
-            /** @description Review created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReviewResponseDto"];
-                };
-            };
-            /** @description Bad request - Job not in approved status */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Forbidden - User is not the job owner */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Job not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Review already exists for this job */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ReviewsController_findByArtisan: {
-        parameters: {
-            query?: {
-                /** @description Page number */
-                page?: string;
-                /** @description Items per page */
-                limit?: string;
-            };
-            header?: never;
-            path: {
-                /** @description Artisan UUID */
-                artisanId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Reviews retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedReviewsResponseDto"];
-                };
-            };
-            /** @description Artisan not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ReviewsController_findMyReviews: {
-        parameters: {
-            query?: {
-                /** @description Page number */
-                page?: string;
-                /** @description Items per page */
-                limit?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Reviews retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedReviewsResponseDto"];
-                };
-            };
-        };
-    };
-    ReviewsController_getArtisanRatingStats: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Artisan UUID */
-                artisanId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Rating statistics retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ArtisanRatingStatsDto"];
-                };
-            };
-            /** @description Artisan not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ReviewsController_canReview: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Job UUID */
-                jobId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Check completed */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CanReviewResponseDto"];
-                };
-            };
-        };
-    };
-    ReviewsController_findByJobId: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Job UUID */
-                jobId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Review retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReviewResponseDto"];
-                };
-            };
-            /** @description No review found for this job */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ReviewsController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Review UUID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Review retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReviewResponseDto"];
-                };
-            };
-            /** @description Review not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ReviewsController_remove: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Review UUID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Review deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponseDto"];
-                };
-            };
-            /** @description Forbidden - User is not the reviewer */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Review not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    ReviewsController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Review UUID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateReviewDto"];
-            };
-        };
-        responses: {
-            /** @description Review updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReviewResponseDto"];
-                };
-            };
-            /** @description Forbidden - User is not the reviewer */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            /** @description Review not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
     AdminController_changeDefaultPassword: {
         parameters: {
             query?: never;
@@ -14206,6 +11776,95 @@ export interface operations {
                 };
             };
             /** @description Bad Request - Validation failed */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_getSupportSetting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current support settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupportSettingResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_updateSupportSetting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSupportSettingDto"];
+            };
+        };
+        responses: {
+            /** @description Support settings updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateSupportSettingResponseDto"];
+                };
+            };
+            /** @description Bad Request - Invalid URL format */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -16930,6 +14589,2773 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    AuditLogController_getAuditLogs: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                /** @description Filter by action (e.g. user_suspended, dispute_resolved) */
+                action?: string;
+                /** @description Filter by entity type (e.g. user, dispute, admin_profile) */
+                entityType?: string;
+                /** @description Filter by admin user ID */
+                adminId?: string;
+                /** @description Search by admin name or action */
+                search?: string;
+                /** @description Start date filter (ISO 8601) */
+                startDate?: string;
+                /** @description End date filter (ISO 8601) */
+                endDate?: string;
+                sortBy?: "createdAt" | "action";
+                sortOrder?: "ASC" | "DESC";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated audit log list */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AuditLogController_getDistinctActions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of distinct actions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminSessionController_getActiveSessions: {
+        parameters: {
+            query?: {
+                /** @description Current session ID to mark as current */
+                currentSessionId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of active sessions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminSessionController_revokeSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevokeSessionDto"];
+            };
+        };
+        responses: {
+            /** @description Session revoked successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Session not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminSessionController_revokeAllOtherSessions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevokeSessionDto"];
+            };
+        };
+        responses: {
+            /** @description All other sessions revoked successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Current session ID is required */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MobileSupportController_getWhatsappLinks: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description WhatsApp support links */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Support links retrieved successfully */
+                        message?: string;
+                        data?: {
+                            /** @example https://wa.me/2348001234567 */
+                            customerWhatsappLink?: string | null;
+                            /** @example https://wa.me/2348007654321 */
+                            artisanWhatsappLink?: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    UsersController_getCurrentUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description User retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UsersController_deleteAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteAccountDto"];
+            };
+        };
+        responses: {
+            /** @description Account deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UsersController_updateProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UpdateProfileDto"];
+            };
+        };
+        responses: {
+            /** @description Profile updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfileResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UsersController_updateLocation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateLocationDto"];
+            };
+        };
+        responses: {
+            /** @description Location updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UsersController_updateSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSettingsDto"];
+            };
+        };
+        responses: {
+            /** @description Settings updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserSettingsResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    CategoriesController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of categories sorted by user preference */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    CategoriesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["CreateCategoryDto"];
+            };
+        };
+        responses: {
+            /** @description Category created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    CategoriesController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Category details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Category not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    CategoriesController_findArtisansByService: {
+        parameters: {
+            query?: {
+                /** @description Latitude of the user location for proximity filtering */
+                latitude?: number;
+                /** @description Longitude of the user location for proximity filtering */
+                longitude?: number;
+                /** @description Search radius in kilometers (default: 50km) */
+                radiusKm?: number;
+                /** @description Page number for pagination (default: 1) */
+                page?: number;
+                /** @description Number of results per page (default: 20, max: 100) */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                /** @description Service/Category ID (UUID) */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of artisans for the service */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FindArtisansByServiceResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service/Category not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_findMine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Service requests retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceRequestResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Service request data with optional media files */
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: uuid
+                     * @description Category ID for the type of service needed
+                     */
+                    categoryId: string;
+                    /** @description Brief title/summary of the service request */
+                    title: string;
+                    /** @description Detailed description of the service needed */
+                    description: string;
+                    /** @description Full address where service is needed */
+                    serviceAddress: string;
+                    /** @description Latitude of service location */
+                    latitude: number;
+                    /** @description Longitude of service location */
+                    longitude: number;
+                    /** @description Destination address (for services that require travel) */
+                    destinationAddress?: string;
+                    /** @description Latitude of destination location */
+                    destinationLatitude?: number;
+                    /** @description Longitude of destination location */
+                    destinationLongitude?: number;
+                    /** @description Contact phone number for this service */
+                    contactPhone: string;
+                    /** @description Minimum budget (in Naira) */
+                    budgetMin?: number;
+                    /** @description Maximum budget (in Naira) */
+                    budgetMax?: number;
+                    /**
+                     * Format: date-time
+                     * @description Preferred date/time for the service (ISO format)
+                     */
+                    preferredDate?: string;
+                    /** @description Photos/videos related to the service request (max 10 files) */
+                    media?: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Service request created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateServiceRequestResponseDto"];
+                };
+            };
+            /** @description Validation error or invalid category */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - User access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Category not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_browseNearby: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: string;
+                /** @description Items per page (max 50) */
+                limit?: string;
+                /** @description Filter by specific category ID (optional) */
+                categoryId?: string;
+                /** @description Search radius in kilometers (defaults to artisan service radius) */
+                radiusKm?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Nearby service requests retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedServiceRequestsResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Artisan profile not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Service request retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceRequestResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service request not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_getMatchingArtisans: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Matching artisans retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MatchingArtisanResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - User access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service request not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_cancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelServiceRequestDto"];
+            };
+        };
+        responses: {
+            /** @description Service request cancelled successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceRequestResponseDto"];
+                };
+            };
+            /** @description Service request cannot be cancelled */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - User access required or not authorized to cancel */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service request not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOfferDto"];
+            };
+        };
+        responses: {
+            /** @description Offer created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Invalid data or already have pending offer */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service request not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_counterOffer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CounterOfferDto"];
+            };
+        };
+        responses: {
+            /** @description Counter-offer created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Validation error or cannot counter this offer */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Offer not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_respond: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RespondOfferDto"];
+            };
+        };
+        responses: {
+            /** @description Offer responded successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Cannot respond to this offer (expired or already responded) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to respond to this offer */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Offer not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_withdraw: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Offer withdrawn successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Cannot withdraw this offer (not pending) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Can only withdraw your own offers */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Offer not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_findByServiceRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Offers retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service request not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_findMyOffers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Offers retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Offer retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Offer not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    OffersController_getNegotiationHistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Negotiation history retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Offer not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_findMine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Jobs retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_getStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Statistics retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobStatsResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Job retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_startJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** @description Before photos (max 5) */
+                    beforePhotos?: string[];
+                    /** @description Optional notes */
+                    notes?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Job started successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponseDto"];
+                };
+            };
+            /** @description Job cannot be started (invalid status) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_completeJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** @description After photos (max 5) */
+                    afterPhotos?: string[];
+                    /** @description Optional notes */
+                    notes?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Job marked as completed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponseDto"];
+                };
+            };
+            /** @description Job cannot be completed (invalid status) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Artisan access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_approveJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Job approved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponseDto"];
+                };
+            };
+            /** @description Job cannot be approved (invalid status) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - User access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_getArtisanLocation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Artisan location retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtisanLocationResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to view this location */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    JobsController_cancelJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelJobDto"];
+            };
+        };
+        responses: {
+            /** @description Job cancelled successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponseDto"];
+                };
+            };
+            /** @description Job cannot be cancelled (invalid status) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to cancel this job */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ChatController_getRooms: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of chat rooms with last message and unread count */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatRoomResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ChatController_getRoom: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Chat room ID (UUID) */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Chat room details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatRoomResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to access this room */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Chat room not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ChatController_getMessages: {
+        parameters: {
+            query?: {
+                /** @description Page number (1-based) */
+                page?: number;
+                /** @description Number of messages per page */
+                limit?: number;
+                /** @description Cursor for cursor-based pagination (message ID) */
+                cursor?: string;
+                /** @description Filter messages before this date */
+                before?: string;
+                /** @description Filter messages after this date */
+                after?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Chat room ID (UUID) */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated messages with sender info */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedMessagesResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to access this room */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Chat room not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ChatController_sendMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Chat room ID (UUID) */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendMessageDto"];
+            };
+        };
+        responses: {
+            /** @description Message sent successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatMessageResponseDto"];
+                };
+            };
+            /** @description Chat room is not active */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to send messages in this room */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Chat room not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ChatController_markRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Chat room ID (UUID) */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkReadDto"];
+            };
+        };
+        responses: {
+            /** @description Number of messages marked as read */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarkReadResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to access this room */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Chat room not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ChatController_markAllRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Chat room ID (UUID) */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Number of messages marked as read */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarkReadResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to access this room */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Chat room not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ChatController_getUnreadCount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Total unread message count */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnreadCountResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ChatController_getRoomByJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Job ID (UUID) */
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Chat room for the job */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatRoomResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to access this chat */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Chat room not found for this job */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    BankAccountsController_verifyAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyBankAccountDto"];
+            };
+        };
+        responses: {
+            /** @description Account verified successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerifyBankAccountResponseDto"];
+                };
+            };
+            /** @description Invalid account number or bank code */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    BankAccountsController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bank accounts retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankAccountResponseDto"][];
+                };
+            };
+        };
+    };
+    BankAccountsController_addAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddBankAccountDto"];
+            };
+        };
+        responses: {
+            /** @description Bank account added successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankAccountResponseDto"];
+                };
+            };
+            /** @description Invalid account details or account already exists */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    BankAccountsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Bank account ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bank account retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankAccountResponseDto"];
+                };
+            };
+            /** @description Bank account not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    BankAccountsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Bank account ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bank account removed successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Bank account not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    BankAccountsController_setAsDefault: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Bank account ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bank account set as default */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankAccountResponseDto"];
+                };
+            };
+            /** @description Bank account not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DisputesController_getDisputes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of disputes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisputeResponseDto"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DisputesController_createDispute: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Dispute data with optional media files */
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: uuid
+                     * @description ID of the job to dispute
+                     */
+                    jobId: string;
+                    /**
+                     * @description Type of dispute
+                     * @enum {string}
+                     */
+                    disputeType: "service_quality" | "payment" | "behavior" | "cancellation" | "other";
+                    /** @description Detailed description of the dispute */
+                    description: string;
+                    /** @description Evidence files (images/videos) - max 10 files */
+                    media?: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Dispute created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisputeResponseDto"];
+                };
+            };
+            /** @description Cannot dispute this job or dispute already exists */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to dispute this job */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DisputesController_getDisputeById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Dispute details with evidence */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisputeResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to view this dispute */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Dispute not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DisputesController_addEvidence: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description Evidence file with optional description */
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: binary
+                     * @description Evidence file (image or video)
+                     */
+                    media: string;
+                    /** @description Optional description of the evidence */
+                    description?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Evidence added successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisputeEvidenceResponseDto"];
+                };
+            };
+            /** @description Dispute is not accepting evidence or no file provided */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to add evidence */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Dispute not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReviewDto"];
+            };
+        };
+        responses: {
+            /** @description Review created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponseDto"];
+                };
+            };
+            /** @description Bad request - Job not in approved status */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - User is not the job owner */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Review already exists for this job */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_findByArtisan: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: string;
+                /** @description Items per page */
+                limit?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Artisan UUID */
+                artisanId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reviews retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedReviewsResponseDto"];
+                };
+            };
+            /** @description Artisan not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_findMyReviews: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: string;
+                /** @description Items per page */
+                limit?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reviews retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedReviewsResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_getArtisanRatingStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Artisan UUID */
+                artisanId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rating statistics retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtisanRatingStatsDto"];
+                };
+            };
+            /** @description Artisan not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_canReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Job UUID */
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Check completed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CanReviewResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_findByJobId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Job UUID */
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Review retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponseDto"];
+                };
+            };
+            /** @description No review found for this job */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Review UUID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Review retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponseDto"];
+                };
+            };
+            /** @description Review not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Review UUID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Review deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Forbidden - User is not the reviewer */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Review not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Review UUID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateReviewDto"];
+            };
+        };
+        responses: {
+            /** @description Review updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponseDto"];
+                };
+            };
+            /** @description Forbidden - User is not the reviewer */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Review not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
             };
         };
     };
