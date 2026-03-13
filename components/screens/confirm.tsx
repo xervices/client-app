@@ -600,8 +600,19 @@ export function ConfirmScreen() {
           <Text className="text-sm text-[#737381]">
             Your payment will be held securely in escrow until the job is completed and approved.
             Funds are released only after you confirm the job is complete. Cancellations made after
-            your pro is on the way may be subject to a{' '}
-            <Text className="text-sm text-[#FE6A00]"> cancellation fee.</Text>{' '}
+            your pro is on the way may be subject to a
+            <Text
+              className="text-sm text-[#FE6A00]"
+              onPress={() => {
+                if (IS_BOOK_TAB) {
+                  router.navigate('/book/cancellation-policy');
+                } else {
+                  router.navigate('/cancellation-policy');
+                }
+              }}>
+              {' '}
+              cancellation fee.
+            </Text>
           </Text>
 
           <View className="flex flex-row gap-2 rounded-[8px] border border-[#0582F1] bg-[#EAF5FF] p-2">

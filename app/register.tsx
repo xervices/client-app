@@ -25,7 +25,16 @@ const formSchema = z
       .min(1, 'Your fullname is required.')
       .refine((val) => !emojiRegex.test(val), 'Name cannot contain emojis.'),
     phoneNumber: z.string().min(1, 'Phone number is required.'),
-    email: z.email('Invalid email address').min(1, 'Email is required.'),
+    email: z
+      .email('Invalid email address')
+      .min(1, 'Email is required.')
+      .refine(
+        (val) => {
+          const isEmail = val.includes('@');
+          return isEmail ? val === val.toLowerCase() : true;
+        },
+        { message: 'Email must be lowercase.' }
+      ),
     password: z
       .string()
       .min(1, 'Password is required.')
@@ -222,23 +231,18 @@ export default function Screen() {
           </Pressable>
         </View>
 
-        <View className="flex flex-row items-center justify-center gap-1.5">
-          <Text className="text-center text-[#737381]">
-            <Pressable>
-              <Text className="mx-1 leading-normal text-[#737381]">
-                By creating an account, you agree to our
-              </Text>
-            </Pressable>
-
-            <Pressable className="pr-1.5" onPress={() => router.navigate('/terms')}>
-              <Text className="leading-normal text-primary">Terms of Service</Text>
-            </Pressable>
-            <Pressable>
-              <Text className="mx-1 leading-normal text-[#737381]">and</Text>
-            </Pressable>
-            <Pressable className="pl-1.5" onPress={() => router.navigate('/privacy')}>
-              <Text className="leading-normal text-primary">Privacy Policy</Text>
-            </Pressable>
+        <View className="flex w-full flex-row flex-wrap items-center justify-center gap-1">
+          <Text className="text-center leading-normal text-[#737381]">
+            By creating an account, you agree to our applicable{' '}
+            <Text onPress={() => router.navigate('/terms')} className="leading-normal text-primary">
+              Terms of Service
+            </Text>{' '}
+            and{' '}
+            <Text
+              onPress={() => router.navigate('/privacy')}
+              className="leading-normal text-primary">
+              Privacy Policy
+            </Text>
           </Text>
         </View>
       </View>

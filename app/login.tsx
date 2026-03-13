@@ -20,9 +20,19 @@ import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
 import { useAuthStore } from '@/store/auth-store';
 import { getDeviceInfo } from '@/lib/utils';
+import { SheetManager } from 'react-native-actions-sheet';
 
 const formSchema = z.object({
-  emailOrPhone: z.string().min(1, 'Email or Phone is required.'),
+  emailOrPhone: z
+    .string()
+    .min(1, 'Email or Phone is required.')
+    .refine(
+      (val) => {
+        const isEmail = val.includes('@');
+        return isEmail ? val === val.toLowerCase() : true;
+      },
+      { message: 'Email must be lowercase.' }
+    ),
   password: z.string().min(1, 'Password is required.'),
   deviceId: z.string(),
   deviceName: z.string(),
@@ -58,8 +68,6 @@ export default function Screen() {
 
       value.deviceId = deviceInfo?.deviceId || '';
       value.deviceName = deviceInfo?.deviceName || '';
-
-      console.log(value);
 
       mutate(value, {
         onSuccess: (res) => {

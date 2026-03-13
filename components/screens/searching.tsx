@@ -162,7 +162,7 @@ export function SearchingScreen() {
         <View className="flex-1 gap-2">
           <View className="flex flex-row items-center justify-between gap-2">
             <Text className="flex-1 text-sm text-[#737381]">
-              {uniqueViews && uniqueViews?.length > 0 ? uniqueViews.length : 0} artisans viewed your
+              {uniqueViews && uniqueViews?.length > 0 ? uniqueViews.length : 0} Pros viewed your
               request
             </Text>
 

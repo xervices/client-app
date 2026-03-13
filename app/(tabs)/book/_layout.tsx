@@ -45,6 +45,13 @@ export default function Layout() {
           title: 'Confirm Booking',
         }}
       />
+      <Stack.Screen
+        name="cancellation-policy"
+        options={{
+          headerShown: false,
+          title: 'Confirm Booking',
+        }}
+      />
     </Stack>
   );
 }

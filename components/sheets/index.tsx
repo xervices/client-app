@@ -8,6 +8,7 @@ import { CounterOfferSheet } from './counter-offer-sheet';
 import { AddPromoCodeSheet } from './add-promo-code-sheet';
 import { CameraSheet } from './camera-sheet';
 import { LocationSearchSheet } from './location-search-sheet';
+import { LocationMapSearchSheet } from './location-map-search-sheet';
 import { PaystackWebviewSheet, PaystackWebviewPayload } from './paystack-webview-sheet';
 import { CancelServiceSheet } from './cancel-service-sheet';
 
@@ -42,6 +43,11 @@ declare module 'react-native-actions-sheet' {
       };
     }>;
     'location-search-sheet': SheetDefinition<{
+      payload: {
+        onSelect?: (location: LocationSearchSheetPayload) => void;
+      };
+    }>;
+    'location-map-search-sheet': SheetDefinition<{
       payload: {
         onSelect?: (location: LocationSearchSheetPayload) => void;
       };
@@ -101,6 +107,7 @@ export const Sheets = () => {
         'add-promo-code-sheet': AddPromoCodeSheet,
         'camera-sheet': CameraSheet,
         'location-search-sheet': LocationSearchSheet,
+        'location-map-search-sheet': LocationMapSearchSheet,
         'paystack-webview-sheet': PaystackWebviewSheet,
         'cancel-service-sheet': CancelServiceSheet,
       }}

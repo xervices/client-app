@@ -27,7 +27,7 @@ import { useMutation } from '@tanstack/react-query';
 import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
 
-export const TICKET_CATEGORIES = ['feedback', 'technical', 'billing', 'general', 'other'] as const;
+export const TICKET_CATEGORIES = ['Feedback', 'Technical', 'Billing', 'General', 'Other'] as const;
 
 const formSchema = z.object({
   subject: z.string().min(1, 'Subject is required.'),
@@ -56,6 +56,8 @@ export default function Screen() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
+      value.category = value.category.toLowerCase();
+
       // @ts-ignore
       mutate(value, {
         onSuccess: () => {
@@ -114,7 +116,7 @@ export default function Screen() {
 
                 <Select>
                   <SelectTrigger className="w-full bg-white">
-                    <SelectValue id="state" placeholder="Select State" />
+                    <SelectValue id="category" placeholder="Select Category" />
                   </SelectTrigger>
                   <SelectContent
                     insets={contentInsets}

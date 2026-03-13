@@ -200,22 +200,22 @@ export function SearchInput({ defaultCategoryId }: SearchInputProps = {}) {
                 className="flex flex-row items-center gap-3 rounded-lg p-3 active:bg-gray-50"
                 android_ripple={{ color: '#F5F5F5' }}>
                 {category.iconUrl && (
-                  <View className="h-10 w-10 overflow-hidden rounded-lg bg-gray-100">
+                  <View className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-gray-100">
                     <Image
                       source={{ uri: category.iconUrl }}
-                      style={{ width: 40, height: 40 }}
-                      contentFit="cover"
+                      style={{ width: 28, height: 28 }}
+                      contentFit="contain"
                     />
                   </View>
                 )}
 
                 <View className="flex-1">
                   <Text className="font-cabinet-medium text-[#1B1B1E]">{category.name}</Text>
-                  {category.description && (
+                  {/* {category.description && (
                     <Text className="text-xs text-gray-500" numberOfLines={1} ellipsizeMode="tail">
                       {category.description}
                     </Text>
-                  )}
+                  )} */}
                 </View>
               </Pressable>
             ))}

@@ -16,7 +16,7 @@ const data = [
     onPress: () => router.navigate('/profile/privacy'),
   },
   {
-    name: 'Terms & conditons',
+    name: 'Terms & Conditions',
     icon: require('@/assets/icons/terms.svg'),
     isLink: true,
     isDestructive: false,
@@ -57,7 +57,7 @@ export default function Screen() {
               />
 
               <Text
-                className={`text-sm ${item.isDestructive ? 'text-[#B3031E]' : 'text-[#1B1B1E]'}`}>
+                className={`font-cabinet-medium text-sm ${item.isDestructive ? 'text-[#B3031E]' : 'text-[#1B1B1E]'}`}>
                 {item.name}
               </Text>
             </View>

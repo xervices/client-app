@@ -16,7 +16,7 @@ const data = [
     onPress: () => router.navigate('/profile/mail-support'),
   },
   {
-    name: 'Whatsapp ',
+    name: 'WhatsApp ',
     icon: require('@/assets/icons/whatsapp.svg'),
     isLink: true,
     isDestructive: false,
@@ -38,7 +38,7 @@ export default function Screen() {
           <Pressable
             onPress={item.onPress}
             key={item.name}
-            className="flex h-[60px] w-full flex-row items-center justify-between rounded-[8px] border border-[#E9E9EB] px-4">
+            className="flex h-[60px] w-full flex-row items-center justify-between rounded-[8px] border border-[#9F9FA7] px-4">
             <View className="flex flex-row items-center gap-2">
               <Image
                 source={item.icon}

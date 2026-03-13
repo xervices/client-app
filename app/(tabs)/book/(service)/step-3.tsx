@@ -21,7 +21,9 @@ import { formatPhoneNumber } from '@/lib/utils';
 export default function Screen() {
   const { user } = useAuthStore();
   const { setStep3, getFormData, requiresDestination } = useServiceStore();
-  const { fetchLocation } = useCurrentLocation();
+  const { fetchLocation } = useCurrentLocation({
+    accuracy: Location.Accuracy.BestForNavigation,
+  });
 
   const [serviceAddress, setServiceAddress] = React.useState('');
   const [latitude, setLatitude] = React.useState<number>();
@@ -140,7 +142,7 @@ export default function Screen() {
           <View className="flex gap-2">
             <Pressable
               onPress={() =>
-                SheetManager.show('location-search-sheet', {
+                SheetManager.show('location-map-search-sheet', {
                   payload: {
                     onSelect: (location) => {
                       setLatitude(Number(location.latitude));

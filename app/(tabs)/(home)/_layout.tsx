@@ -59,6 +59,13 @@ export default function Layout() {
           title: 'Confirm',
         }}
       />
+      <Stack.Screen
+        name="cancellation-policy"
+        options={{
+          headerShown: false,
+          title: 'Confirm',
+        }}
+      />
     </Stack>
   );
 }
