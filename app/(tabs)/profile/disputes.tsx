@@ -51,7 +51,11 @@ export default function Screen() {
                 style={{
                   color: value === 'progress' ? '#FFF4EA' : '#522200',
                 }}>
-                In Progress
+                {inProgressDisputes && inProgressDisputes?.length > 0
+                  ? inProgressDisputes?.length
+                  : 'No'}{' '}
+                in-progress{' '}
+                {inProgressDisputes && inProgressDisputes?.length > 1 ? 'disputes' : 'dispute'}
               </Text>
             </TabsTrigger>
             <TabsTrigger
@@ -67,7 +71,8 @@ export default function Screen() {
                 style={{
                   color: value === 'resolved' ? '#FFF4EA' : '#522200',
                 }}>
-                Resolved
+                {resolvedDisputes && resolvedDisputes?.length > 0 ? resolvedDisputes?.length : 'No'}{' '}
+                resolved {resolvedDisputes && resolvedDisputes?.length > 1 ? 'disputes' : 'dispute'}
               </Text>
             </TabsTrigger>
           </TabsList>
@@ -75,7 +80,7 @@ export default function Screen() {
           {/* In progress content */}
           <TabsContent value="progress" className="flex gap-6 pt-4">
             {inProgressDisputes && inProgressDisputes?.length === 0 ? (
-              <EmptyState title="No Disputes in progress" />
+              <EmptyState title="No in-progress disputes." />
             ) : (
               inProgressDisputes?.map((dispute) => (
                 <View
@@ -90,8 +95,8 @@ export default function Screen() {
                   className="flex gap-4 rounded-[8px] bg-white p-4">
                   <View className="flex flex-row items-center justify-between gap-4">
                     <View className="flex-1">
-                      <Text className="flex-1 font-cabinet-bold leading-none text-[#1B1B1E]">
-                        Plumber
+                      <Text className="flex-1 font-cabinet-bold capitalize leading-none text-[#1B1B1E]">
+                        {dispute?.disputeType}
                       </Text>
                       <Text
                         numberOfLines={1}
@@ -132,7 +137,7 @@ export default function Screen() {
           {/* Resolved content */}
           <TabsContent value="resolved" className="flex gap-6 pt-4">
             {resolvedDisputes && resolvedDisputes?.length === 0 ? (
-              <EmptyState title="No Resolved disputes" />
+              <EmptyState title="No resolved disputes." />
             ) : (
               resolvedDisputes?.map((dispute) => (
                 <View
@@ -147,8 +152,8 @@ export default function Screen() {
                   className="flex gap-4 rounded-[8px] bg-white p-4">
                   <View className="flex flex-row items-center justify-between gap-4">
                     <View className="flex-1">
-                      <Text className="flex-1 font-cabinet-bold leading-none text-[#1B1B1E]">
-                        Plumber
+                      <Text className="flex-1 font-cabinet-bold capitalize leading-none text-[#1B1B1E]">
+                        {dispute?.disputeType}
                       </Text>
                       <Text
                         numberOfLines={1}

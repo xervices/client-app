@@ -70,7 +70,7 @@ const issuesData = [
   },
   {
     id: '5',
-    label: 'Other issues',
+    label: 'Other Issues',
     value: 'other',
   },
 ];
@@ -203,7 +203,7 @@ export function CreateDisputeScreen() {
               <View>
                 <Select>
                   <SelectTrigger className="w-full bg-white">
-                    <SelectValue id="state" placeholder="Select Issues Type" />
+                    <SelectValue id="state" placeholder="Select Issue Type" />
                   </SelectTrigger>
                   <SelectContent
                     insets={contentInsets}
@@ -211,7 +211,7 @@ export function CreateDisputeScreen() {
                     style={{ maxHeight: 300 }}>
                     <NativeSelectScrollView className="h-full">
                       <SelectGroup>
-                        <SelectLabel>Issues Type</SelectLabel>
+                        <SelectLabel>Issue Type</SelectLabel>
                         {issuesData.map((type) => (
                           <SelectItem
                             onPress={() => {
@@ -251,15 +251,15 @@ export function CreateDisputeScreen() {
           </form.Field>
 
           <View>
-            <Text className="font-cabinet-bold text-sm text-[#737381]">Add Photos or Videos</Text>
+            <Text className="font-cabinet-bold text-sm text-[#737381]">Add Photos or Videos.</Text>
 
             <Text className="text-sm text-[#737381]">
-              Photos and videos will help us resolve disputes faster
+              Photos and videos will help us resolve disputes faster.
             </Text>
 
             <Text className="text-sm text-[#FFAC70]">
-              Include photos of: The completed work, Any damage or poor quality and original job
-              agreement/messages
+              Include photos of: the completed work, any damage or poor quality and original job
+              agreement/messages.
             </Text>
           </View>
 

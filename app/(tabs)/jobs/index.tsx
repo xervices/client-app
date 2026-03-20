@@ -57,7 +57,8 @@ export default function Screen() {
                   style={{
                     color: value === 'progress' ? '#FFF4EA' : '#522200',
                   }}>
-                  In Progress
+                  {inProgressJobs && inProgressJobs?.length > 0 ? inProgressJobs?.length : 'No'}{' '}
+                  in-progress {inProgressJobs && inProgressJobs?.length > 1 ? 'jobs' : 'job'}
                 </Text>
               </TabsTrigger>
               <TabsTrigger
@@ -73,7 +74,8 @@ export default function Screen() {
                   style={{
                     color: value === 'completed' ? '#FFF4EA' : '#522200',
                   }}>
-                  Completed
+                  {completedJobs && completedJobs?.length > 0 ? completedJobs?.length : 'No'}{' '}
+                  completed {completedJobs && completedJobs?.length > 1 ? 'jobs' : 'job'}
                 </Text>
               </TabsTrigger>
             </TabsList>
@@ -182,7 +184,7 @@ export default function Screen() {
             <TabsContent value="completed" className="flex min-h-full gap-6 pt-4">
               {completedJobs && completedJobs?.length > 0 ? (
                 <View className="flex gap-2">
-                  <Text className="font-cabinet-medium text-xs uppercase">Completed orders</Text>
+                  <Text className="font-cabinet-medium text-xs uppercase">Completed Jobs</Text>
 
                   <LegendList
                     contentContainerStyle={{ gap: 16, flexGrow: 1 }}

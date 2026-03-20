@@ -133,13 +133,10 @@ export default function Screen() {
             </Text>
           ) : (
             <Text className="text-center text-[#737381]">
-              <Pressable>
-                <Text className="mx-1 leading-normal text-[#737381]">Haven’t gotten any code?</Text>
-              </Pressable>
-
-              <Pressable onPress={handleOnResendOTP}>
-                <Text className="leading-normal text-primary">Resend</Text>
-              </Pressable>
+              Haven’t gotten any code?{' '}
+              <Text onPress={handleOnResendOTP} className="text-primary">
+                Resend
+              </Text>
             </Text>
           )}
         </View>

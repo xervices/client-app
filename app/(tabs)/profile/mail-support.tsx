@@ -88,7 +88,7 @@ export default function Screen() {
       }>
       <View className="flex-1 gap-6">
         <Text className="text-center text-sm text-[#737381]">
-          Have a concern or problem, how can we help you?
+          Have a concern or problem? How can we help you?
         </Text>
 
         <View className="flex gap-4">

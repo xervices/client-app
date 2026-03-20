@@ -100,7 +100,9 @@ export default function Screen() {
                 <Text className="font-cabinet-bold text-sm text-[#1B1B1E]">
                   {data?.artisan?.profile?.fullName} has arrived at your location
                 </Text>
-                <Text className="text-xs leading-none text-[#B4B4BC]">0:9AM - 27-11-2025</Text>
+                <Text className="text-xs leading-none text-[#B4B4BC]">
+                  {formatDateTime(data?.startedAt)}
+                </Text>
               </View>
             </View>
 
@@ -134,6 +136,10 @@ export default function Screen() {
                 </Text>
 
                 <Text className="text-xs text-[#B4B4BC]">Before photo has been attached</Text>
+
+                <Text className="text-xs leading-none text-[#B4B4BC]">
+                  {formatDateTime(data?.startedAt)}
+                </Text>
 
                 <View className="mt-1 flex flex-row flex-wrap gap-2">
                   {beforeEvidence?.map((i) => (
@@ -178,7 +184,11 @@ export default function Screen() {
                   {data?.artisan?.profile?.fullName} is done and has checked out
                 </Text>
 
-                <Text className="text-xs text-[#B4B4BC]">After photo has been attached</Text>
+                <Text className="text-xs text-[#B4B4BC]">After photo have been attached</Text>
+
+                <Text className="text-xs leading-none text-[#B4B4BC]">
+                  {formatDateTime(data?.completedAt)}
+                </Text>
 
                 <View className="mt-1 flex flex-row flex-wrap gap-2">
                   {afterEvidence?.map((i) => (

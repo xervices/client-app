@@ -159,20 +159,75 @@ export default function Screen() {
           </form.Field>
 
           <form.Field name="password">
-            {(field) => (
-              <View>
-                <Label nativeID="password">Password</Label>
-                <Input
-                  id="password"
-                  value={field.state.value}
-                  onChangeText={field.handleChange}
-                  placeholder="Enter your password"
-                  secureTextEntry
-                  hasError={!field.state.meta.isValid}
-                />
-                {!field.state.meta.isValid ? <InputError errors={field.state.meta.errors} /> : null}
-              </View>
-            )}
+            {(field) => {
+              const password = field.state.value;
+              const hasUppercase = /[A-Z]/.test(password);
+              const hasLowercase = /[a-z]/.test(password);
+              const hasMinLength = password.length >= 6;
+
+              return (
+                <View>
+                  <Label nativeID="password">Password</Label>
+                  <Input
+                    id="password"
+                    value={field.state.value}
+                    onChangeText={field.handleChange}
+                    placeholder="Enter your password"
+                    secureTextEntry
+                    hasError={!field.state.meta.isValid}
+                  />
+
+                  <View className="mt-2 gap-1">
+                    <View className="flex flex-row items-center gap-2">
+                      <Text
+                        className={
+                          hasUppercase ? 'text-sm text-green-600' : 'text-sm text-gray-400'
+                        }>
+                        {hasUppercase ? '✓' : '○'}
+                      </Text>
+                      <Text
+                        className={
+                          hasUppercase ? 'text-sm text-green-600' : 'text-sm text-gray-400'
+                        }>
+                        Uppercase letter
+                      </Text>
+                    </View>
+                    <View className="flex flex-row items-center gap-2">
+                      <Text
+                        className={
+                          hasLowercase ? 'text-sm text-green-600' : 'text-sm text-gray-400'
+                        }>
+                        {hasLowercase ? '✓' : '○'}
+                      </Text>
+                      <Text
+                        className={
+                          hasLowercase ? 'text-sm text-green-600' : 'text-sm text-gray-400'
+                        }>
+                        Lowercase letter
+                      </Text>
+                    </View>
+                    <View className="flex flex-row items-center gap-2">
+                      <Text
+                        className={
+                          hasMinLength ? 'text-sm text-green-600' : 'text-sm text-gray-400'
+                        }>
+                        {hasMinLength ? '✓' : '○'}
+                      </Text>
+                      <Text
+                        className={
+                          hasMinLength ? 'text-sm text-green-600' : 'text-sm text-gray-400'
+                        }>
+                        Minimum 6 characters
+                      </Text>
+                    </View>
+                  </View>
+
+                  {!field.state.meta.isValid ? (
+                    <InputError errors={field.state.meta.errors} />
+                  ) : null}
+                </View>
+              );
+            }}
           </form.Field>
 
           <form.Field name="confirmPassword">

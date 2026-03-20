@@ -1442,6 +1442,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/settings/about": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get about Xervices information
+         * @description Get the current about Xervices information including description, mission, vision, and contact details.
+         */
+        get: operations["AdminController_getAboutXervices"];
+        /**
+         * Update about Xervices information
+         * @description Update the about Xervices information displayed to users in the mobile app, including description, mission, vision, and contact details.
+         */
+        put: operations["AdminController_updateAboutXervices"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/auth/request-otp": {
         parameters: {
             query?: never;
@@ -2800,6 +2824,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/artisan-levels/artisans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artisans by level
+         * @description Retrieve a paginated list of artisans with their level, rating, jobs completed, and discount usage. Filterable by level and searchable by name, email, or phone.
+         */
+        get: operations["ArtisanLevelsController_findArtisansByLevel"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/artisan-levels/{id}": {
         parameters: {
             query?: never;
@@ -2815,7 +2859,7 @@ export interface paths {
         head?: never;
         /**
          * Update an artisan level
-         * @description Update artisan level settings including display name, minimum jobs required, and commission rate.
+         * @description Update artisan level settings including display name, job requirements, rating threshold, commission rates, discounted jobs, and priority matching.
          */
         patch: operations["ArtisanLevelsController_update"];
         trace?: never;
@@ -2972,6 +3016,26 @@ export interface paths {
          * @description Returns the WhatsApp support links for customers and artisans. Used by mobile apps to display support contact options.
          */
         get: operations["MobileSupportController_getWhatsappLinks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/about-xervices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get about Xervices information
+         * @description Returns the current about Xervices information for display in the app.
+         */
+        get: operations["MobileAboutXervicesController_getAboutXervices"];
         put?: never;
         post?: never;
         delete?: never;
@@ -6329,6 +6393,62 @@ export interface components {
             message: string;
             data: components["schemas"]["SupportSettingResponseDto"];
         };
+        AboutXervicesResponseDto: {
+            id: string;
+            title: Record<string, never> | null;
+            content: Record<string, never> | null;
+            missionStatement: Record<string, never> | null;
+            visionStatement: Record<string, never> | null;
+            contactEmail: Record<string, never> | null;
+            contactPhone: Record<string, never> | null;
+            website: Record<string, never> | null;
+            isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateAboutXervicesDto: {
+            /**
+             * @description Title for the About section
+             * @example About Xervices
+             */
+            title?: string;
+            /**
+             * @description Main content/description about Xervices
+             * @example Xervices is a platform that connects customers with skilled artisans...
+             */
+            content?: string;
+            /**
+             * @description Company mission statement
+             * @example To empower artisans and provide quality services to customers.
+             */
+            missionStatement?: string;
+            /**
+             * @description Company vision statement
+             * @example To be the leading platform for artisan services in Africa.
+             */
+            visionStatement?: string;
+            /**
+             * @description Contact email address
+             * @example info@xervices.com
+             */
+            contactEmail?: string;
+            /**
+             * @description Contact phone number
+             * @example +2348001234567
+             */
+            contactPhone?: string;
+            /**
+             * @description Company website URL
+             * @example https://www.xervices.com
+             */
+            website?: string;
+        };
+        UpdateAboutXervicesResponseDto: {
+            message: string;
+            data: components["schemas"]["AboutXervicesResponseDto"];
+        };
         RequestAdminOtpDto: {
             /**
              * @description Purpose of the OTP (e.g., "sensitive_action", "login_verification"). Defaults to "verification".
@@ -6923,10 +7043,30 @@ export interface components {
              */
             minJobsRequired?: number;
             /**
+             * @description Minimum star rating required per job to qualify for this level
+             * @example 3.5
+             */
+            minRatingRequired?: number;
+            /**
              * @description Standard commission percentage for this level
              * @example 10
              */
             commissionPercent?: number;
+            /**
+             * @description Discounted commission percentage for this level
+             * @example 9
+             */
+            discountedCommissionPercent?: number;
+            /**
+             * @description Number of jobs at discounted commission rate before reverting to standard rate
+             * @example 10
+             */
+            discountedJobsCount?: number;
+            /**
+             * @description Whether artisans at this level get priority in job matching
+             * @example false
+             */
+            hasPriorityMatching?: boolean;
         };
         RevokeSessionDto: {
             /** @description ID of the session to revoke */
@@ -11893,6 +12033,95 @@ export interface operations {
             };
         };
     };
+    AdminController_getAboutXervices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current about Xervices information */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AboutXervicesResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AdminController_updateAboutXervices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAboutXervicesDto"];
+            };
+        };
+        responses: {
+            /** @description About Xervices updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateAboutXervicesResponseDto"];
+                };
+            };
+            /** @description Bad Request - Validation failed */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - Admin access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     AdminController_requestAdminOtp: {
         parameters: {
             query?: never;
@@ -14513,6 +14742,31 @@ export interface operations {
             };
         };
     };
+    ArtisanLevelsController_findArtisansByLevel: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                /** @description Filter by artisan level */
+                level?: "STARTER" | "SKILLED" | "PRO" | "EXPERT" | "ELITE";
+                /** @description Search by artisan name, email, or phone */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Artisans by level retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     ArtisanLevelsController_update: {
         parameters: {
             query?: never;
@@ -14750,6 +15004,32 @@ export interface operations {
                             /** @example https://wa.me/2348007654321 */
                             artisanWhatsappLink?: string | null;
                         };
+                    };
+                };
+            };
+        };
+    };
+    MobileAboutXervicesController_getAboutXervices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description About Xervices information */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example About Xervices information retrieved successfully */
+                        message?: string;
+                        data?: components["schemas"]["AboutXervicesResponseDto"];
                     };
                 };
             };
