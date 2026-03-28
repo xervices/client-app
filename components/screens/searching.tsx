@@ -5,7 +5,7 @@ import { Layout } from '@/components/layout';
 import { AuthHeader } from '@/components/auth-header';
 import { Image } from 'expo-image';
 import { ArrowUpRight, ChevronRight } from 'lucide-react-native';
-import { router, useLocalSearchParams, usePathname } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams, usePathname } from 'expo-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { useQueries } from '@tanstack/react-query';
@@ -13,9 +13,12 @@ import { api } from '@/api';
 import { LoadingState } from '@/components/loading-state';
 import { formatRelativeTime } from '@/lib/utils';
 import { useOffersContext } from '@/providers/offers-context';
+import { useAuthStore } from '@/store/auth-store';
 
 export function SearchingScreen() {
   const { id }: { id: string } = useLocalSearchParams();
+
+  const { user } = useAuthStore();
 
   const pathname = usePathname();
 
@@ -104,12 +107,29 @@ export function SearchingScreen() {
     }
   }, [isConnected]);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      serviceRequest?.refetch().then(({ data }) => {
+        if (!data) return;
+        if (data.status === 'cancelled' || data.status === 'expired') {
+          router.replace(
+            // IS_BOOK_TAB ?
+            '/book'
+            // '/(tabs)/(home)'
+          );
+        }
+      });
+    }, [serviceRequest?.refetch, IS_BOOK_TAB])
+  );
+
   const uniqueViews = React.useMemo(
     () =>
       views?.filter(
-        (view, index, self) => self.findIndex((v) => v.artisanId === view.artisanId) === index
+        (view, index, self) =>
+          self.findIndex((v) => v.artisanId === view.artisanId) === index &&
+          view.artisanId !== user?.id
       ),
-    [views]
+    [views, user?.id]
   );
 
   React.useEffect(() => {
@@ -162,8 +182,8 @@ export function SearchingScreen() {
         <View className="flex-1 gap-2">
           <View className="flex flex-row items-center justify-between gap-2">
             <Text className="flex-1 text-sm text-[#737381]">
-              {uniqueViews && uniqueViews?.length > 0 ? uniqueViews.length : 0} Pros viewed your
-              request
+              {uniqueViews && uniqueViews?.length > 0 ? uniqueViews.length : 0}{' '}
+              {uniqueViews && uniqueViews?.length === 1 ? 'Pro' : 'Pros'} viewed your request
             </Text>
 
             <View className="flex-row">

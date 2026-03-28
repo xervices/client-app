@@ -327,6 +327,17 @@ export const api = {
     };
   },
 
+  // Artisan endpoints
+  getCurrentArtisanProfile: () =>
+    queryOptions({
+      queryKey: ['artisans', 'me'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/artisans/me');
+
+        return data;
+      },
+    }),
+
   // categories endpoints
   getAllCategories: () =>
     queryOptions({

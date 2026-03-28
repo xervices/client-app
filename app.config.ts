@@ -36,6 +36,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     googleServicesFile,
     googleMapsApiKey,
     iosUrlScheme,
+    iosGoogleMapsApiKey,
   } = getDynamicAppConfig(
     (process.env.APP_ENV as 'development' | 'preview' | 'production') || 'development'
   );
@@ -69,6 +70,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       bundleIdentifier: bundleIdentifier,
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
+      },
+      config: {
+        googleMapsApiKey: iosGoogleMapsApiKey,
       },
     },
     experiments: {
@@ -173,6 +177,7 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
       googleServicesFile: './prod-google-services.json',
       googleMapsApiKey: 'process.env.GOOGLE_MAPS_API_KEY',
       iosUrlScheme: 'com.googleusercontent.apps._some_id_here_',
+      iosGoogleMapsApiKey: 'AIzaSyCebyLUsUxuLwTbvQFDKFaHF4B_Hz_lVT8',
     };
   }
 
@@ -185,6 +190,7 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
       googleServicesFile: './preview-google-services.json',
       googleMapsApiKey: 'AIzaSyDA7HnZnWADQ3h1AYCUgCLAccJGPJo67gU',
       iosUrlScheme: 'com.googleusercontent.apps._some_id_here_',
+      iosGoogleMapsApiKey: 'AIzaSyCebyLUsUxuLwTbvQFDKFaHF4B_Hz_lVT8',
     };
   }
 
@@ -196,5 +202,6 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
     googleServicesFile: './dev-google-services.json',
     googleMapsApiKey: 'AIzaSyDA7HnZnWADQ3h1AYCUgCLAccJGPJo67gU',
     iosUrlScheme: 'com.googleusercontent.apps.254247444720-nk2nrjvqda0r37s9kudt7embqirg3efu',
+    iosGoogleMapsApiKey: 'AIzaSyCebyLUsUxuLwTbvQFDKFaHF4B_Hz_lVT8',
   };
 };

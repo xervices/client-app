@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { ArrowUpRight, BadgeCheck, X } from 'lucide-react-native';
 import { router } from 'expo-router';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api';
 import React from 'react';
 import { LoadingIndicator } from '../ui/loading-indicator';
@@ -15,6 +15,8 @@ export function ActiveJobs() {
   const { data, refetch } = useQuery(api.getUserServiceRequests());
 
   const jobs = useQuery(api.getUserJobs());
+
+  const queryClient = useQueryClient();
 
   const inCompleteSearch = data?.filter((i) => i.status === 'open');
   const negotiatingJobs = data?.filter((i) => i.status === 'in_negotiation');
@@ -54,6 +56,10 @@ export function ActiveJobs() {
             id={search.id}
             category={search.category?.name}
             onCancelFn={() => {
+              queryClient.invalidateQueries({
+                queryKey: api.getServiceRequest(search.id).queryKey,
+              });
+
               refetch();
             }}
           />

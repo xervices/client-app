@@ -76,11 +76,11 @@ export default function Screen() {
       ) : (
         <View className="flex-1 gap-6">
           <View className="flex gap-2">
-            <Text className="text-center font-cabinet-bold text-[#737381]">Rate us</Text>
-
-            <Text className="text-center text-sm text-[#737381]">
-              We would love to hear from you
+            <Text className="text-center font-cabinet-bold text-[#737381]">
+              Please rate your experience
             </Text>
+
+            <Text className="text-center text-sm text-[#737381]">We’d love to hear from you!</Text>
           </View>
 
           <View className="flex gap-10">

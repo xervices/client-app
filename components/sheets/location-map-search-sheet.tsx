@@ -1,6 +1,6 @@
 import { Pressable, View, Keyboard } from 'react-native';
 import ActionSheet, { SheetManager, SheetProps } from 'react-native-actions-sheet';
-import MapView, { Marker, Region } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { Text } from '../ui/text';
 import { ArrowLeft, AlertCircle, MapPin, Search } from 'lucide-react-native';
 import { LoadingIndicator } from '../ui/loading-indicator';
@@ -344,6 +344,7 @@ export function LocationMapSearchSheet(props: SheetProps<'location-map-search-sh
         <View className="relative w-full flex-1">
           <MapView
             ref={mapRef}
+            provider={PROVIDER_GOOGLE}
             style={{ flex: 1 }}
             initialRegion={mapRegion}
             onPress={handleMapPress}
@@ -391,16 +392,13 @@ export function LocationMapSearchSheet(props: SheetProps<'location-map-search-sh
               )}
 
               {/* No Results */}
-              {!loading &&
-                !error &&
-                query.length >= MIN_QUERY_LENGTH &&
-                results.length === 0 && (
-                  <View className="items-center justify-center px-4 py-3">
-                    <Text className="text-center text-sm text-gray-500">
-                      No locations found. Try a different search term.
-                    </Text>
-                  </View>
-                )}
+              {!loading && !error && query.length >= MIN_QUERY_LENGTH && results.length === 0 && (
+                <View className="items-center justify-center px-4 py-3">
+                  <Text className="text-center text-sm text-gray-500">
+                    No locations found. Try a different search term.
+                  </Text>
+                </View>
+              )}
 
               {/* Results List */}
               {!loading && !error && results.length > 0 && (

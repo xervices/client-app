@@ -267,7 +267,7 @@ export default function Screen() {
             {data?.serviceRequest?.serviceLatitude && data?.serviceRequest?.serviceLongitude ? (
               <MapView
                 ref={mapRef}
-                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
+                provider={PROVIDER_GOOGLE}
                 style={{ width: '100%', height: '100%' }}
                 initialRegion={{
                   latitude: Number(data?.serviceRequest?.serviceLatitude),

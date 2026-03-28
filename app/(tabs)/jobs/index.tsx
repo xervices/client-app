@@ -58,7 +58,7 @@ export default function Screen() {
                     color: value === 'progress' ? '#FFF4EA' : '#522200',
                   }}>
                   {inProgressJobs && inProgressJobs?.length > 0 ? inProgressJobs?.length : 'No'}{' '}
-                  in-progress {inProgressJobs && inProgressJobs?.length > 1 ? 'jobs' : 'job'}
+                  in-progress {inProgressJobs && inProgressJobs?.length === 1 ? 'job' : 'jobs'}
                 </Text>
               </TabsTrigger>
               <TabsTrigger
@@ -75,7 +75,7 @@ export default function Screen() {
                     color: value === 'completed' ? '#FFF4EA' : '#522200',
                   }}>
                   {completedJobs && completedJobs?.length > 0 ? completedJobs?.length : 'No'}{' '}
-                  completed {completedJobs && completedJobs?.length > 1 ? 'jobs' : 'job'}
+                  completed {completedJobs && completedJobs?.length === 1 ? 'job' : 'jobs'}
                 </Text>
               </TabsTrigger>
             </TabsList>
@@ -173,8 +173,8 @@ export default function Screen() {
               ) : (
                 <View className="h-full flex-1">
                   <EmptyState
-                    title="No In Progress jobs"
-                    subtitle="You currently don't have an In-progress Job. "
+                    title="No in-progress jobs"
+                    subtitle="You currently don’t have any in-progress jobs."
                   />
                 </View>
               )}
@@ -269,8 +269,8 @@ export default function Screen() {
               ) : (
                 <View className="h-full flex-1">
                   <EmptyState
-                    title="No Completed jobs"
-                    subtitle="You currently don't have an completed Job. "
+                    title="No completed jobs"
+                    subtitle="You currently don’t have any completed jobs."
                   />
                 </View>
               )}

@@ -121,27 +121,34 @@ export function OfferScreen() {
           </View>
 
           <View className="flex gap-4">
-            {uniqueOffersByArtisan?.map((offer) => (
-              <OfferCard
-                key={offer.id}
-                id={offer.id}
-                amount={offer.amount}
-                artisanId={offer.artisanId}
-                artisanLat={offer?.artisanLatitude}
-                artisanLong={offer?.artisanLongitude}
-                avatarUrl={offer?.artisan?.profile?.avatarUrl}
-                name={offer?.artisan?.profile?.fullName}
-                onCounterOfferCallback={() => allOffers?.refetch()}
-                onRejectOfferCallback={() => {
-                  allOffers?.refetch();
-                }}
-                rating={offer?.artisanRating}
-                reviewCount={offer?.artisanReviewCount}
-                serviceLat={offer?.serviceRequest?.serviceLatitude}
-                serviceLong={offer?.serviceRequest?.serviceLongitude}
-                serviceRequestId={offer?.serviceRequestId}
-              />
-            ))}
+            {uniqueOffersByArtisan?.map((offer) => {
+              const offersMadeCount = allOffers?.data?.filter(
+                (i) => i.artisanId === offer?.artisanId && i.offeredBy === 'user'
+              )?.length;
+
+              return (
+                <OfferCard
+                  key={offer.id}
+                  id={offer.id}
+                  amount={offer.amount}
+                  artisanId={offer.artisanId}
+                  artisanLat={offer?.artisanLatitude}
+                  artisanLong={offer?.artisanLongitude}
+                  avatarUrl={offer?.artisan?.profile?.avatarUrl}
+                  name={offer?.artisan?.profile?.fullName}
+                  onCounterOfferCallback={() => allOffers?.refetch()}
+                  onRejectOfferCallback={() => {
+                    allOffers?.refetch();
+                  }}
+                  rating={offer?.artisanRating}
+                  reviewCount={offer?.artisanReviewCount}
+                  serviceLat={offer?.serviceRequest?.serviceLatitude}
+                  serviceLong={offer?.serviceRequest?.serviceLongitude}
+                  serviceRequestId={offer?.serviceRequestId}
+                  offersLeft={2 - (offersMadeCount ? offersMadeCount : 0)}
+                />
+              );
+            })}
           </View>
         </View>
       )}
@@ -164,6 +171,7 @@ interface OfferCardProps {
   serviceLong?: number | null;
   artisanLat?: number | null | Record<string, never>;
   artisanLong?: number | null | Record<string, never>;
+  offersLeft?: number;
 }
 
 function OfferCard({
@@ -181,6 +189,7 @@ function OfferCard({
   artisanLong,
   serviceLat,
   serviceLong,
+  offersLeft,
 }: OfferCardProps) {
   const sendCounterOffer = useMutation(api.createCounterOffer());
   const rejectOffer = useMutation(api.respondToOffer(id));
@@ -301,81 +310,91 @@ function OfferCard({
         )}
       </View>
 
-      <View className="flex flex-row gap-4">
-        <Button
-          isLoading={sendCounterOffer?.isPending || rejectOffer?.isPending}
-          disabled={sendCounterOffer?.isPending || rejectOffer?.isPending}
-          loadingIndicatorColor="#CC5600"
-          onPress={() =>
-            SheetManager.show('counter-offer-sheet', {
-              payload: {
-                type: 'counter',
-                amount: amount,
-                name: name,
-                profileImage: avatarUrl,
-                onReject: () => {
-                  rejectOffer?.mutate(
-                    {
-                      action: 'reject',
-                    },
-                    {
-                      onSuccess: () => {
-                        onRejectOfferCallback?.();
-                        showSuccessMessage('Rejected offer successfully.');
+      <View>
+        <View className="flex flex-row gap-4">
+          <Button
+            isLoading={sendCounterOffer?.isPending || rejectOffer?.isPending}
+            disabled={sendCounterOffer?.isPending || rejectOffer?.isPending}
+            loadingIndicatorColor="#CC5600"
+            onPress={() => {
+              if (!offersLeft) {
+                return showErrorMessage("You've run out of counters with this artisan.");
+              }
+
+              SheetManager.show('counter-offer-sheet', {
+                payload: {
+                  type: 'counter',
+                  amount: amount,
+                  name: name,
+                  profileImage: avatarUrl,
+                  onReject: () => {
+                    rejectOffer?.mutate(
+                      {
+                        action: 'reject',
                       },
-                      onError: (err) => {
-                        showErrorMessage(err.message);
-                      },
-                    }
-                  );
-                },
-                onConfirm: (amount) => {
-                  sendCounterOffer.mutate(
-                    // @ts-ignore
-                    { amount, id },
-                    {
-                      onSuccess: () => {
-                        onCounterOfferCallback?.();
-                        showSuccessMessage('Counter offer sent successfully.');
-                      },
-                      onError: (err) => {
-                        showErrorMessage(err.message);
-                      },
-                    }
-                  );
-                },
-              },
-            })
-          }
-          className="h-12 flex-1"
-          variant={'outline'}>
-          Counter
-        </Button>
-        <Button
-          onPress={() => {
-            if (IS_BOOK_TAB) {
-              router.navigate({
-                pathname: '/book/pro',
-                params: {
-                  serviceId: serviceRequestId,
-                  artisanId: artisanId,
-                  offerId: id,
+                      {
+                        onSuccess: () => {
+                          onRejectOfferCallback?.();
+                          showSuccessMessage('Rejected offer successfully.');
+                        },
+                        onError: (err) => {
+                          showErrorMessage(err.message);
+                        },
+                      }
+                    );
+                  },
+                  onConfirm: (amount) => {
+                    sendCounterOffer.mutate(
+                      // @ts-ignore
+                      { amount, id },
+                      {
+                        onSuccess: () => {
+                          onCounterOfferCallback?.();
+                          showSuccessMessage('Counter offer sent successfully.');
+                        },
+                        onError: (err) => {
+                          showErrorMessage(err.message);
+                        },
+                      }
+                    );
+                  },
                 },
               });
-            } else {
-              router.navigate({
-                pathname: '/pro',
-                params: {
-                  serviceId: serviceRequestId,
-                  artisanId: artisanId,
-                  offerId: id,
-                },
-              });
-            }
-          }}
-          className="h-12 flex-1">
-          Accept
-        </Button>
+            }}
+            className="h-12 flex-1"
+            variant={'outline'}>
+            Counter
+          </Button>
+          <Button
+            onPress={() => {
+              if (IS_BOOK_TAB) {
+                router.navigate({
+                  pathname: '/book/pro',
+                  params: {
+                    serviceId: serviceRequestId,
+                    artisanId: artisanId,
+                    offerId: id,
+                  },
+                });
+              } else {
+                router.navigate({
+                  pathname: '/pro',
+                  params: {
+                    serviceId: serviceRequestId,
+                    artisanId: artisanId,
+                    offerId: id,
+                  },
+                });
+              }
+            }}
+            className="h-12 flex-1">
+            Accept
+          </Button>
+        </View>
+
+        <Text className="mt-2 text-center font-cabinet-medium text-xs text-primary">
+          You have {offersLeft ? offersLeft : 0} counter offers left.
+        </Text>
       </View>
     </View>
   );

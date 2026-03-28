@@ -317,7 +317,7 @@ export function ConfirmScreen() {
             <View className="relative aspect-[311/120] w-full overflow-hidden rounded-[8px]">
               <MapView
                 ref={mapRef}
-                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
+                provider={PROVIDER_GOOGLE}
                 style={{ width: '100%', height: '100%' }}
                 initialRegion={{
                   latitude: offer?.data?.serviceRequest?.serviceLatitude || 4.7425431,
