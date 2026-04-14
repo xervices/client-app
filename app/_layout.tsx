@@ -1,5 +1,7 @@
 import '@/global.css';
 
+import * as SplashScreenAPI from 'expo-splash-screen';
+
 import { useAuthStore } from '@/store/auth-store';
 import { PortalHost } from '@rn-primitives/portal';
 import { Stack } from 'expo-router';
@@ -13,9 +15,10 @@ import { View } from 'react-native';
 import { LocationProvider } from 'solomo';
 import { QueryProvider } from '@/providers/query-provider';
 import { NotificationProvider } from '@/providers/notification-provider';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { SplashScreen } from '@/components/splash-screen';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -25,13 +28,30 @@ export {
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();
   const { isLoggedIn, hasCompletedOnboarding } = useAuthStore();
+  const [showingSplash, setShowingSplash] = useState(true);
 
   useEffect(() => {
     GoogleSignin.configure({
-      iosClientId: '254247444720-nk2nrjvqda0r37s9kudt7embqirg3efu.apps.googleusercontent.com',
+      iosClientId: '254247444720-svvp7snle85nn3giielj7r9cmftm1ofv.apps.googleusercontent.com',
       webClientId: '254247444720-3g5icekin9d9ls4hg0faag1mgsarb3u6.apps.googleusercontent.com',
     });
   }, []);
+  // useEffect(() => {
+  //   GoogleSignin.configure({
+  //     iosClientId: '254247444720-nk2nrjvqda0r37s9kudt7embqirg3efu.apps.googleusercontent.com',
+  //     webClientId: '254247444720-3g5icekin9d9ls4hg0faag1mgsarb3u6.apps.googleusercontent.com',
+  //   });
+  // }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      await SplashScreenAPI.hideAsync(); // hide native splash first
+      setShowingSplash(false); // then show your custom one
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (showingSplash) return <SplashScreen />;
 
   return (
     // <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>

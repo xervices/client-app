@@ -72,16 +72,27 @@ export function CounterOfferSheet(props: SheetProps<'counter-offer-sheet'>) {
       containerStyle={{ backgroundColor: '#FFFFFF' }}
       indicatorStyle={{ width: 38, height: 6, backgroundColor: '#FFF4EA' }}>
       <View className="flex gap-4 p-6 pt-0">
-        <View className="relative flex w-full flex-row items-center gap-4">
-          <Pressable
-            onPress={() => SheetManager.hide('counter-offer-sheet')}
-            className="h-8 w-8 justify-center">
-            <ArrowLeft size={24} color={'#B4B4BC'} />
-          </Pressable>
+        <View className="flex w-full flex-row items-center justify-between gap-4">
+          <View className="relative flex flex-1 flex-row items-center gap-4">
+            <Pressable
+              onPress={() => SheetManager.hide('counter-offer-sheet')}
+              className="h-8 w-8 justify-center">
+              <ArrowLeft size={24} color={'#B4B4BC'} />
+            </Pressable>
 
-          <Text className="font-cabinet-bold text-[18px] text-[#737381]">
-            {props.payload?.type === 'counter' ? 'Counteroffer' : 'Offer'} to{' '}
-            {props.payload?.name || ''}
+            <Text className="font-cabinet-bold text-[18px] text-[#737381]">
+              {props.payload?.type === 'counter' ? 'Counteroffer' : 'Offer'} to{' '}
+              {props.payload?.name || ''}
+            </Text>
+          </View>
+
+          <Text
+            className="flex-1 text-right font-cabinet-bold text-sm text-primary"
+            onPress={() => {
+              props?.payload?.onReject?.();
+              SheetManager.hide('counter-offer-sheet');
+            }}>
+            Reject Offer
           </Text>
         </View>
 

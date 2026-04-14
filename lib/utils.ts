@@ -370,7 +370,7 @@ export async function getTravelTimeGoogle(
   mode: 'driving' | 'walking' | 'bicycling' | 'transit' = 'driving'
 ): Promise<TravelTimeResult> {
   // const apiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
-  const apiKey = 'AIzaSyDkT-0SiaW_dZq_ydeOTZAsKT6IvSgLp5Q';
+  const apiKey = 'AIzaSyDlZwHBiKYN7A9CJHuvZqbroZCPnKlCHWc';
 
   if (!apiKey) {
     throw new Error('Google Maps API key not found');

@@ -3044,6 +3044,166 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/jobs/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Job statistics
+         * @description Get job counts by status: completed, in progress, cancelled, and total.
+         */
+        get: operations["AdminJobsController_getJobStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List all jobs
+         * @description Paginated list of all jobs with filtering by status, date range, search by Job ID / customer name / artisan name, and sorting.
+         */
+        get: operations["AdminJobsController_getJobs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/jobs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Job detail
+         * @description Full job detail including customer details, artisan details, payment/escrow info.
+         */
+        get: operations["AdminJobsController_getJobDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/jobs/{id}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Job timeline
+         * @description Full lifecycle timeline of a job with timestamps, descriptions, and evidence photos.
+         */
+        get: operations["AdminJobsController_getJobTimeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/jobs/{id}/release-escrow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Release escrow
+         * @description Release held escrow funds to the artisan's available balance. Job status changes to approved.
+         */
+        post: operations["AdminJobsController_releaseEscrow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/jobs/{id}/refund-escrow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Refund escrow
+         * @description Refund escrow to the customer. Removes funds from artisan's pending balance, marks payment as refunded, and cancels the job.
+         */
+        post: operations["AdminJobsController_refundEscrow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/first-time-discounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all first-time discount settings
+         * @description Retrieve discount settings for both new users and new artisans. Returns the current discount percentage, eligible job count, validity period, and active status.
+         */
+        get: operations["FirstTimeDiscountController_findAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/first-time-discounts/{targetType}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update first-time discount settings
+         * @description Update the discount percentage, eligible jobs, validity days, or active status for user or artisan first-time discounts.
+         */
+        patch: operations["FirstTimeDiscountController_update"];
+        trace?: never;
+    };
     "/api/users/me": {
         parameters: {
             query?: never;
@@ -3110,6 +3270,26 @@ export interface paths {
          * @description Update notification preferences (email, SMS, push)
          */
         patch: operations["UsersController_updateSettings"];
+        trace?: never;
+    };
+    "/api/users/me/become-artisan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Become an artisan
+         * @description Upgrade a regular user account to also have artisan capabilities (dual-role). The user keeps their primary role but gains access to artisan features. After this, complete the artisan onboarding via POST /artisans/onboard.
+         */
+        post: operations["UsersController_becomeArtisan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/categories": {
@@ -4326,6 +4506,11 @@ export interface components {
             /** @description Whether account is active */
             isActive: boolean;
             /**
+             * @description Whether user has artisan capabilities (dual-role support)
+             * @example false
+             */
+            isArtisan: boolean;
+            /**
              * Format: date-time
              * @description Last login timestamp
              */
@@ -4364,6 +4549,14 @@ export interface components {
             user: components["schemas"]["UserResponseDto"];
             /** @description Authentication tokens */
             tokens: components["schemas"]["TokensResponseDto"];
+            /**
+             * @description List of roles available to this user for context switching. Always includes "user". Includes "artisan" if isArtisan is true. Includes "admin" if user is an admin.
+             * @example [
+             *       "user",
+             *       "artisan"
+             *     ]
+             */
+            availableRoles?: string[];
             /**
              * @description Indicates if the user needs to verify their account. If true, a verification code has been sent to email and phone.
              * @example true
@@ -7072,6 +7265,47 @@ export interface components {
             /** @description ID of the session to revoke */
             sessionId: string;
         };
+        AdminEscrowActionDto: {
+            /** @description Reason for the escrow action */
+            reason: string;
+        };
+        FirstTimeDiscountResponseDto: {
+            id: string;
+            /** @example user */
+            targetType: string;
+            /** @example 5 */
+            discountPercent: number;
+            /** @example 5 */
+            maxJobs: number;
+            /** @example 30 */
+            validityDays: number;
+            /** @example true */
+            isActive: boolean;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateFirstTimeDiscountDto: {
+            /**
+             * @description Discount percentage
+             * @example 10
+             */
+            discountPercent?: number;
+            /**
+             * @description Number of eligible jobs
+             * @example 5
+             */
+            maxJobs?: number;
+            /**
+             * @description Validity period in days (user discounts only)
+             * @example 30
+             */
+            validityDays?: number;
+            /**
+             * @description Activate or deactivate the discount
+             * @example true
+             */
+            isActive?: boolean;
+        };
         UserSettingsResponseDto: {
             notificationEnabled: boolean;
             emailNotification: boolean;
@@ -7163,6 +7397,28 @@ export interface components {
              * @example true
              */
             pushNotification?: boolean;
+        };
+        BecomeArtisanDto: {
+            /**
+             * @description Array of category/service IDs the user wants to offer as an artisan
+             * @example [
+             *       "550e8400-e29b-41d4-a716-446655440001",
+             *       "550e8400-e29b-41d4-a716-446655440002"
+             *     ]
+             */
+            categoryIds: string[];
+        };
+        BecomeArtisanResponseDto: {
+            /**
+             * @description Success message
+             * @example Successfully registered as artisan. Complete your artisan profile to start receiving jobs.
+             */
+            message: string;
+            /**
+             * @description Whether user now has artisan capabilities
+             * @example true
+             */
+            isArtisan: boolean;
         };
         DeleteAccountDto: {
             /** @description Reason for deleting the account */
@@ -15035,6 +15291,232 @@ export interface operations {
             };
         };
     };
+    AdminJobsController_getJobStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Job statistics */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminJobsController_getJobs: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                /** @description Filter by job status */
+                status?: "pending" | "paid" | "in_progress" | "completed" | "approved" | "disputed" | "cancelled";
+                /** @description Search by Job ID, customer name, or artisan name */
+                search?: string;
+                /** @description Filter from date (ISO string) */
+                dateFrom?: string;
+                /** @description Filter to date (ISO string) */
+                dateTo?: string;
+                sortBy?: "createdAt" | "finalAmount" | "status";
+                sortOrder?: "ASC" | "DESC";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated job list */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminJobsController_getJobDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Job detail */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminJobsController_getJobTimeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Job timeline */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminJobsController_releaseEscrow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminEscrowActionDto"];
+            };
+        };
+        responses: {
+            /** @description Escrow released successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Cannot release escrow for this job status */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdminJobsController_refundEscrow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminEscrowActionDto"];
+            };
+        };
+        responses: {
+            /** @description Escrow refunded successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Cannot refund escrow for this job status */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FirstTimeDiscountController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description First-time discount settings retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FirstTimeDiscountResponseDto"][];
+                };
+            };
+        };
+    };
+    FirstTimeDiscountController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Discount target: user (customer) or artisan */
+                targetType: "user" | "artisan";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateFirstTimeDiscountDto"];
+            };
+        };
+        responses: {
+            /** @description Settings updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FirstTimeDiscountResponseDto"];
+                };
+            };
+        };
+    };
     UsersController_getCurrentUser: {
         parameters: {
             query?: never;
@@ -15214,6 +15696,57 @@ export interface operations {
             };
             /** @description Unauthorized */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UsersController_becomeArtisan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BecomeArtisanDto"];
+            };
+        };
+        responses: {
+            /** @description Successfully registered as artisan */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BecomeArtisanResponseDto"];
+                };
+            };
+            /** @description Admin users cannot become artisans or invalid category IDs */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description User already has artisan capabilities */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

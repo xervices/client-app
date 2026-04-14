@@ -279,11 +279,12 @@ export default function Screen() {
         <GoogleSigninButton />
 
         <View className="flex flex-row items-center justify-center gap-1.5">
-          <Text className="text-[#737381]">Already have an account?</Text>
-
-          <Pressable onPress={() => router.navigate('/login')}>
-            <Text className="text-primary">Log in</Text>
-          </Pressable>
+          <Text className="text-center text-[#737381]">
+            Already have an account?{' '}
+            <Text onPress={() => router.navigate('/login')} className="text-primary">
+              Log in
+            </Text>
+          </Text>
         </View>
 
         <View className="flex w-full flex-row flex-wrap items-center justify-center gap-1">

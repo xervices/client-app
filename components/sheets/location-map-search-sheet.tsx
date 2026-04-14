@@ -35,7 +35,7 @@ interface GooglePlaceDetails {
 }
 
 // ---------- Constants ----------
-const GOOGLE_MAPS_API_KEY = 'AIzaSyDkT-0SiaW_dZq_ydeOTZAsKT6IvSgLp5Q';
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDlZwHBiKYN7A9CJHuvZqbroZCPnKlCHWc';
 const DEBOUNCE_DELAY = 500;
 const MIN_QUERY_LENGTH = 3;
 
@@ -141,6 +141,7 @@ export function LocationMapSearchSheet(props: SheetProps<'location-map-search-sh
         setResults([]);
         setError('No locations found. Try a different search term.');
       } else if (data.status === 'REQUEST_DENIED') {
+        console.log('Google denial reason:', data.error_message);
         setError('API key error. Please contact support.');
       } else if (data.status === 'OVER_QUERY_LIMIT') {
         setError('Too many requests. Please try again later.');

@@ -106,7 +106,7 @@ export default function Screen() {
     destination: { latitude: number; longitude: number }
   ) => {
     try {
-      const apiKey = 'AIzaSyDkT-0SiaW_dZq_ydeOTZAsKT6IvSgLp5Q'; // Fallback to dev key if Constants fails
+      const apiKey = 'AIzaSyDlZwHBiKYN7A9CJHuvZqbroZCPnKlCHWc'; // Fallback to dev key if Constants fails
 
       if (!apiKey) {
         console.warn('Google Maps API Key not found');

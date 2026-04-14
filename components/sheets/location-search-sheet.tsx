@@ -32,7 +32,7 @@ interface GooglePlaceDetails {
   }>;
 }
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyDkT-0SiaW_dZq_ydeOTZAsKT6IvSgLp5Q';
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDlZwHBiKYN7A9CJHuvZqbroZCPnKlCHWc';
 const DEBOUNCE_DELAY = 500; // milliseconds
 const MIN_QUERY_LENGTH = 3;
 
