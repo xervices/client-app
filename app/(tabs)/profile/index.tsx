@@ -13,6 +13,7 @@ import { useMutation } from '@tanstack/react-query';
 import { api } from '@/api';
 import Storage from 'expo-sqlite/kv-store';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
+import { SheetManager } from 'react-native-actions-sheet';
 
 export default function Screen() {
   const { expoPushToken } = useNotification();
@@ -95,6 +96,13 @@ export default function Screen() {
         useAuthStore.getState().setLoginState(false);
       },
     },
+    {
+      name: 'Delete account',
+      icon: require('@/assets/icons/delete.svg'),
+      isLink: true,
+      isDestructive: true,
+      onPress: () => SheetManager.show('delete-account-sheet'),
+    },
   ];
 
   return (
@@ -129,7 +137,9 @@ export default function Screen() {
 
             {item.isLink && <ChevronRight size={20} color={'#B4B4BC'} />}
 
-            {isPending && item.isDestructive ? <LoadingIndicator size={14} /> : null}
+            {isPending && item.name === 'Logout' && item.isDestructive ? (
+              <LoadingIndicator size={14} />
+            ) : null}
           </Pressable>
         ))}
       </View>

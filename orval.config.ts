@@ -4,7 +4,7 @@ export default defineConfig({
   api: {
     input: {
       // Option 1: URL to Swagger JSON
-      target: 'https://server-api-bibv.onrender.com/api/docs-json',
+      target: 'https://staging-api.getxervices.com/api/docs-json',
     },
     output: {
       mode: 'tags-split', // Creates separate files per tag

@@ -68,6 +68,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ios: {
       supportsTablet: true,
       bundleIdentifier: bundleIdentifier,
+      usesAppleSignIn: true,
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
       },
@@ -158,6 +159,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           iosUrlScheme: iosUrlScheme,
         },
       ],
+      'expo-apple-authentication',
     ],
     extra: {
       eas: {

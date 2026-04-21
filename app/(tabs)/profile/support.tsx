@@ -23,13 +23,13 @@ const data = [
     isDestructive: false,
     onPress: () => router.navigate('/profile/policies'),
   },
-  {
-    name: 'Delete account',
-    icon: require('@/assets/icons/delete.svg'),
-    isLink: true,
-    isDestructive: true,
-    onPress: () => SheetManager.show('delete-account-sheet'),
-  },
+  // {
+  //   name: 'Delete account',
+  //   icon: require('@/assets/icons/delete.svg'),
+  //   isLink: true,
+  //   isDestructive: true,
+  //   onPress: () => SheetManager.show('delete-account-sheet'),
+  // },
 ];
 
 export default function Screen() {

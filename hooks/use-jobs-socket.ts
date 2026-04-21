@@ -13,7 +13,7 @@ import {
 } from './types';
 import { AppState } from 'react-native';
 
-const SOCKET_URL = 'https://server-api-bibv.onrender.com';
+const SOCKET_URL = 'https://staging-api.getxervices.com';
 
 type JobsSocket = Socket<JobsServerToClientEvents, JobsClientToServerEvents>;
 

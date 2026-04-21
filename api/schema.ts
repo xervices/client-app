@@ -284,6 +284,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/apple/mobile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Apple Sign-In for mobile apps
+         * @description Authenticate using an Apple identity token from Sign in with Apple on iOS. Creates the user if they do not already exist. Apple only returns the user name on the first sign-in, so the mobile client must forward firstName/lastName on that first call.
+         */
+        post: operations["AuthController_appleMobileLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/notifications": {
         parameters: {
             query?: never;
@@ -4106,6 +4126,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/reviews/customer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Artisan rates customer
+         * @description Create a review for the customer of a completed and approved job. Only the assigned artisan can submit this review.
+         */
+        post: operations["ReviewsController_createByArtisan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/reviews/artisan/{artisanId}": {
         parameters: {
             query?: never;
@@ -4158,6 +4198,26 @@ export interface paths {
          * @description Get rating statistics for an artisan including average rating and distribution
          */
         get: operations["ReviewsController_getArtisanRatingStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/customer/{customerId}/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get customer rating stats
+         * @description Get rating statistics for a customer based on reviews submitted by artisans after completed jobs.
+         */
+        get: operations["ReviewsController_getCustomerRatingStats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4751,6 +4811,23 @@ export interface components {
              * @example eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
              */
             idToken: string;
+        };
+        AppleMobileLoginDto: {
+            /**
+             * @description Apple identity token received from Sign in with Apple on the mobile app
+             * @example eyJraWQiOiJmaDZCczhDIiwiYWxnIjoiUlMyNTYifQ...
+             */
+            identityToken: string;
+            /**
+             * @description User first name. Apple only provides this on the first sign-in.
+             * @example Jane
+             */
+            firstName?: string;
+            /**
+             * @description User last name. Apple only provides this on the first sign-in.
+             * @example Doe
+             */
+            lastName?: string;
         };
         NotificationResponseDto: {
             /**
@@ -8706,6 +8783,49 @@ export interface components {
              */
             ratingDistribution: Record<string, never>;
         };
+        CustomerRatingStatsDto: {
+            /**
+             * @description Customer user ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            customerId: string;
+            /**
+             * @description Average overall rating (0-5)
+             * @example 4.5
+             */
+            averageRating: number;
+            /**
+             * @description Average punctuality rating (0-5)
+             * @example 4.7
+             */
+            averagePunctualityRating: number;
+            /**
+             * @description Average communication rating (0-5)
+             * @example 4.3
+             */
+            averageCommunicationRating: number;
+            /**
+             * @description Average quality rating (0-5)
+             * @example 4.5
+             */
+            averageQualityRating: number;
+            /**
+             * @description Total number of reviews received
+             * @example 12
+             */
+            totalReviews: number;
+            /**
+             * @description Rating distribution (1-5 stars) based on overall rating
+             * @example {
+             *       "1": 0,
+             *       "2": 1,
+             *       "3": 2,
+             *       "4": 4,
+             *       "5": 5
+             *     }
+             */
+            ratingDistribution: Record<string, never>;
+        };
         CanReviewResponseDto: {
             /**
              * @description Whether the user can create a review for this job
@@ -9344,6 +9464,39 @@ export interface operations {
                 };
             };
             /** @description Invalid Google ID token */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_appleMobileLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AppleMobileLoginDto"];
+            };
+        };
+        responses: {
+            /** @description Authentication successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponseDto"];
+                };
+            };
+            /** @description Invalid Apple identity token */
             401: {
                 headers: {
                     [name: string]: unknown;
@@ -17905,6 +18058,66 @@ export interface operations {
             };
         };
     };
+    ReviewsController_createByArtisan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReviewDto"];
+            };
+        };
+        responses: {
+            /** @description Review created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponseDto"];
+                };
+            };
+            /** @description Bad request - Job not in approved status */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Forbidden - User is not the assigned artisan */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Job not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Review already exists for this job */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     ReviewsController_findByArtisan: {
         parameters: {
             query?: {
@@ -17989,6 +18202,38 @@ export interface operations {
                 };
             };
             /** @description Artisan not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_getCustomerRatingStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Customer UUID */
+                customerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rating statistics retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerRatingStatsDto"];
+                };
+            };
+            /** @description Customer not found */
             404: {
                 headers: {
                     [name: string]: unknown;

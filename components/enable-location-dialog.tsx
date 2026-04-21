@@ -54,7 +54,7 @@ export default function EnableLocationDialog() {
             onPress={() => {
               requestPermission().finally(() => setVisible(false));
             }}>
-            Turn on location
+            Continue
           </Button>
         </View>
       </View>

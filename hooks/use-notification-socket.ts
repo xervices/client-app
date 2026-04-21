@@ -11,7 +11,7 @@ import { tokenStorage } from '@/api/token-storage';
 import { AppState } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 
-const SOCKET_URL = 'https://server-api-bibv.onrender.com';
+const SOCKET_URL = 'https://staging-api.getxervices.com';
 
 type NotificationSocket = Socket<
   NotificationServerToClientEvents,

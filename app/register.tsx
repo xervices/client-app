@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { InputError } from '@/components/ui/input-error';
 import { GoogleSigninButton } from '@/components/google-signin-button';
+import { AppleSigninButton } from '@/components/apple-signin-button';
 
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
@@ -277,6 +278,8 @@ export default function Screen() {
         </View>
 
         <GoogleSigninButton />
+
+        <AppleSigninButton />
 
         <View className="flex flex-row items-center justify-center gap-1.5">
           <Text className="text-center text-[#737381]">

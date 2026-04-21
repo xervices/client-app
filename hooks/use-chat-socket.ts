@@ -11,7 +11,7 @@ import {
 } from './types';
 import { AppState } from 'react-native';
 
-const SOCKET_URL = 'https://server-api-bibv.onrender.com';
+const SOCKET_URL = 'https://staging-api.getxervices.com';
 
 type ChatSocket = Socket<ChatServerToClientEvents, ChatClientToServerEvents>;
 

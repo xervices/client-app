@@ -8,6 +8,10 @@ import { showErrorMessage } from './helpers';
 
 export const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://server-api-bibv.onrender.com';
 
+// Staging: https://staging-api.getxervices.com
+// Production: https://api.getxervices.com
+// Render: 'https://server-api-bibv.onrender.com'
+
 // Track ongoing refresh to prevent multiple simultaneous refresh requests
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;

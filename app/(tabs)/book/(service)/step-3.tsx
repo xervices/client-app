@@ -18,6 +18,14 @@ import { api } from '@/api';
 import { SheetManager } from 'react-native-actions-sheet';
 import { formatPhoneNumber } from '@/lib/utils';
 
+function stripDialCode(phone: string): string {
+  const cleaned = phone.replace(/[^0-9+]/g, '');
+  if (cleaned.startsWith('+234')) return cleaned.slice(4);
+  if (cleaned.startsWith('234')) return cleaned.slice(3);
+  if (cleaned.startsWith('0')) return cleaned.slice(1);
+  return cleaned;
+}
+
 export default function Screen() {
   const { user } = useAuthStore();
   const { setStep3, getFormData, requiresDestination } = useServiceStore();
@@ -34,7 +42,7 @@ export default function Screen() {
   const [destinationLongitude, setDestinationLongitude] = React.useState<number>();
 
   const [contactPhone, setContactPhone] = React.useState(
-    user?.phoneVerified ? user?.phoneNumber : undefined
+    user?.phoneVerified ? stripDialCode(user?.phoneNumber ?? '') : undefined
   );
   const [loadingLocation, setLoadingLocation] = React.useState(false);
 
@@ -46,7 +54,7 @@ export default function Screen() {
     if (status === 'granted') {
       Contacts.presentContactPickerAsync().then((res) => {
         const phoneNumber = res?.phoneNumbers?.[0]?.number?.replace(/\s/g, '');
-        setContactPhone(formatPhoneNumber(phoneNumber || ''));
+        setContactPhone(stripDialCode(formatPhoneNumber(phoneNumber || '')));
       });
     }
   };
@@ -99,7 +107,7 @@ export default function Screen() {
       return showErrorMessage('Provide the destination location.');
 
     setStep3({
-      contactPhone,
+      contactPhone: formatPhoneNumber(contactPhone!),
       latitude,
       longitude,
       serviceAddress,

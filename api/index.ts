@@ -243,6 +243,30 @@ export const api = {
       },
     };
   },
+  appleSignin: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/auth/apple/mobile', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/auth/apple/mobile', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Apple signin request failed'));
+        }
+
+        if (data?.tokens) {
+          await tokenStorage.setTokens(data.tokens.accessToken, data.tokens.refreshToken);
+        }
+
+        if (data.user) {
+          useAuthStore.getState().setUser(data.user);
+          useAuthStore.getState().setLoginState(true);
+        }
+
+        return data;
+      },
+    };
+  },
 
   // User management endpoints
   getCurrentUser: () =>
