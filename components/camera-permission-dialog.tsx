@@ -74,7 +74,7 @@ export default function CameraPermissionDialog({
           <Text className="text-sm text-[#737381]">So you can record and take photos/videos.</Text>
 
           {/* Action Button */}
-          <Button onPress={onRequestPermission}>Grant permission</Button>
+          <Button onPress={onRequestPermission}>Continue</Button>
         </View>
       </View>
     </Modal>

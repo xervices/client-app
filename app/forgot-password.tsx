@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
 import { GoogleSigninButton } from '@/components/google-signin-button';
+import { formatPhoneNumber } from '@/lib/utils';
 
 const formSchema = z.object({
   emailOrPhone: z.string().min(1, 'Email/Phone number is required.'),
@@ -39,6 +40,10 @@ export default function Screen() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
+      if (!value.emailOrPhone.includes('@')) {
+        value.emailOrPhone = formatPhoneNumber(value.emailOrPhone);
+      }
+
       mutate(value, {
         onSuccess: (data) => {
           toast.success(data.message);

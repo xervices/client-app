@@ -25,7 +25,7 @@ const formSchema = z
       .string()
       .min(1, 'Your fullname is required.')
       .refine((val) => !emojiRegex.test(val), 'Name cannot contain emojis.'),
-    phoneNumber: z.string().min(1, 'Phone number is required.'),
+    phoneNumber: z.string(),
     email: z
       .email('Invalid email address')
       .min(1, 'Email is required.')
@@ -76,7 +76,12 @@ export default function Screen() {
     onSubmit: async ({ value }) => {
       const { confirmPassword, referralCode, ...registerData } = value;
 
-      registerData.phoneNumber = formatPhoneNumber(registerData.phoneNumber);
+      if (registerData.phoneNumber.trim()) {
+        registerData.phoneNumber = formatPhoneNumber(registerData.phoneNumber);
+      } else {
+        // @ts-expect-error — phoneNumber is optional on the server after the App Store 5.1.1(v) fix
+        delete registerData.phoneNumber;
+      }
 
       mutate(registerData, {
         onSuccess: () => {
@@ -145,7 +150,7 @@ export default function Screen() {
           <form.Field name="phoneNumber">
             {(field) => (
               <View>
-                <Label nativeID="phone">Phone Number</Label>
+                <Label nativeID="phone">Phone Number (Optional)</Label>
                 <Input
                   id="phone"
                   value={field.state.value}

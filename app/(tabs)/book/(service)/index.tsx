@@ -1,5 +1,4 @@
 import { api } from '@/api';
-import EnableLocationDialog from '@/components/enable-location-dialog';
 import { SearchInput } from '@/components/home/search-input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -73,8 +72,6 @@ export default function Screen() {
           disabled={!id}>
           Continue
         </Button>
-
-        <EnableLocationDialog />
       </View>
     </ScrollView>
   );

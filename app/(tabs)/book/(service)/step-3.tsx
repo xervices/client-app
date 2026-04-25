@@ -7,7 +7,7 @@ import * as React from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import * as Contacts from 'expo-contacts';
 import { useAuthStore } from '@/store/auth-store';
-import { useCurrentLocation } from 'solomo';
+import { useCurrentLocation, useLocation } from 'solomo';
 import * as Location from 'expo-location';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
@@ -32,6 +32,7 @@ export default function Screen() {
   const { fetchLocation } = useCurrentLocation({
     accuracy: Location.Accuracy.BestForNavigation,
   });
+  const { hasPermission: hasLocationPermission } = useLocation();
 
   const [serviceAddress, setServiceAddress] = React.useState('');
   const [latitude, setLatitude] = React.useState<number>();
@@ -45,6 +46,7 @@ export default function Screen() {
     user?.phoneVerified ? stripDialCode(user?.phoneNumber ?? '') : undefined
   );
   const [loadingLocation, setLoadingLocation] = React.useState(false);
+  const [locationDialogVisible, setLocationDialogVisible] = React.useState(false);
 
   const { mutate, isPending } = useMutation(api.createServiceRequest());
   const { refetch } = useQuery(api.getUserServiceRequests());
@@ -60,6 +62,11 @@ export default function Screen() {
   };
 
   const handleGetCurrentLocation = async () => {
+    if (!hasLocationPermission) {
+      setLocationDialogVisible(true);
+      return;
+    }
+
     setLoadingLocation(true);
     try {
       const res = await fetchLocation();
@@ -266,7 +273,11 @@ export default function Screen() {
         </Button>
       </View>
 
-      <EnableLocationDialog />
+      <EnableLocationDialog
+        visible={locationDialogVisible}
+        setVisible={setLocationDialogVisible}
+        onPermissionGranted={handleGetCurrentLocation}
+      />
     </ScrollView>
   );
 }

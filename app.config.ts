@@ -122,35 +122,35 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         'expo-location',
         {
-          locationWhenInUsePermission: `Allow ${name} to use your location for route tracking functionality.`,
+          locationWhenInUsePermission: `${name} uses your location to match you with nearby service providers and show accurate travel routes and ETAs during a booking.`,
         },
       ],
       'expo-notifications',
       [
         'expo-camera',
         {
-          cameraPermission: `Allow ${name} to access your camera`,
-          microphonePermission: `Allow ${name} to access your microphone`,
+          cameraPermission: `${name} uses your camera to take a profile photo, capture before and after photos of a service, and attach photo or video evidence when you open a dispute.`,
+          microphonePermission: `${name} uses your microphone to record audio while you capture video of a service or dispute, for example a short clip showing the condition of the work area.`,
           recordAudioAndroid: true,
         },
       ],
       [
         'expo-contacts',
         {
-          contactsPermission: `Allow ${name} to access your contacts.`,
+          contactsPermission: `${name} accesses your contacts so you can quickly invite friends to the app and share a service booking with them.`,
         },
       ],
       [
         'expo-audio',
         {
-          microphonePermission: `Allow ${name} to access your microphone.`,
+          microphonePermission: `${name} uses your microphone to record audio alongside video, for example when you capture a short clip of the service area to include with a booking or dispute.`,
           recordAudioAndroid: true,
         },
       ],
       [
         'expo-image-picker',
         {
-          photosPermission: 'The app accesses your photos to let you share them with your friends.',
+          photosPermission: `${name} accesses your photo library so you can choose a profile picture and attach existing photos to a service booking or dispute.`,
         },
       ],
       [

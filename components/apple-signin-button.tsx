@@ -34,6 +34,7 @@ export function AppleSigninButton() {
     mutate(
       {
         identityToken,
+        platform: Platform.OS === 'android' ? 'android' : 'ios',
         firstName,
         lastName,
       },

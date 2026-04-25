@@ -6,7 +6,6 @@ import { Promotions } from '@/components/home/promotions';
 import { Services } from '@/components/home/services';
 import { UserOfWeek } from '@/components/home/user-of-week';
 import { ActiveJobs } from '@/components/home/active-jobs';
-import EnableLocationDialog from '@/components/enable-location-dialog';
 import { useMutation, useQueries } from '@tanstack/react-query';
 import { api } from '@/api';
 import { usePathname } from 'expo-router';
@@ -89,8 +88,6 @@ export default function Screen() {
       }>
       <View className="flex-1 gap-4">
         <BroadcastDialog />
-
-        <EnableLocationDialog />
 
         <View className="px-6">
           <SearchInput />

@@ -295,7 +295,7 @@ export interface paths {
         put?: never;
         /**
          * Apple Sign-In for mobile apps
-         * @description Authenticate using an Apple identity token from Sign in with Apple on iOS. Creates the user if they do not already exist. Apple only returns the user name on the first sign-in, so the mobile client must forward firstName/lastName on that first call.
+         * @description Authenticate using an Apple identity token from Sign in with Apple on iOS or Android. Pass platform="ios" (default) or platform="android" so the server validates the token against the correct Apple bundle/services ID. Creates the user if they do not already exist. Apple only returns the user name on the first sign-in, so the mobile client must forward firstName/lastName on that first call.
          */
         post: operations["AuthController_appleMobileLogin"];
         delete?: never;
@@ -4166,6 +4166,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/reviews/customer/{customerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get customer reviews
+         * @description Get all reviews that artisans have left for the given customer, with pagination.
+         */
+        get: operations["ReviewsController_findByCustomer"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/reviews/my-reviews": {
         parameters: {
             query?: never;
@@ -4254,8 +4274,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get review by job
-         * @description Get the review for a specific job if it exists
+         * Get reviews for a job
+         * @description Returns both the customer review (customer → artisan) and the artisan review (artisan → customer) for the job, each nullable if not yet submitted.
          */
         get: operations["ReviewsController_findByJobId"];
         put?: never;
@@ -4511,10 +4531,10 @@ export interface components {
              */
             email: string;
             /**
-             * @description Phone number in international format (+2348012345678) or local format (08012345678)
+             * @description Phone number in international format (+2348012345678) or local format (08012345678). Optional — users can sign up without one.
              * @example 08164593466
              */
-            phoneNumber: string;
+            phoneNumber?: string;
             /**
              * @description Password (min 8 chars, must contain uppercase, lowercase, number, and special character)
              * @example Password123!
@@ -4818,6 +4838,13 @@ export interface components {
              * @example eyJraWQiOiJmaDZCczhDIiwiYWxnIjoiUlMyNTYifQ...
              */
             identityToken: string;
+            /**
+             * @description Mobile platform the token was issued on. Determines which Apple audience (bundle id / services id) to validate against. Defaults to ios for backwards compatibility.
+             * @default ios
+             * @example android
+             * @enum {string}
+             */
+            platform: "ios" | "android";
             /**
              * @description User first name. Apple only provides this on the first sign-in.
              * @example Jane
@@ -6739,10 +6766,10 @@ export interface components {
              */
             emailSentTo: string;
             /**
-             * @description Phone number where OTP was sent (masked)
+             * @description Phone number where OTP was sent (masked). Null if admin has no phone on file.
              * @example +234***7890
              */
-            phoneSentTo: string;
+            phoneSentTo: Record<string, never> | null;
             /**
              * @description OTP expiry time in minutes
              * @example 15
@@ -18155,6 +18182,43 @@ export interface operations {
             };
         };
     };
+    ReviewsController_findByCustomer: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: string;
+                /** @description Items per page */
+                limit?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Customer UUID */
+                customerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reviews retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedReviewsResponseDto"];
+                };
+            };
+            /** @description Customer not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     ReviewsController_findMyReviews: {
         parameters: {
             query?: {
@@ -18279,23 +18343,12 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Review retrieved successfully */
+            /** @description Reviews retrieved successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["ReviewResponseDto"];
-                };
-            };
-            /** @description No review found for this job */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
+                content?: never;
             };
         };
     };

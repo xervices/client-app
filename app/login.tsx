@@ -20,7 +20,7 @@ import { AppleSigninButton } from '@/components/apple-signin-button';
 import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
 import { useAuthStore } from '@/store/auth-store';
-import { getDeviceInfo } from '@/lib/utils';
+import { formatPhoneNumber, getDeviceInfo } from '@/lib/utils';
 import { SheetManager } from 'react-native-actions-sheet';
 
 const formSchema = z.object({
@@ -69,6 +69,10 @@ export default function Screen() {
 
       value.deviceId = deviceInfo?.deviceId || '';
       value.deviceName = deviceInfo?.deviceName || '';
+
+      if (!value.emailOrPhone.includes('@')) {
+        value.emailOrPhone = formatPhoneNumber(value.emailOrPhone);
+      }
 
       mutate(value, {
         onSuccess: (res) => {
