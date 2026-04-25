@@ -113,6 +113,13 @@ export default function Screen() {
           </Text>
         </View>
 
+        <View className="rounded-xl border border-[#FFDCC1] bg-[#FFF6EE] px-4 py-3">
+          <Text className="text-center text-sm leading-normal text-[#737381]">
+            Creating an account helps us find artisans in your specific neighborhood and keeps our
+            community safe.
+          </Text>
+        </View>
+
         <View className="flex gap-4">
           <form.Field name="fullName">
             {(field) => (
