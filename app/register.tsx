@@ -174,9 +174,13 @@ export default function Screen() {
           <form.Field name="password">
             {(field) => {
               const password = field.state.value;
-              const hasUppercase = /[A-Z]/.test(password);
-              const hasLowercase = /[a-z]/.test(password);
-              const hasMinLength = password.length >= 6;
+              const requirements = [
+                { label: 'Uppercase letter', met: /[A-Z]/.test(password) },
+                { label: 'Lowercase letter', met: /[a-z]/.test(password) },
+                { label: 'Number', met: /[0-9]/.test(password) },
+                { label: 'Special character (e.g. !@#$%)', met: /[^A-Za-z0-9]/.test(password) },
+                { label: 'Minimum 8 characters', met: password.length >= 8 },
+              ];
 
               return (
                 <View>
@@ -191,48 +195,18 @@ export default function Screen() {
                   />
 
                   <View className="mt-2 gap-1">
-                    <View className="flex flex-row items-center gap-2">
-                      <Text
-                        className={
-                          hasUppercase ? 'text-sm text-green-600' : 'text-sm text-gray-400'
-                        }>
-                        {hasUppercase ? '✓' : '○'}
-                      </Text>
-                      <Text
-                        className={
-                          hasUppercase ? 'text-sm text-green-600' : 'text-sm text-gray-400'
-                        }>
-                        Uppercase letter
-                      </Text>
-                    </View>
-                    <View className="flex flex-row items-center gap-2">
-                      <Text
-                        className={
-                          hasLowercase ? 'text-sm text-green-600' : 'text-sm text-gray-400'
-                        }>
-                        {hasLowercase ? '✓' : '○'}
-                      </Text>
-                      <Text
-                        className={
-                          hasLowercase ? 'text-sm text-green-600' : 'text-sm text-gray-400'
-                        }>
-                        Lowercase letter
-                      </Text>
-                    </View>
-                    <View className="flex flex-row items-center gap-2">
-                      <Text
-                        className={
-                          hasMinLength ? 'text-sm text-green-600' : 'text-sm text-gray-400'
-                        }>
-                        {hasMinLength ? '✓' : '○'}
-                      </Text>
-                      <Text
-                        className={
-                          hasMinLength ? 'text-sm text-green-600' : 'text-sm text-gray-400'
-                        }>
-                        Minimum 6 characters
-                      </Text>
-                    </View>
+                    {requirements.map(({ label, met }) => (
+                      <View key={label} className="flex flex-row items-center gap-2">
+                        <Text
+                          className={met ? 'text-sm text-green-600' : 'text-sm text-gray-400'}>
+                          {met ? '✓' : '○'}
+                        </Text>
+                        <Text
+                          className={met ? 'text-sm text-green-600' : 'text-sm text-gray-400'}>
+                          {label}
+                        </Text>
+                      </View>
+                    ))}
                   </View>
 
                   {!field.state.meta.isValid ? (
