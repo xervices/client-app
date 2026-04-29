@@ -13,18 +13,21 @@ import { LoadingState } from '@/components/loading-state';
 import EmptyState from '@/components/empty-state';
 import { formatRelativeTime } from '@/lib/utils';
 import { AppState } from 'react-native';
+import { useAuthStore } from '@/store/auth-store';
+import { Button } from '@/components/ui/button';
 
 export default function Screen() {
+  const isGuest = useAuthStore((s) => s.isGuest);
   const [value, setValue] = React.useState('progress');
 
-  const { isLoading, data, isRefetching, refetch } = useQuery(api.getUserJobs());
-
-  const inProgressJobs = data?.filter(
-    (i) => i.status === 'paid' || i.status === 'in_progress' || i.status === 'completed'
-  );
-  const completedJobs = data?.filter((i) => i.status === 'approved');
+  const { isLoading, data, isRefetching, refetch } = useQuery({
+    ...api.getUserJobs(),
+    enabled: !isGuest,
+  });
 
   React.useEffect(() => {
+    if (isGuest) return;
+
     const subscription = AppState.addEventListener('change', (nextAppState) => {
       if (nextAppState === 'active') {
         refetch();
@@ -34,7 +37,33 @@ export default function Screen() {
     return () => {
       subscription.remove();
     };
-  }, []);
+  }, [isGuest]);
+
+  if (isGuest) {
+    return (
+      <Layout>
+        <View className="flex flex-1 items-center justify-center gap-6 px-6">
+          <View className="gap-2">
+            <Text className="text-center font-cabinet-bold text-xl text-[#1B1B1E]">
+              Login to see your jobs
+            </Text>
+            <Text className="text-center text-sm text-[#737381]">
+              Sign in to view your in-progress and completed jobs.
+            </Text>
+          </View>
+
+          <Button onPress={() => router.navigate('/login')} className="w-full">
+            Login
+          </Button>
+        </View>
+      </Layout>
+    );
+  }
+
+  const inProgressJobs = data?.filter(
+    (i) => i.status === 'paid' || i.status === 'in_progress' || i.status === 'completed'
+  );
+  const completedJobs = data?.filter((i) => i.status === 'approved');
 
   return (
     <Layout scrollable={false}>

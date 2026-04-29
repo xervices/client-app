@@ -4,7 +4,7 @@ import * as SplashScreenAPI from 'expo-splash-screen';
 
 import { useAuthStore } from '@/store/auth-store';
 import { PortalHost } from '@rn-primitives/portal';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import { Toaster } from 'sonner-native';
@@ -13,9 +13,9 @@ import { SheetProvider } from 'react-native-actions-sheet';
 import { Sheets } from '@/components/sheets';
 import { View } from 'react-native';
 import { LocationProvider } from 'solomo';
-import { QueryProvider } from '@/providers/query-provider';
+import { QueryProvider, queryClient } from '@/providers/query-provider';
 import { NotificationProvider } from '@/providers/notification-provider';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SplashScreen } from '@/components/splash-screen';
@@ -27,8 +27,23 @@ export {
 
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();
-  const { isLoggedIn, hasCompletedOnboarding } = useAuthStore();
+  const { isLoggedIn, isGuest, hasCompletedOnboarding } = useAuthStore();
+  const consumePendingRedirect = useAuthStore((s) => s.consumePendingRedirect);
+  const wasLoggedIn = useRef(isLoggedIn);
   const [showingSplash, setShowingSplash] = useState(true);
+
+  useEffect(() => {
+    if (!wasLoggedIn.current && isLoggedIn) {
+      queryClient.invalidateQueries();
+
+      const dest = consumePendingRedirect();
+      if (dest) {
+        // Defer one tick so the protected stack mounts before navigating
+        setTimeout(() => router.replace(dest as any), 0);
+      }
+    }
+    wasLoggedIn.current = isLoggedIn;
+  }, [isLoggedIn, consumePendingRedirect]);
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -65,8 +80,11 @@ export default function RootLayout() {
                   <Sheets />
                   <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
                   <Stack>
-                    <Stack.Protected guard={isLoggedIn}>
+                    <Stack.Protected guard={isLoggedIn || isGuest}>
                       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                    </Stack.Protected>
+
+                    <Stack.Protected guard={isLoggedIn}>
                       <Stack.Screen name="chat" options={{ headerShown: false }} />
                       <Stack.Screen name="ongoing" options={{ headerShown: false }} />
                       <Stack.Screen name="photo-preview" options={{ headerShown: false }} />

@@ -35,6 +35,10 @@ export const OffersProvider: React.FC<OffersProviderProps> = ({
   );
   const [shouldConnect, setShouldConnect] = React.useState(autoConnect);
 
+  React.useEffect(() => {
+    setShouldConnect(autoConnect);
+  }, [autoConnect]);
+
   const offersData = useOffersSocket({
     serviceRequestId: activeServiceRequestId,
     autoConnect: shouldConnect,

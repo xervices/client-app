@@ -27,7 +27,7 @@ function stripDialCode(phone: string): string {
 }
 
 export default function Screen() {
-  const { user } = useAuthStore();
+  const { user, isGuest, setPendingRedirect } = useAuthStore();
   const { setStep3, getFormData, requiresDestination } = useServiceStore();
   const { fetchLocation } = useCurrentLocation({
     accuracy: Location.Accuracy.BestForNavigation,
@@ -49,7 +49,7 @@ export default function Screen() {
   const [locationDialogVisible, setLocationDialogVisible] = React.useState(false);
 
   const { mutate, isPending } = useMutation(api.createServiceRequest());
-  const { refetch } = useQuery(api.getUserServiceRequests());
+  const { refetch } = useQuery({ ...api.getUserServiceRequests(), enabled: !isGuest });
 
   const getContact = async () => {
     const { status } = await Contacts.requestPermissionsAsync();
@@ -122,6 +122,12 @@ export default function Screen() {
       destinationLatitude,
       destinationLongitude,
     });
+
+    if (isGuest) {
+      setPendingRedirect('/book/step-3');
+      router.navigate('/login');
+      return;
+    }
 
     const data = getFormData();
 

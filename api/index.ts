@@ -367,7 +367,7 @@ export const api = {
     queryOptions({
       queryKey: ['categories'],
       queryFn: async () => {
-        const { data } = await apiClient.GET('/api/categories');
+        const { data } = await publicApiClient.GET('/api/categories');
 
         return data;
       },
@@ -523,7 +523,7 @@ export const api = {
     queryOptions({
       queryKey: ['profiles', 'active', 'featured'],
       queryFn: async () => {
-        const { data } = await apiClient.GET('/api/featured-profiles', {
+        const { data } = await publicApiClient.GET('/api/featured-profiles', {
           params: {
             query: {
               type: 'user',
@@ -540,7 +540,7 @@ export const api = {
     queryOptions({
       queryKey: ['news', 'promotions'],
       queryFn: async () => {
-        const { data } = await apiClient.GET('/api/promotion-slides', {
+        const { data } = await publicApiClient.GET('/api/promotion-slides', {
           params: {
             query: {
               audience: 'artisans',

@@ -14,12 +14,41 @@ import { api } from '@/api';
 import Storage from 'expo-sqlite/kv-store';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { SheetManager } from 'react-native-actions-sheet';
+import { Button } from '@/components/ui/button';
 
 export default function Screen() {
+  const isGuest = useAuthStore((s) => s.isGuest);
   const { expoPushToken } = useNotification();
   const { mutateAsync: unregisterDevice, isPending } = useMutation(
     api.unregisterDeviceForPushNotification()
   );
+
+  if (isGuest) {
+    return (
+      <Layout
+        useBackground
+        stickyHeader={
+          <View className="pb-4">
+            <AuthHeader title="Settings" showBackButton={false} />
+          </View>
+        }>
+        <View className="flex flex-1 items-center justify-center gap-6 px-6">
+          <View className="gap-2">
+            <Text className="text-center font-cabinet-bold text-xl text-[#1B1B1E]">
+              Login to access your profile
+            </Text>
+            <Text className="text-center text-sm text-[#737381]">
+              Sign in to manage your personal details, password, disputes and more.
+            </Text>
+          </View>
+
+          <Button onPress={() => router.navigate('/login')} className="w-full">
+            Login
+          </Button>
+        </View>
+      </Layout>
+    );
+  }
 
   const data = [
     {

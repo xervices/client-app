@@ -8,6 +8,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api';
 import { LoadingIndicator } from '../ui/loading-indicator';
 import * as Application from 'expo-application';
+import { useAuthStore } from '@/store/auth-store';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH;
@@ -22,7 +23,8 @@ const BROADCAST_ICONS = {
 };
 
 export function BroadcastDialog() {
-  const { isLoading, data } = useQuery(api.getActiveBroadcasts());
+  const isGuest = useAuthStore((s) => s.isGuest);
+  const { isLoading, data } = useQuery({ ...api.getActiveBroadcasts(), enabled: !isGuest });
 
   const [visible, setVisible] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);

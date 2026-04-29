@@ -10,13 +10,37 @@ import React from 'react';
 import { LoadingIndicator } from '../ui/loading-indicator';
 import { showErrorMessage } from '@/api/helpers';
 import { SheetManager } from 'react-native-actions-sheet';
+import { useAuthStore } from '@/store/auth-store';
 
 export function ActiveJobs() {
-  const { data, refetch } = useQuery(api.getUserServiceRequests());
+  const isGuest = useAuthStore((s) => s.isGuest);
 
-  const jobs = useQuery(api.getUserJobs());
+  const { data, refetch } = useQuery({
+    ...api.getUserServiceRequests(),
+    enabled: !isGuest,
+  });
+
+  const jobs = useQuery({ ...api.getUserJobs(), enabled: !isGuest });
 
   const queryClient = useQueryClient();
+
+  if (isGuest) {
+    return (
+      <View className="flex gap-2 px-6">
+        <Text className="font-cabinet-medium text-xs uppercase">Active Jobs</Text>
+
+        <View className="flex w-full items-center justify-center gap-5 rounded-[8px] border border-[#D4D4D8] p-4">
+          <Text className="text-center text-sm text-[#737381]">
+            Log in to see your active jobs and bookings.
+          </Text>
+
+          <Button onPress={() => router.navigate('/login')} className="w-full">
+            Login
+          </Button>
+        </View>
+      </View>
+    );
+  }
 
   const inCompleteSearch = data?.filter((i) => i.status === 'open');
   const negotiatingJobs = data?.filter((i) => i.status === 'in_negotiation');

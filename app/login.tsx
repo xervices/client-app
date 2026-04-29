@@ -196,6 +196,17 @@ export default function Screen() {
             </Text>
           </Text>
         </View>
+
+        <Pressable
+          onPress={() => {
+            useAuthStore.getState().setGuestMode(true);
+            router.replace('/(tabs)/(home)');
+          }}
+          className="flex flex-row items-center justify-center">
+          <Text className="font-cabinet-medium text-sm text-[#737381]">
+            Continue as <Text className="text-primary">Guest</Text>
+          </Text>
+        </Pressable>
       </View>
     </Layout>
   );

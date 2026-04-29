@@ -1,6 +1,7 @@
 import { Text } from '@/components/ui/text';
 import { NotificationSocketProvider } from '@/providers/notification-socket-provider';
 import { OffersProvider } from '@/providers/offers-context';
+import { useAuthStore } from '@/store/auth-store';
 import { Image } from 'expo-image';
 import { Tabs } from 'expo-router';
 import { Key } from 'react';
@@ -8,9 +9,11 @@ import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabsLayout() {
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
+
   return (
     <NotificationSocketProvider>
-      <OffersProvider>
+      <OffersProvider autoConnect={isLoggedIn}>
         <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <MyTabBar {...props} />}>
           <Tabs.Screen
             name="(home)"

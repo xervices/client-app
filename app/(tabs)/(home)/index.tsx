@@ -15,15 +15,15 @@ import { useAuthStore } from '@/store/auth-store';
 import { BroadcastDialog } from '@/components/home/broadcast-dialog';
 
 export default function Screen() {
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn, isGuest } = useAuthStore();
   const { expoPushToken } = useNotification();
   const { mutateAsync: registerDevice } = useMutation(api.registerDeviceForPushNotification());
 
   const [categories, requests, jobs, userOfWeek, newsPromotions] = useQueries({
     queries: [
       api.getAllCategories(),
-      api.getUserServiceRequests(),
-      api.getUserJobs(),
+      { ...api.getUserServiceRequests(), enabled: !isGuest },
+      { ...api.getUserJobs(), enabled: !isGuest },
       api.getActiveFeaturedProfiles(),
       api.getNewsAndPromotions(),
     ],
@@ -37,8 +37,8 @@ export default function Screen() {
     try {
       await Promise.all([
         categories.refetch(),
-        requests?.refetch(),
-        jobs?.refetch(),
+        !isGuest ? requests?.refetch() : Promise.resolve(),
+        !isGuest ? jobs?.refetch() : Promise.resolve(),
         userOfWeek?.refetch(),
         newsPromotions?.refetch(),
       ]);
@@ -49,6 +49,7 @@ export default function Screen() {
   };
 
   useEffect(() => {
+    if (isGuest) return;
     if (expoPushToken) {
       registerDevice({
         pushToken: expoPushToken,
@@ -57,23 +58,25 @@ export default function Screen() {
         console.log('Failed to register device:', error);
       });
     }
-  }, [expoPushToken]);
+  }, [expoPushToken, isGuest]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextAppState) => {
       if (nextAppState === 'active') {
         categories.refetch();
-        requests?.refetch();
-        jobs?.refetch();
         userOfWeek?.refetch();
         newsPromotions?.refetch();
+        if (!isGuest) {
+          requests?.refetch();
+          jobs?.refetch();
+        }
       }
     });
 
     return () => {
       subscription.remove();
     };
-  }, []);
+  }, [isGuest]);
 
   return (
     <Layout
