@@ -8,7 +8,7 @@ import { ArrowUpRight, ChevronRight } from 'lucide-react-native';
 import { router, useFocusEffect, useLocalSearchParams, usePathname } from 'expo-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
-import { useQueries } from '@tanstack/react-query';
+import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api';
 import { LoadingState } from '@/components/loading-state';
 import { formatRelativeTime } from '@/lib/utils';
@@ -19,6 +19,8 @@ export function SearchingScreen() {
   const { id }: { id: string } = useLocalSearchParams();
 
   const { user } = useAuthStore();
+
+  const queryClient = useQueryClient();
 
   const pathname = usePathname();
 
@@ -37,6 +39,13 @@ export function SearchingScreen() {
 
   const { joinServiceRequest, views, offers, isConnected } = useOffersContext({
     onOfferEvent(eventType, data) {
+      if (eventType === 'request:viewed') {
+        queryClient.setQueryData(['service-request', id], (prev: any) =>
+          prev ? { ...prev, viewersCount: (prev.viewersCount ?? 0) + 1 } : prev
+        );
+        serviceRequest?.refetch();
+        return;
+      }
       allOffers?.refetch();
     },
   });
@@ -104,6 +113,7 @@ export function SearchingScreen() {
   React.useEffect(() => {
     if (isConnected) {
       joinServiceRequest(id);
+      serviceRequest?.refetch();
     }
   }, [isConnected]);
 
@@ -130,6 +140,11 @@ export function SearchingScreen() {
           view.artisanId !== user?.id
       ),
     [views, user?.id]
+  );
+
+  const viewersCount = Math.max(
+    serviceRequest?.data?.viewersCount ?? 0,
+    uniqueViews?.length ?? 0
   );
 
   React.useEffect(() => {
@@ -182,8 +197,7 @@ export function SearchingScreen() {
         <View className="flex-1 gap-2">
           <View className="flex flex-row items-center justify-between gap-2">
             <Text className="flex-1 text-sm text-[#737381]">
-              {uniqueViews && uniqueViews?.length > 0 ? uniqueViews.length : 0}{' '}
-              {uniqueViews && uniqueViews?.length === 1 ? 'Pro' : 'Pros'} viewed your request
+              {viewersCount} {viewersCount === 1 ? 'Pro' : 'Pros'} viewed your request
             </Text>
 
             <View className="flex-row">
@@ -201,13 +215,13 @@ export function SearchingScreen() {
                 </Avatar>
               ))}
 
-              {uniqueViews && Math.max(0, uniqueViews?.length - 6) > 0 && (
+              {viewersCount - Math.min(uniqueViews?.length ?? 0, 6) > 0 && (
                 <Avatar
                   alt="@evilrabbit"
                   className="-mr-2 h-6 w-6 border-2 border-background bg-[#F4F4F5] web:border-0 web:ring-2 web:ring-background">
                   <AvatarFallback>
                     <Text className="font-cabinet-bold text-xs">
-                      +{Math.max(0, uniqueViews?.length - 6)}
+                      +{viewersCount - Math.min(uniqueViews?.length ?? 0, 6)}
                     </Text>
                   </AvatarFallback>
                 </Avatar>

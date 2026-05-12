@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { View } from 'react-native';
 
-import { Text } from '@/components/ui/text';
 import { Layout } from '@/components/layout';
 import { AuthHeader } from '@/components/auth-header';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import { LoadingState } from '../loading-state';
+import { HtmlContent } from '@/components/html-content';
 
 export function PrivacyScreen() {
   const { data, isLoading, refetch, isRefetching } = useQuery(api.getPrivacyPolicy());
@@ -24,8 +24,8 @@ export function PrivacyScreen() {
       {isLoading ? (
         <LoadingState title="Loading Privacy Policy..." />
       ) : (
-        <View className="flex-1 gap-6">
-          <Text className="text-[#737381]">{data?.data?.content}</Text>
+        <View className="flex-1">
+          <HtmlContent html={data?.data?.content} />
         </View>
       )}
     </Layout>

@@ -10,17 +10,31 @@ export const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://staging-api.
 
 // Staging: https://staging-api.getxervices.com
 // Production: https://api.getxervices.com
-// Render: 'https://server-api-bibv.onrender.com'
 
 // Track ongoing refresh to prevent multiple simultaneous refresh requests
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
+// Track if we've already shown unauthorized error to prevent multiple error messages
+let unauthorizedErrorShown = false;
+
+function showSessionExpiredOnce() {
+  if (unauthorizedErrorShown) return;
+  unauthorizedErrorShown = true;
+  showErrorMessage('Session expired, please login again');
+  setTimeout(() => {
+    unauthorizedErrorShown = false;
+  }, 3000);
+}
+
 /**
  * Refresh the access token using the refresh token
+ * Works in both foreground and background contexts
  * Prevents multiple simultaneous refresh requests
  */
-async function refreshAccessToken(): Promise<string | null> {
+export async function refreshAccessToken(
+  skipInBackground: boolean = false
+): Promise<string | null> {
   // If already refreshing, wait for that request to complete
   if (isRefreshing && refreshPromise) {
     console.log('⏳ Waiting for ongoing token refresh...');
@@ -40,15 +54,26 @@ async function refreshAccessToken(): Promise<string | null> {
 
       console.log('🔄 Refreshing access token...');
 
-      // Create a separate client without auth middleware to avoid infinite loop
-      const refreshClient = createClient<paths>({ baseUrl: BASE_URL });
-      const { data, error } = await refreshClient.POST('/api/auth/refresh', {
-        body: { refreshToken },
+      // Use direct fetch instead of client to ensure it works in background tasks
+      const response = await fetch(`${BASE_URL}/api/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken }),
       });
 
-      if (error || !data) {
-        console.error('❌ Token refresh failed:', error);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Token refresh failed:', errorText);
         throw new Error('Failed to refresh token');
+      }
+
+      const data = await response.json();
+
+      if (!data.accessToken) {
+        console.error('❌ No access token in response');
+        throw new Error('No access token in response');
       }
 
       // Store new tokens
@@ -61,8 +86,12 @@ async function refreshAccessToken(): Promise<string | null> {
 
       // Clear tokens and logout on refresh failure
       await tokenStorage.clearTokens();
-      useAuthStore.getState().setLoginState(false);
-      showErrorMessage('Session expired, please login again');
+
+      // Only try to update auth state if not in background
+      if (!skipInBackground && useAuthStore.getState) {
+        useAuthStore.getState().setLoginState(false);
+        showSessionExpiredOnce();
+      }
 
       return null;
     } finally {
@@ -102,7 +131,7 @@ const authMiddleware: Middleware = {
   async onRequest({ request }) {
     try {
       // Add the role header to every request
-      request.headers.set('X-Active-Role', 'user');
+      request.headers.set('X-Active-Role', 'artisan');
 
       let token = await tokenStorage.getAccessToken();
 
@@ -156,24 +185,22 @@ const authMiddleware: Middleware = {
           console.log('🔄 Retrying request with new token...');
           const retryResponse = await fetch(clonedRequest);
 
-          // If retry succeeds, return the new response
           if (retryResponse.ok || retryResponse.status !== 401) {
             console.log('✅ Retry successful');
             return retryResponse;
           }
         }
 
-        // If refresh failed or retry still got 401, logout
         console.error('❌ Token refresh failed or retry still unauthorized');
         await tokenStorage.clearTokens();
         useAuthStore.getState().setLoginState(false);
-        showErrorMessage('Session expired, please login again');
+        showSessionExpiredOnce();
       } catch (error) {
         console.error('❌ Error handling 401:', error);
         if (error?.error === 'Unauthorized') {
           await tokenStorage.clearTokens();
           useAuthStore.getState().setLoginState(false);
-          showErrorMessage('Session expired, please login again');
+          showSessionExpiredOnce();
         }
       }
     }
@@ -184,7 +211,7 @@ const authMiddleware: Middleware = {
 
 const roleMiddleware: Middleware = {
   async onRequest({ request }) {
-    request.headers.set('X-Active-Role', 'user');
+    request.headers.set('X-Active-Role', 'artisan');
 
     return request;
   },

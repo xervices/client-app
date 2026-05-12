@@ -5,7 +5,7 @@ import { Layout } from '@/components/layout';
 import { AuthHeader } from '@/components/auth-header';
 import { Image } from 'expo-image';
 import { ArrowUpRight, BadgeCheck, ChevronRight, Map, MapPin } from 'lucide-react-native';
-import { router, useLocalSearchParams, usePathname } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams, usePathname } from 'expo-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { Button } from '@/components/ui/button';
@@ -22,9 +22,23 @@ export function OfferScreen() {
 
   const pathname = usePathname();
 
-  const [allOffers] = useQueries({
-    queries: [api.getOffers(id)],
+  const IS_BOOK_TAB = pathname.includes('book');
+
+  const [allOffers, serviceRequest] = useQueries({
+    queries: [api.getOffers(id), api.getServiceRequest(id)],
   });
+
+  const hasRedirectedRef = React.useRef(false);
+
+  const redirectToRootTab = React.useCallback(() => {
+    if (hasRedirectedRef.current) return;
+    hasRedirectedRef.current = true;
+    if (IS_BOOK_TAB) {
+      router.replace('/book');
+    } else {
+      router.replace('/(tabs)/(home)');
+    }
+  }, [IS_BOOK_TAB]);
 
   const queryClient = useQueryClient();
 
@@ -34,7 +48,10 @@ export function OfferScreen() {
     setIsRefreshing(true);
 
     try {
-      await Promise.all([allOffers.refetch()]);
+      const [, sr] = await Promise.all([allOffers.refetch(), serviceRequest.refetch()]);
+      if (sr?.data?.status === 'cancelled' || sr?.data?.status === 'expired') {
+        redirectToRootTab();
+      }
     } catch (error) {
     } finally {
       setIsRefreshing(false);
@@ -72,6 +89,11 @@ export function OfferScreen() {
 
         // Refetch all data
         allOffers?.refetch();
+        serviceRequest?.refetch().then((res) => {
+          if (res?.data?.status === 'cancelled' || res?.data?.status === 'expired') {
+            redirectToRootTab();
+          }
+        });
       }
     });
 
@@ -79,6 +101,17 @@ export function OfferScreen() {
       subscription.remove();
     };
   }, [isConnected, id]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      serviceRequest?.refetch().then((res) => {
+        if (!res?.data) return;
+        if (res.data.status === 'cancelled' || res.data.status === 'expired') {
+          redirectToRootTab();
+        }
+      });
+    }, [serviceRequest?.refetch, redirectToRootTab])
+  );
 
   const excludedStatuses = ['withdrawn', 'rejected', 'expired'];
 

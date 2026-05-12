@@ -3224,6 +3224,47 @@ export interface paths {
         patch: operations["FirstTimeDiscountController_update"];
         trace?: never;
     };
+    "/api/admin/otp-bypass": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List OTP bypass emails
+         * @description Paginated list with optional case-insensitive search by email substring.
+         */
+        get: operations["OtpBypassController_findAll"];
+        put?: never;
+        /**
+         * Add an email to the OTP bypass list
+         * @description Users whose email matches an entry on this list will skip OTP/MFA/device verification on register, login and PIN creation.
+         */
+        post: operations["OtpBypassController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/otp-bypass/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove an email from the OTP bypass list */
+        delete: operations["OtpBypassController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/users/me": {
         parameters: {
             query?: never;
@@ -3321,7 +3362,7 @@ export interface paths {
         };
         /**
          * Get all categories (Skills)
-         * @description Get all service categories/skills. Results are personalized and sorted by your recently viewed categories first, then by default display order.
+         * @description Get all service categories/skills. Public endpoint — guest users see the default ordering; authenticated users get personalized ordering based on their recently viewed categories.
          */
         get: operations["CategoriesController_findAll"];
         put?: never;
@@ -3345,7 +3386,7 @@ export interface paths {
         };
         /**
          * Get category by ID
-         * @description Get details of a category. This action logs a view to personalize your future category lists.
+         * @description Get details of a category. Public endpoint — when authenticated, this action logs a view to personalize your future category lists.
          */
         get: operations["CategoriesController_findOne"];
         put?: never;
@@ -3436,6 +3477,26 @@ export interface paths {
          *     The User must be joined to the `service_request:{id}` room to receive it.
          */
         get: operations["ServiceRequestsController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/service-requests/{id}/views": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get view count for a service request
+         * @description Returns the number of unique artisans (Pros) that have viewed this service request. Only the request owner or an artisan can call this.
+         */
+        get: operations["ServiceRequestsController_getViewersCount"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4312,6 +4373,46 @@ export interface paths {
          * @description Update an existing review. Only the original reviewer can update.
          */
         patch: operations["ReviewsController_update"];
+        trace?: never;
+    };
+    "/api/admin/paystack/disputes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Paystack chargebacks/disputes
+         * @description Proxies Paystack /dispute. Filters: status (awaiting-merchant-feedback, resolved, pending), transaction, date range. The dispute object shown is whatever Paystack returns.
+         */
+        get: operations["PaystackDisputesController_listDisputes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/paystack/disputes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a single Paystack dispute
+         * @description Proxies Paystack /dispute/:id and returns the raw dispute payload.
+         */
+        get: operations["PaystackDisputesController_getDispute"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/support/tickets": {
@@ -7410,6 +7511,18 @@ export interface components {
              */
             isActive?: boolean;
         };
+        CreateOtpBypassEmailDto: {
+            /**
+             * @description Email address that should bypass the OTP flow
+             * @example qa+tester1@xervices.com
+             */
+            email: string;
+            /**
+             * @description Optional reason / note for the bypass entry
+             * @example iOS reviewer test account
+             */
+            reason?: string;
+        };
         UserSettingsResponseDto: {
             notificationEnabled: boolean;
             emailNotification: boolean;
@@ -7706,6 +7819,11 @@ export interface components {
              * @example 2025-12-07T10:00:00.000Z
              */
             updatedAt: string;
+            /**
+             * @description Number of unique artisans (Pros) that have viewed this service request
+             * @example 3
+             */
+            viewersCount?: number;
             /** @description User who created the request (included when relations are loaded) */
             user?: components["schemas"]["UserResponseDto"];
             /** @description Category details (included when relations are loaded) */
@@ -15697,6 +15815,86 @@ export interface operations {
             };
         };
     };
+    OtpBypassController_findAll: {
+        parameters: {
+            query?: {
+                /** @description Filter by email substring (case-insensitive) */
+                search?: string;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OTP bypass emails retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OtpBypassController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOtpBypassEmailDto"];
+            };
+        };
+        responses: {
+            /** @description Email added to OTP bypass list */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Email is already on the list */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OtpBypassController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description OTP bypass entry ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Email removed from OTP bypass list */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Entry not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     UsersController_getCurrentUser: {
         parameters: {
             query?: never;
@@ -15954,15 +16152,6 @@ export interface operations {
                     "application/json": components["schemas"]["CategoryResponseDto"][];
                 };
             };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
         };
     };
     CategoriesController_create: {
@@ -16034,15 +16223,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CategoryResponseDto"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
                 };
             };
             /** @description Category not found */
@@ -16307,6 +16487,49 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ServiceRequestResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service request not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_getViewersCount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description View count retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example 3 */
+                        viewersCount?: number;
+                    };
                 };
             };
             /** @description Unauthorized */
@@ -18467,6 +18690,61 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ErrorResponseDto"];
                 };
+            };
+        };
+    };
+    PaystackDisputesController_listDisputes: {
+        parameters: {
+            query?: {
+                page?: number;
+                perPage?: number;
+                /** @description awaiting-merchant-feedback | pending | resolved */
+                status?: string;
+                transaction?: string;
+                /** @description ISO date */
+                from?: string;
+                /** @description ISO date */
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paystack disputes retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PaystackDisputesController_getDispute: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paystack dispute retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Paystack dispute not found */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
