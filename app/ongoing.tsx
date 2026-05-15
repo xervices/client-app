@@ -17,6 +17,7 @@ import { formatRelativeTime, getTravelTimeGoogle, makePhoneCall } from '@/lib/ut
 import { useJobsSocket } from '@/hooks/use-jobs-socket';
 import { LoadingState } from '@/components/loading-state';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
+import { MediaThumbnail } from '@/components/media-thumbnail';
 
 export default function Screen() {
   const { id }: { id: string } = useLocalSearchParams();
@@ -621,10 +622,10 @@ export default function Screen() {
                                     <View
                                       key={item?.id}
                                       className="aspect-[56/46] w-14 overflow-hidden rounded-[4px]">
-                                      <Image
-                                        source={item?.mediaUrl}
-                                        style={{ width: '100%', height: '100%' }}
-                                        contentFit="cover"
+                                      <MediaThumbnail
+                                        url={item?.mediaUrl}
+                                        playBadgeSize={18}
+                                        playIconSize={9}
                                       />
                                     </View>
                                   ))
@@ -677,10 +678,10 @@ export default function Screen() {
                                     <View
                                       key={item?.id}
                                       className="aspect-[56/46] w-14 overflow-hidden rounded-[4px]">
-                                      <Image
-                                        source={item?.mediaUrl}
-                                        style={{ width: '100%', height: '100%' }}
-                                        contentFit="cover"
+                                      <MediaThumbnail
+                                        url={item?.mediaUrl}
+                                        playBadgeSize={18}
+                                        playIconSize={9}
                                       />
                                     </View>
                                   ))

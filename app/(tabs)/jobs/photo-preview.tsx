@@ -3,13 +3,12 @@ import * as React from 'react';
 import { Pressable, View } from 'react-native';
 import { Layout } from '@/components/layout';
 import { AuthHeader } from '@/components/auth-header';
-import { Image } from 'expo-image';
-import { ChevronRight } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { LegendList } from '@legendapp/list';
 import { SheetManager } from 'react-native-actions-sheet';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
+import { MediaThumbnail } from '@/components/media-thumbnail';
 
 export default function Screen() {
   const { type, id }: { type: string; id: string } = useLocalSearchParams();
@@ -49,11 +48,7 @@ export default function Screen() {
                 });
               }}
               className="flex aspect-square w-full items-center justify-center gap-[2px] overflow-hidden rounded-[8px]">
-              <Image
-                source={item?.mediaUrl}
-                style={{ width: '100%', height: '100%' }}
-                contentFit="cover"
-              />
+              <MediaThumbnail url={item?.mediaUrl} playBadgeSize={36} playIconSize={18} />
             </Pressable>
           )}
           recycleItems

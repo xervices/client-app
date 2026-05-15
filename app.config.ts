@@ -54,9 +54,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
     splash: {
-      image: './assets/images/splash.png',
+      image: './assets/images/splash-icon.png',
       resizeMode: 'contain',
       backgroundColor: '#E15D02',
+      imageWidth: 580,
     },
     updates: {
       url: `https://u.expo.dev/${EAS_PROJECT_ID}`,

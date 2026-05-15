@@ -22,6 +22,7 @@ import { showErrorMessage } from '@/api/helpers';
 import { useAuthStore } from '@/store/auth-store';
 import { formatPhoneNumber, getDeviceInfo } from '@/lib/utils';
 import { SheetManager } from 'react-native-actions-sheet';
+import { deviceName } from 'expo-device';
 
 const formSchema = z.object({
   emailOrPhone: z
@@ -88,6 +89,10 @@ export default function Screen() {
               pathname: '/verify-device',
               params: {
                 token: res?.deviceVerificationToken,
+                emailOrPhone: value?.emailOrPhone,
+                password: value?.password,
+                deviceId: value?.deviceId,
+                deviceName: value?.deviceName,
               },
             });
           } else {

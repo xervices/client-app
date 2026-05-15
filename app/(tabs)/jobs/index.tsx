@@ -1,6 +1,6 @@
 import { Text } from '@/components/ui/text';
 import * as React from 'react';
-import { Pressable, RefreshControl, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, View } from 'react-native';
 import { Layout } from '@/components/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { router } from 'expo-router';
@@ -201,10 +201,23 @@ export default function Screen() {
                 </View>
               ) : (
                 <View className="h-full flex-1">
-                  <EmptyState
-                    title="No in-progress jobs"
-                    subtitle="You currently don’t have any in-progress jobs."
-                  />
+                  <ScrollView
+                    contentContainerStyle={{
+                      flexGrow: 1,
+                    }}
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={isRefetching}
+                        onRefresh={refetch}
+                        tintColor={'#E15D02'}
+                        colors={['#E15D02']}
+                      />
+                    }>
+                    <EmptyState
+                      title="No in-progress jobs"
+                      subtitle="You currently don’t have any in-progress jobs."
+                    />
+                  </ScrollView>
                 </View>
               )}
             </TabsContent>
@@ -297,10 +310,23 @@ export default function Screen() {
                 </View>
               ) : (
                 <View className="h-full flex-1">
-                  <EmptyState
-                    title="No completed jobs"
-                    subtitle="You currently don’t have any completed jobs."
-                  />
+                  <ScrollView
+                    contentContainerStyle={{
+                      flexGrow: 1,
+                    }}
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={isRefetching}
+                        onRefresh={refetch}
+                        tintColor={'#E15D02'}
+                        colors={['#E15D02']}
+                      />
+                    }>
+                    <EmptyState
+                      title="No completed jobs"
+                      subtitle="You currently don’t have any completed jobs."
+                    />
+                  </ScrollView>
                 </View>
               )}
             </TabsContent>

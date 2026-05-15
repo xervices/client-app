@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { OtpInput } from 'react-native-otp-entry';
 import { useMutation } from '@tanstack/react-query';
@@ -17,11 +17,18 @@ import { useAuthStore } from '@/store/auth-store';
 import { getDeviceInfo } from '@/lib/utils';
 
 export default function Screen() {
-  const { token }: { token: string } = useLocalSearchParams();
+  const params = useLocalSearchParams<{
+    token: string;
+    emailOrPhone: string;
+    password: string;
+    deviceId: string;
+    deviceName: string;
+  }>();
 
+  const [token, setToken] = React.useState(params.token ?? '');
   const [otpDisabled, setOTPDisabled] = React.useState(false);
-  //   const [timer, setTimer] = React.useState(0);
-  //   const { minute, seconds } = useTimer({ sec: timer });
+  const [timer, setTimer] = React.useState(0);
+  const { minute, seconds } = useTimer({ sec: timer });
 
   const verifyDevice = useMutation({
     ...api.verifyDevice(),
@@ -46,6 +53,32 @@ export default function Screen() {
     },
     onSettled: () => [setOTPDisabled(false)],
   });
+
+  const resendCode = useMutation({
+    ...api.login(),
+    onSuccess: (data: any) => {
+      if (data?.deviceVerificationToken) {
+        setToken(data.deviceVerificationToken);
+      }
+      showSuccessMessage('Verification code sent to your email successfully.');
+    },
+    onError: (err) => {
+      showErrorMessage(err.message);
+    },
+  });
+
+  const handleOnResendOTP = () => {
+    if (Number(seconds) > 0) return;
+
+    setTimer((prev) => prev + 30);
+
+    resendCode.mutate({
+      emailOrPhone: params.emailOrPhone,
+      password: params.password,
+      deviceId: params.deviceId,
+      deviceName: params.deviceName,
+    });
+  };
 
   return (
     <Layout useBackground>
@@ -98,7 +131,23 @@ export default function Screen() {
         </View>
 
         <View className="flex flex-row items-center justify-center gap-1.5">
-          {verifyDevice.isPending ? <LoadingIndicator size={24} /> : null}
+          {verifyDevice.isPending || resendCode.isPending ? (
+            <LoadingIndicator size={24} />
+          ) : Number(seconds) > 0 ? (
+            <Text className="text-center text-[#737381]">
+              Wait to request code in:{' '}
+              <Text className="text-primary">
+                {minute}:{seconds}
+              </Text>
+            </Text>
+          ) : (
+            <Text className="text-center text-[#737381]">
+              Haven’t gotten any code?{' '}
+              <Text onPress={handleOnResendOTP} className="text-primary">
+                Resend
+              </Text>
+            </Text>
+          )}
         </View>
       </View>
     </Layout>

@@ -4,7 +4,8 @@ import { AppState, Pressable, View } from 'react-native';
 import { Layout } from '@/components/layout';
 import { AuthHeader } from '@/components/auth-header';
 import { Image } from 'expo-image';
-import { ArrowUpRight, ChevronRight } from 'lucide-react-native';
+import { ArrowUpRight } from 'lucide-react-native';
+import { MediaThumbnail } from '@/components/media-thumbnail';
 import { router, useFocusEffect, useLocalSearchParams, usePathname } from 'expo-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
@@ -267,10 +268,10 @@ export function SearchingScreen() {
                 <View className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-sm border-2 border-[#FFAC70]">
                   {serviceRequest?.data?.mediaUrls &&
                     serviceRequest?.data?.mediaUrls?.length > 0 && (
-                      <Image
-                        source={serviceRequest?.data?.mediaUrls[0]}
-                        style={{ width: '100%', height: '100%' }}
-                        contentFit="cover"
+                      <MediaThumbnail
+                        url={serviceRequest.data.mediaUrls[0]}
+                        playBadgeSize={14}
+                        playIconSize={7}
                       />
                     )}
                 </View>

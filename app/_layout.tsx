@@ -15,10 +15,9 @@ import { View } from 'react-native';
 import { LocationProvider } from 'solomo';
 import { QueryProvider, queryClient } from '@/providers/query-provider';
 import { NotificationProvider } from '@/providers/notification-provider';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { SplashScreen } from '@/components/splash-screen';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -30,7 +29,6 @@ export default function RootLayout() {
   const { isLoggedIn, isGuest, hasCompletedOnboarding } = useAuthStore();
   const consumePendingRedirect = useAuthStore((s) => s.consumePendingRedirect);
   const wasLoggedIn = useRef(isLoggedIn);
-  const [showingSplash, setShowingSplash] = useState(true);
 
   useEffect(() => {
     if (!wasLoggedIn.current && isLoggedIn) {
@@ -58,15 +56,9 @@ export default function RootLayout() {
   //   });
   // }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(async () => {
-      await SplashScreenAPI.hideAsync(); // hide native splash first
-      setShowingSplash(false); // then show your custom one
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (showingSplash) return <SplashScreen />;
+  // useEffect(() => {
+  //   SplashScreenAPI.hideAsync();
+  // }, []);
 
   return (
     // <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>

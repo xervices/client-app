@@ -20,6 +20,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import { formatCurrency, formatDateTime } from '@/lib/utils';
 import { LoadingState } from '@/components/loading-state';
+import { MediaThumbnail } from '@/components/media-thumbnail';
 
 export default function Screen() {
   const { id }: { id: string } = useLocalSearchParams();
@@ -144,11 +145,7 @@ export default function Screen() {
                 <View className="mt-1 flex flex-row flex-wrap gap-2">
                   {beforeEvidence?.map((i) => (
                     <View key={i?.id} className="aspect-[56/46] w-14 overflow-hidden rounded-[4px]">
-                      <Image
-                        source={i?.mediaUrl}
-                        style={{ width: '100%', height: '100%' }}
-                        contentFit="cover"
-                      />
+                      <MediaThumbnail url={i?.mediaUrl} playBadgeSize={18} playIconSize={9} />
                     </View>
                   ))}
                 </View>
@@ -193,11 +190,7 @@ export default function Screen() {
                 <View className="mt-1 flex flex-row flex-wrap gap-2">
                   {afterEvidence?.map((i) => (
                     <View key={i?.id} className="aspect-[56/46] w-14 overflow-hidden rounded-[4px]">
-                      <Image
-                        source={i?.mediaUrl}
-                        style={{ width: '100%', height: '100%' }}
-                        contentFit="cover"
-                      />
+                      <MediaThumbnail url={i?.mediaUrl} playBadgeSize={18} playIconSize={9} />
                     </View>
                   ))}
                 </View>
