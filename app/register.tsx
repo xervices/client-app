@@ -178,7 +178,7 @@ export default function Screen() {
                 { label: 'Uppercase letter', met: /[A-Z]/.test(password) },
                 { label: 'Lowercase letter', met: /[a-z]/.test(password) },
                 { label: 'Number', met: /[0-9]/.test(password) },
-                { label: 'Special character (e.g. !@#$%)', met: /[^A-Za-z0-9]/.test(password) },
+                { label: 'Special character (e.g. !@#$%)', met: /[^A-Za-z0-9.,]/.test(password) },
                 { label: 'Minimum 8 characters', met: password.length >= 8 },
               ];
 
@@ -197,12 +197,10 @@ export default function Screen() {
                   <View className="mt-2 gap-1">
                     {requirements.map(({ label, met }) => (
                       <View key={label} className="flex flex-row items-center gap-2">
-                        <Text
-                          className={met ? 'text-sm text-green-600' : 'text-sm text-gray-400'}>
+                        <Text className={met ? 'text-sm text-green-600' : 'text-sm text-gray-400'}>
                           {met ? '✓' : '○'}
                         </Text>
-                        <Text
-                          className={met ? 'text-sm text-green-600' : 'text-sm text-gray-400'}>
+                        <Text className={met ? 'text-sm text-green-600' : 'text-sm text-gray-400'}>
                           {label}
                         </Text>
                       </View>
