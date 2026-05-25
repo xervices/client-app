@@ -1,6 +1,6 @@
 import '@/global.css';
 
-import * as SplashScreenAPI from 'expo-splash-screen';
+import * as ExpoSplashScreen from 'expo-splash-screen';
 
 import { useAuthStore } from '@/store/auth-store';
 import { PortalHost } from '@rn-primitives/portal';
@@ -15,9 +15,10 @@ import { View } from 'react-native';
 import { LocationProvider } from 'solomo';
 import { QueryProvider, queryClient } from '@/providers/query-provider';
 import { NotificationProvider } from '@/providers/notification-provider';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { SplashScreen } from '@/components/splash-screen';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -29,6 +30,16 @@ export default function RootLayout() {
   const { isLoggedIn, isGuest, hasCompletedOnboarding } = useAuthStore();
   const consumePendingRedirect = useAuthStore((s) => s.consumePendingRedirect);
   const wasLoggedIn = useRef(isLoggedIn);
+
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    // The custom <SplashScreen /> is already painted on this first frame,
+    // so hide the native splash immediately to reveal it.
+    ExpoSplashScreen.hideAsync();
+    const timer = setTimeout(() => setShowSplash(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (!wasLoggedIn.current && isLoggedIn) {
@@ -49,16 +60,6 @@ export default function RootLayout() {
       webClientId: '254247444720-3g5icekin9d9ls4hg0faag1mgsarb3u6.apps.googleusercontent.com',
     });
   }, []);
-  // useEffect(() => {
-  //   GoogleSignin.configure({
-  //     iosClientId: '254247444720-nk2nrjvqda0r37s9kudt7embqirg3efu.apps.googleusercontent.com',
-  //     webClientId: '254247444720-3g5icekin9d9ls4hg0faag1mgsarb3u6.apps.googleusercontent.com',
-  //   });
-  // }, []);
-
-  // useEffect(() => {
-  //   SplashScreenAPI.hideAsync();
-  // }, []);
 
   return (
     // <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
@@ -111,6 +112,11 @@ export default function RootLayout() {
                     }}
                   />
                   <PortalHost />
+                  {showSplash && (
+                    <View className="absolute inset-0 z-50">
+                      <SplashScreen />
+                    </View>
+                  )}
                 </SheetProvider>
               </NotificationProvider>
             </View>
