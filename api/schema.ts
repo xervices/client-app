@@ -2549,7 +2549,7 @@ export interface paths {
         };
         /**
          * Get active terms and conditions
-         * @description Returns the currently active terms and conditions for display in the app.
+         * @description Returns the currently active terms and conditions for the specified app. Pass ?app=customer for the customer app or ?app=pro for the artisan app.
          */
         get: operations["MobileTermsController_getActiveTerms"];
         put?: never;
@@ -6254,6 +6254,12 @@ export interface components {
              */
             title?: string;
             /**
+             * @description Which app these terms apply to
+             * @example customer
+             * @enum {string}
+             */
+            type: "customer" | "pro";
+            /**
              * @description Whether this version is active
              * @example true
              */
@@ -6469,6 +6475,12 @@ export interface components {
              * @example true
              */
             isActive: boolean;
+            /**
+             * @description Which app these terms apply to
+             * @example customer
+             * @enum {string}
+             */
+            type: "customer" | "pro";
             /**
              * @description Date when this version becomes effective
              * @example 2025-02-01T00:00:00Z
@@ -11788,11 +11800,12 @@ export interface operations {
     };
     AdminController_getAllTermsAndConditions: {
         parameters: {
-            query?: {
+            query: {
                 /** @description Page number (default: 1) */
                 page?: number;
                 /** @description Items per page (default: 20) */
                 limit?: number;
+                type: string;
             };
             header?: never;
             path?: never;
@@ -11890,7 +11903,9 @@ export interface operations {
     };
     AdminController_getActiveTermsAndConditions: {
         parameters: {
-            query?: never;
+            query: {
+                type: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -14738,7 +14753,10 @@ export interface operations {
     };
     MobileTermsController_getActiveTerms: {
         parameters: {
-            query?: never;
+            query: {
+                /** @description Which app to fetch terms for (customer or pro) */
+                app: "customer" | "pro";
+            };
             header?: never;
             path?: never;
             cookie?: never;
