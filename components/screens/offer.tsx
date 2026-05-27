@@ -351,52 +351,65 @@ function OfferCard({
             loadingIndicatorColor="#CC5600"
             onPress={() => {
               if (!offersLeft) {
-                return showErrorMessage("You've run out of counters with this artisan.");
+                rejectOffer?.mutate(
+                  {
+                    action: 'reject',
+                  },
+                  {
+                    onSuccess: () => {
+                      onRejectOfferCallback?.();
+                      showSuccessMessage('Rejected offer successfully.');
+                    },
+                    onError: (err) => {
+                      showErrorMessage(err.message);
+                    },
+                  }
+                );
+              } else {
+                SheetManager.show('counter-offer-sheet', {
+                  payload: {
+                    type: 'counter',
+                    amount: amount,
+                    name: name,
+                    profileImage: avatarUrl,
+                    onReject: () => {
+                      rejectOffer?.mutate(
+                        {
+                          action: 'reject',
+                        },
+                        {
+                          onSuccess: () => {
+                            onRejectOfferCallback?.();
+                            showSuccessMessage('Rejected offer successfully.');
+                          },
+                          onError: (err) => {
+                            showErrorMessage(err.message);
+                          },
+                        }
+                      );
+                    },
+                    onConfirm: (amount) => {
+                      sendCounterOffer.mutate(
+                        // @ts-ignore
+                        { amount, id },
+                        {
+                          onSuccess: () => {
+                            onCounterOfferCallback?.();
+                            showSuccessMessage('Counter offer sent successfully.');
+                          },
+                          onError: (err) => {
+                            showErrorMessage(err.message);
+                          },
+                        }
+                      );
+                    },
+                  },
+                });
               }
-
-              SheetManager.show('counter-offer-sheet', {
-                payload: {
-                  type: 'counter',
-                  amount: amount,
-                  name: name,
-                  profileImage: avatarUrl,
-                  onReject: () => {
-                    rejectOffer?.mutate(
-                      {
-                        action: 'reject',
-                      },
-                      {
-                        onSuccess: () => {
-                          onRejectOfferCallback?.();
-                          showSuccessMessage('Rejected offer successfully.');
-                        },
-                        onError: (err) => {
-                          showErrorMessage(err.message);
-                        },
-                      }
-                    );
-                  },
-                  onConfirm: (amount) => {
-                    sendCounterOffer.mutate(
-                      // @ts-ignore
-                      { amount, id },
-                      {
-                        onSuccess: () => {
-                          onCounterOfferCallback?.();
-                          showSuccessMessage('Counter offer sent successfully.');
-                        },
-                        onError: (err) => {
-                          showErrorMessage(err.message);
-                        },
-                      }
-                    );
-                  },
-                },
-              });
             }}
             className="h-12 flex-1"
             variant={'outline'}>
-            Counter
+            {!offersLeft ? 'Reject' : 'Counter'}
           </Button>
           <Button
             onPress={() => {

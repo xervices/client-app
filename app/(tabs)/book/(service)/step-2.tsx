@@ -44,7 +44,7 @@ export default function Screen() {
         </View>
 
         <View className="flex gap-2">
-          <Text className="font-cabinet-bold leading-none text-[#737381]">Add Photos & videos</Text>
+          <Text className="font-cabinet-bold leading-none text-[#737381]">Add photos & videos</Text>
 
           <Text className="text-sm text-[#737381]">
             Show us the service request with a photo/video

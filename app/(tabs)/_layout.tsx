@@ -2,11 +2,18 @@ import { Text } from '@/components/ui/text';
 import { NotificationSocketProvider } from '@/providers/notification-socket-provider';
 import { OffersProvider } from '@/providers/offers-context';
 import { useAuthStore } from '@/store/auth-store';
+import { CommonActions } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import { Tabs } from 'expo-router';
-import { Key } from 'react';
+import { Key, useEffect, useRef } from 'react';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+// Tabs whose nested stack should be reset to a known root route whenever
+// the tab loses focus. Maps tab route name → desired root screen name.
+const RESET_ON_BLUR_TABS: Record<string, string> = {
+  book: '(service)',
+};
 
 export default function TabsLayout() {
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
@@ -53,6 +60,37 @@ type MyTabBarProps = {
 
 function MyTabBar({ state, descriptors, navigation }: MyTabBarProps) {
   const insets = useSafeAreaInsets();
+
+  // Force-reset specific tabs to a known root route whenever the focused tab
+  // changes away from them. This handles both tab-bar presses and programmatic
+  // cross-tab navigation (e.g. router.replace to a route in a different tab).
+  // We reset to a named root rather than popping, because the leaving tab's
+  // nested stack may not contain the desired root (e.g. when navigation into
+  // the screen used router.replace, which clears the underlying stack).
+  const prevIndexRef = useRef(state.index);
+  useEffect(() => {
+    const prev = prevIndexRef.current;
+    if (prev !== state.index) {
+      const leavingRoute = state.routes[prev];
+      const desiredRoot = leavingRoute && RESET_ON_BLUR_TABS[leavingRoute.name];
+      const innerState = leavingRoute?.state;
+      const alreadyAtRoot =
+        innerState &&
+        innerState.index === 0 &&
+        innerState.routes[0]?.name === desiredRoot;
+
+      if (desiredRoot && innerState && !alreadyAtRoot) {
+        navigation.dispatch({
+          ...CommonActions.reset({
+            index: 0,
+            routes: [{ name: desiredRoot }],
+          }),
+          target: innerState.key,
+        });
+      }
+      prevIndexRef.current = state.index;
+    }
+  }, [state.index, state.routes, navigation]);
 
   const TAB_ICONS: Record<string, { icon: any; active: any }> = {
     '(home)': {

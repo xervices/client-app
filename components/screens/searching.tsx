@@ -143,10 +143,7 @@ export function SearchingScreen() {
     [views, user?.id]
   );
 
-  const viewersCount = Math.max(
-    serviceRequest?.data?.viewersCount ?? 0,
-    uniqueViews?.length ?? 0
-  );
+  const viewersCount = Math.max(serviceRequest?.data?.viewersCount ?? 0, uniqueViews?.length ?? 0);
 
   React.useEffect(() => {
     if (!artisans.isLoading && artisans.data !== undefined && artisans.data.length === 0) {
@@ -282,21 +279,21 @@ export function SearchingScreen() {
               <View className="flex flex-row items-center justify-end">
                 <Pressable
                   onPress={() => {
-                    if (IS_BOOK_TAB) {
-                      router.replace({
-                        pathname: '/book/offer',
-                        params: {
-                          id: serviceRequest?.data?.id,
-                        },
-                      });
-                    } else {
-                      router.replace({
-                        pathname: '/offer',
-                        params: {
-                          id: serviceRequest?.data?.id,
-                        },
-                      });
-                    }
+                    // if (IS_BOOK_TAB) {
+                    //   router.replace({
+                    //     pathname: '/book/offer',
+                    //     params: {
+                    //       id: serviceRequest?.data?.id,
+                    //     },
+                    //   });
+                    // } else {
+                    router.replace({
+                      pathname: '/offer',
+                      params: {
+                        id: serviceRequest?.data?.id,
+                      },
+                    });
+                    // }
                   }}
                   className="flex flex-row items-center gap-1">
                   <Text className="font-cabinet-bold text-sm text-primary">View details</Text>
