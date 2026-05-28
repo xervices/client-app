@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npx tsc *)",
-      "Bash(pnpm add *)"
+      "Bash(pnpm add *)",
+      "PowerShell(pnpm add react-native-compressor)"
     ]
   }
 }

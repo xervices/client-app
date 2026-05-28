@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import { queryOptions } from '@tanstack/react-query';
+import { Video as VideoCompressor } from 'react-native-compressor';
 
 import { apiClient, publicApiClient } from './client';
 import { tokenStorage } from './token-storage';
@@ -8,6 +9,18 @@ import { useAuthStore } from '@/store/auth-store';
 import { getFileExtension } from '@/lib/utils';
 
 const normalizePath = (uri: string) => (Platform.OS === 'ios' ? uri.replace('file://', '') : uri);
+
+const maybeCompressVideo = async (uri: string, mimeType?: string): Promise<string> => {
+  if (!mimeType?.startsWith('video/')) return uri;
+  try {
+    return await VideoCompressor.compress(uri, {
+      compressionMethod: 'auto',
+    });
+  } catch (err) {
+    console.warn('Video compression failed, uploading original:', err);
+    return uri;
+  }
+};
 
 export const api = {
   // Server Health endpoints
@@ -626,17 +639,20 @@ export const api = {
         // @ts-ignore
         if (credentials.media && credentials.media.length > 0) {
           // @ts-ignore
-          credentials.media.forEach((cert, index) => {
-            const extension = getFileExtension(cert.url, cert.mimeType);
+          for (let index = 0; index < credentials.media.length; index++) {
+            // @ts-ignore
+            const cert = credentials.media[index];
+            const compressedUri = await maybeCompressVideo(cert.url, cert.mimeType);
+            const extension = getFileExtension(compressedUri, cert.mimeType);
 
             const file = {
-              uri: normalizePath(cert.url),
+              uri: normalizePath(compressedUri),
               type: cert.mimeType || 'image/jpeg',
               name: cert.name || `media_${index}_${Date.now()}.${extension}`,
             };
             // @ts-ignore - FormData typing issue in React Native
             formData.append('media', file);
-          });
+          }
         }
 
         const { data, error } = await apiClient.POST('/api/service-requests', {
@@ -1140,17 +1156,20 @@ export const api = {
         // @ts-ignore
         if (credentials.media && credentials.media.length > 0) {
           // @ts-ignore
-          credentials.media.forEach((media, index) => {
-            const extension = getFileExtension(media.url, media.mimeType);
+          for (let index = 0; index < credentials.media.length; index++) {
+            // @ts-ignore
+            const media = credentials.media[index];
+            const compressedUri = await maybeCompressVideo(media.url, media.mimeType);
+            const extension = getFileExtension(compressedUri, media.mimeType);
 
             const file = {
-              uri: normalizePath(media.url),
+              uri: normalizePath(compressedUri),
               type: media.mimeType || 'image/jpg',
               name: media.name || `media_${index}_${Date.now()}.${extension}`,
             };
             // @ts-ignore - FormData typing issue in React Native
             formData.append('media', file);
-          });
+          }
         }
 
         const { data, error } = await apiClient.POST('/api/disputes', {

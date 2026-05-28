@@ -102,7 +102,7 @@ export default function Screen() {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: false,
-      quality: 1,
+      quality: 0.7,
     });
 
     if (!result.canceled) {

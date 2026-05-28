@@ -30,7 +30,7 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
   });
 
   const takePicture = async () => {
-    const photo = await ref.current?.takePictureAsync();
+    const photo = await ref.current?.takePictureAsync({ quality: 0.7 });
     if (photo?.uri) setImageMedia({ uri: photo.uri, mimeType: 'image/jpeg' });
   };
 
@@ -41,7 +41,7 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
       return;
     }
     setRecording(true);
-    const video = await ref.current?.recordAsync();
+    const video = await ref.current?.recordAsync({ maxDuration: 60 });
     if (video?.uri) setVideoMedia({ uri: video.uri, mimeType: 'video/mp4' });
   };
 
@@ -60,7 +60,8 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
       mediaTypes: ['images', 'videos'],
       allowsEditing: false,
       // aspect: [4, 3],
-      quality: 1,
+      quality: 0.7,
+      videoMaxDuration: 60,
     });
 
     if (!result.canceled) {
@@ -164,6 +165,7 @@ export function CameraSheet(props: SheetProps<'camera-sheet'>) {
           mode={mode}
           facing={facing}
           mute={false}
+          videoQuality="720p"
           responsiveOrientationWhenOrientationLocked
         />
 
