@@ -17,7 +17,7 @@ import { AppleSigninButton } from '@/components/apple-signin-button';
 
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
-import { emojiRegex, formatPhoneNumber } from '@/lib/utils';
+import { emojiRegex, formatPhoneNumber, getDeviceInfo } from '@/lib/utils';
 
 const formSchema = z
   .object({
@@ -44,6 +44,8 @@ const formSchema = z
     confirmPassword: z.string().min(1, 'Password confirmation is required.'),
     role: z.union([z.literal('user')]),
     referralCode: z.string(),
+    deviceId: z.string(),
+    deviceName: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -69,11 +71,18 @@ export default function Screen() {
       confirmPassword: '',
       role: 'user' as const,
       referralCode: '',
+      deviceId: '',
+      deviceName: '',
     },
     validators: {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
+      const deviceInfo = await getDeviceInfo();
+
+      value.deviceId = deviceInfo?.deviceId || '';
+      value.deviceName = deviceInfo?.deviceName || '';
+
       const { confirmPassword, referralCode, ...registerData } = value;
 
       if (registerData.phoneNumber.trim()) {
