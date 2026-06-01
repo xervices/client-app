@@ -75,7 +75,7 @@ export function PaystackWebviewSheet(props: SheetProps<'paystack-webview-sheet'>
       closable={false}
       closeOnPressBack={true}
       onNavigateBack={() => {
-        onError?.('Payment cancelled');
+        // onError?.('Payment cancelled');
         SheetManager.hide('paystack-webview-sheet');
       }}
       backgroundInteractionEnabled={false}
@@ -94,7 +94,7 @@ export function PaystackWebviewSheet(props: SheetProps<'paystack-webview-sheet'>
         <View className="realtive flex w-full flex-row items-center gap-4 px-6 py-4">
           <Pressable
             onPress={() => {
-              onError?.('Payment cancelled');
+              // onError?.('Payment cancelled');
               SheetManager.hide('paystack-webview-sheet');
             }}
             className="h-8 w-8 justify-center">

@@ -43,6 +43,9 @@
         "appleId": "Xervicestechnologies247@gmail.com",
         "ascAppId": "6761826149",
         "appleTeamId": "G7635Z8B89"
+      },
+      "android": {
+        "serviceAccountKeyPath": "../xervices-480909-512578d0b6ed.json"
       }
     }
   }

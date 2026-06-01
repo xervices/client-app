@@ -231,9 +231,9 @@ export default function Screen() {
             </Pressable>
           </View>
 
-          <View className="flex w-full flex-row">
-            <View className="flex flex-1 flex-row items-center gap-2">
-              <View className="relative h-14 w-14">
+          <View className="flex w-full flex-row gap-2">
+            <View className="min-w-0 flex-1 flex-row items-center gap-2">
+              <View className="relative h-14 w-14 flex-shrink-0">
                 <Avatar alt="User's Avatar" className="h-14 w-14">
                   <AvatarImage source={{ uri: job?.data?.artisan?.profile?.avatarUrl }} />
                   <AvatarFallback className="bg-primary">
@@ -246,16 +246,23 @@ export default function Screen() {
                 <View className="absolute bottom-0 right-1 flex h-3 w-3 items-center justify-center rounded-full border-2 border-white bg-[#04802E]" />
               </View>
 
-              <View>
+              <View className="min-w-0 flex-1">
                 <View className="flex flex-row items-center">
-                  <Text className="font-cabinet-bold text-[18px] text-[#1B1B1E]">
+                  <Text
+                    className="min-w-0 flex-shrink font-cabinet-bold text-[18px] text-[#1B1B1E]"
+                    numberOfLines={1}>
                     {job?.data?.artisan?.profile?.fullName}
                   </Text>
 
-                  <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+                  <BadgeCheck
+                    style={{ flexShrink: 0 }}
+                    size={16}
+                    fill={'#FE6A00'}
+                    stroke={'#FFFFFF'}
+                  />
                 </View>
 
-                <Text className="text-xs text-[#1B1B1E]">
+                <Text className="text-xs text-[#1B1B1E]" numberOfLines={1}>
                   {job?.data?.category?.name} Specialist
                 </Text>
 
@@ -263,7 +270,7 @@ export default function Screen() {
               </View>
             </View>
 
-            <View className="flex flex-row justify-between">
+            <View className="flex-shrink-0 flex-row justify-between">
               <View className="flex h-[26px] items-center justify-center rounded-full bg-[#FFF4EA] px-3">
                 <Text className="text-sm text-primary">In Progress</Text>
               </View>

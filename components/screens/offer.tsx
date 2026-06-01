@@ -292,8 +292,8 @@ function OfferCard({
         elevation: 4,
       }}
       className="flex gap-4 rounded-[8px] bg-white p-4">
-      <View className="flex w-full flex-row">
-        <View className="flex w-1/2 flex-row items-center gap-2">
+      <View className="flex w-full flex-row items-start gap-2">
+        <View className="min-w-0 flex-1 flex-row items-center gap-2">
           <Avatar alt="User's Avatar" className="h-8 w-8">
             <AvatarImage source={{ uri: avatarUrl }} />
             <AvatarFallback className="bg-primary">
@@ -303,11 +303,13 @@ function OfferCard({
             </AvatarFallback>
           </Avatar>
 
-          <View>
+          <View className="min-w-0 flex-1">
             <View className="flex flex-row items-center">
-              <Text className="font-cabinet-bold text-[18px] text-[#1B1B1E]">{name}</Text>
+              <Text className="min-w-0 flex-shrink font-cabinet-bold text-[18px] text-[#1B1B1E]">
+                {name}
+              </Text>
 
-              <BadgeCheck size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
+              <BadgeCheck style={{ flexShrink: 0 }} size={16} fill={'#FE6A00'} stroke={'#FFFFFF'} />
             </View>
 
             <Text className="text-xs text-[#FF6A00]">
@@ -316,8 +318,11 @@ function OfferCard({
           </View>
         </View>
 
-        <View className="flex w-1/2 justify-between">
-          <Text className="text-right font-cabinet-bold text-[18px] text-[#FF6A00]">
+        <View className="max-w-[50%] flex-shrink-0 justify-between">
+          <Text
+            adjustsFontSizeToFit
+            className="text-right font-cabinet-bold text-[18px] text-[#FF6A00]"
+            minimumFontScale={0.7}>
             {formatCurrency(amount)}
           </Text>
         </View>
