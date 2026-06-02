@@ -1231,6 +1231,23 @@ export const api = {
     };
   },
 
+  // app analytics endpoints
+  appInstall: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/analytics/app-install', 'post'>) => {
+        const { data, error } = await publicApiClient.POST('/api/analytics/app-install', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'App install register failed'));
+        }
+
+        return data;
+      },
+    };
+  },
+
   // legal endpoints
   getPrivacyPolicy: () =>
     queryOptions({

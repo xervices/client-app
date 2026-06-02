@@ -15,6 +15,7 @@ import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 import { useAuthStore } from '@/store/auth-store';
 import { getDeviceInfo } from '@/lib/utils';
+import { getStableDeviceId } from '@/lib/app-install';
 
 export default function Screen() {
   const params = useLocalSearchParams<{
@@ -122,7 +123,7 @@ export default function Screen() {
             onFilled={async (value) => {
               const deviceInfo = await getDeviceInfo();
 
-              const deviceId = deviceInfo?.deviceId || '';
+              const deviceId = await getStableDeviceId();
               const deviceName = deviceInfo?.deviceName || '';
 
               verifyDevice.mutate({ code: value, token, deviceId, deviceName });

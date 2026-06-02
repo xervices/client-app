@@ -18,6 +18,7 @@ import { AppleSigninButton } from '@/components/apple-signin-button';
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 import { emojiRegex, formatPhoneNumber, getDeviceInfo } from '@/lib/utils';
+import { getStableDeviceId } from '@/lib/app-install';
 
 const formSchema = z
   .object({
@@ -80,7 +81,7 @@ export default function Screen() {
     onSubmit: async ({ value }) => {
       const deviceInfo = await getDeviceInfo();
 
-      value.deviceId = deviceInfo?.deviceId || '';
+      value.deviceId = await getStableDeviceId();
       value.deviceName = deviceInfo?.deviceName || '';
 
       const { confirmPassword, referralCode, ...registerData } = value;

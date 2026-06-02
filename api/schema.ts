@@ -4603,6 +4603,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/analytics/app-install": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Track app install
+         * @description Called by the mobile app on first launch. No auth required. Duplicate calls from the same deviceId are silently ignored.
+         */
+        post: operations["AnalyticsController_trackInstall"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -4653,6 +4673,16 @@ export interface components {
              * @enum {string}
              */
             role: "user" | "artisan";
+            /**
+             * @description Unique device identifier (UUID per device)
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            deviceId?: string;
+            /**
+             * @description Human-readable device name
+             * @example iPhone 15 Pro
+             */
+            deviceName?: string;
         };
         UserProfileResponseDto: {
             fullName: string;
@@ -9085,6 +9115,24 @@ export interface components {
              *     }
              */
             deviceInfo?: Record<string, never>;
+        };
+        TrackInstallDto: {
+            /**
+             * @description Unique device identifier — used to deduplicate multiple calls from the same device
+             * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+             */
+            deviceId: string;
+            /**
+             * @description Device platform
+             * @example ios
+             * @enum {string}
+             */
+            platform: "ios" | "android";
+            /**
+             * @description App version at install time
+             * @example 1.0.0
+             */
+            appVersion?: string;
         };
     };
     responses: never;
@@ -19178,6 +19226,28 @@ export interface operations {
             };
             /** @description Forbidden - Admin only */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AnalyticsController_trackInstall: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TrackInstallDto"];
+            };
+        };
+        responses: {
+            /** @description Install tracked */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };

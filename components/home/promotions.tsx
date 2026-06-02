@@ -24,12 +24,12 @@ export function Promotions() {
                 Linking.openURL(news?.linkUrl);
               }
             }}
-            className="h-[100px] w-[250px]"
+            className="h-[100px] w-[250px] overflow-hidden rounded-md"
             key={news?.id}>
             <Image
               source={news?.imageUrl}
-              style={{ width: 250, height: 100 }}
-              contentFit="contain"
+              style={{ width: '100%', height: '100%' }}
+              contentFit="cover"
             />
           </Pressable>
         ))}
