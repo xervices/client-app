@@ -29,6 +29,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
 import { NIGERIAN_STATES } from '@/store/data';
+import { COUNTRIES } from '@/lib/countries';
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 import { emojiRegex } from '@/lib/utils';
@@ -190,49 +191,19 @@ export default function Screen() {
                       <SelectGroup>
                         <SelectLabel>Country</SelectLabel>
 
-                        <SelectItem
-                          onPress={() => {
-                            field.handleChange('Nigeria');
-                          }}
-                          label="Nigeria"
-                          value="Nigeria">
-                          Nigeria
-                        </SelectItem>
-                      </SelectGroup>
-                    </NativeSelectScrollView>
-                  </SelectContent>
-                </Select>
-
-                {!field.state.meta.isValid ? <InputError errors={field.state.meta.errors} /> : null}
-              </View>
-            )}
-          </form.Field>
-
-          <form.Field name="state">
-            {(field) => (
-              <View>
-                <Label nativeID="state">State</Label>
-
-                <Select defaultValue={{ label: field.state.value, value: field.state.value }}>
-                  <SelectTrigger className="w-full bg-white">
-                    <SelectValue id="state" placeholder="Select State" />
-                  </SelectTrigger>
-                  <SelectContent
-                    insets={contentInsets}
-                    className="mt-2 w-full bg-white"
-                    style={{ maxHeight: 300 }}>
-                    <NativeSelectScrollView className="h-full">
-                      <SelectGroup>
-                        <SelectLabel>State</SelectLabel>
-                        {NIGERIAN_STATES.map((state) => (
+                        {COUNTRIES.map((country) => (
                           <SelectItem
+                            key={country.code}
                             onPress={() => {
-                              field.handleChange(state.state);
+                              field.handleChange(country.name);
+                              // Reset location fields that depend on the country
+                              form.setFieldValue('state', '');
+                              form.setFieldValue('city', '');
+                              form.setFieldValue('postalCode', '');
                             }}
-                            key={state.state}
-                            label={state.state}
-                            value={state.state}>
-                            {state.state}
+                            label={country.name}
+                            value={country.name}>
+                            {country.name}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -246,13 +217,79 @@ export default function Screen() {
           </form.Field>
 
           <form.Subscribe
+            selector={(state) => ({ country: state.values.country })}
+            children={({ country }) => {
+              const isNigeria = country === 'Nigeria';
+
+              return (
+                <form.Field name="state">
+                  {(field) => (
+                    <View>
+                      <Label nativeID="state">State</Label>
+
+                      {isNigeria ? (
+                        <Select
+                          defaultValue={{ label: field.state.value, value: field.state.value }}>
+                          <SelectTrigger className="w-full bg-white">
+                            <SelectValue id="state" placeholder="Select State" />
+                          </SelectTrigger>
+                          <SelectContent
+                            insets={contentInsets}
+                            className="mt-2 w-full bg-white"
+                            style={{ maxHeight: 300 }}>
+                            <NativeSelectScrollView className="h-full">
+                              <SelectGroup>
+                                <SelectLabel>State</SelectLabel>
+                                {NIGERIAN_STATES.map((state) => (
+                                  <SelectItem
+                                    onPress={() => {
+                                      field.handleChange(state.state);
+                                      // Reset city/postal when the state changes
+                                      form.setFieldValue('city', '');
+                                      form.setFieldValue('postalCode', '');
+                                    }}
+                                    key={state.state}
+                                    label={state.state}
+                                    value={state.state}>
+                                    {state.state}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </NativeSelectScrollView>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Input
+                          className="bg-white"
+                          id="state"
+                          value={field.state.value}
+                          onChangeText={field.handleChange}
+                          placeholder="Enter your state / region"
+                          hasError={!field.state.meta.isValid}
+                        />
+                      )}
+
+                      {!field.state.meta.isValid ? (
+                        <InputError errors={field.state.meta.errors} />
+                      ) : null}
+                    </View>
+                  )}
+                </form.Field>
+              );
+            }}
+          />
+
+          <form.Subscribe
             selector={(state) => ({
+              country: state.values.country,
               state: state.values.state,
             })}
-            children={({ state }) => {
+            children={({ country, state }) => {
+              const isNigeria = country === 'Nigeria';
               const LGA_DATA = NIGERIAN_STATES.find((i) => i.state === state);
 
-              if (!LGA_DATA) {
+              // For Nigeria, only show the City dropdown once a state is picked
+              if (isNigeria && !LGA_DATA) {
                 return null;
               }
 
@@ -262,33 +299,45 @@ export default function Screen() {
                     <View>
                       <Label nativeID="city">City</Label>
 
-                      <Select defaultValue={{ label: field.state.value, value: field.state.value }}>
-                        <SelectTrigger className="w-full bg-white">
-                          <SelectValue id="city" placeholder="Select City" />
-                        </SelectTrigger>
-                        <SelectContent
-                          insets={contentInsets}
-                          className="mt-2 w-full bg-white"
-                          style={{ maxHeight: 300 }}>
-                          <NativeSelectScrollView className="h-full">
-                            <SelectGroup>
-                              <SelectLabel>City</SelectLabel>
-                              {LGA_DATA?.lgas?.map((lga) => (
-                                <SelectItem
-                                  onPress={() => {
-                                    field.handleChange(lga.name);
-                                    form.setFieldValue('postalCode', lga.postal_code);
-                                  }}
-                                  key={lga.name}
-                                  label={lga.name}
-                                  value={lga.name}>
-                                  {lga.name}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </NativeSelectScrollView>
-                        </SelectContent>
-                      </Select>
+                      {isNigeria ? (
+                        <Select
+                          defaultValue={{ label: field.state.value, value: field.state.value }}>
+                          <SelectTrigger className="w-full bg-white">
+                            <SelectValue id="city" placeholder="Select City" />
+                          </SelectTrigger>
+                          <SelectContent
+                            insets={contentInsets}
+                            className="mt-2 w-full bg-white"
+                            style={{ maxHeight: 300 }}>
+                            <NativeSelectScrollView className="h-full">
+                              <SelectGroup>
+                                <SelectLabel>City</SelectLabel>
+                                {LGA_DATA?.lgas?.map((lga) => (
+                                  <SelectItem
+                                    onPress={() => {
+                                      field.handleChange(lga.name);
+                                      form.setFieldValue('postalCode', lga.postal_code);
+                                    }}
+                                    key={lga.name}
+                                    label={lga.name}
+                                    value={lga.name}>
+                                    {lga.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </NativeSelectScrollView>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Input
+                          className="bg-white"
+                          id="city"
+                          value={field.state.value}
+                          onChangeText={field.handleChange}
+                          placeholder="Enter your city"
+                          hasError={!field.state.meta.isValid}
+                        />
+                      )}
 
                       {!field.state.meta.isValid ? (
                         <InputError errors={field.state.meta.errors} />

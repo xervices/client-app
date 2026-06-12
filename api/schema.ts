@@ -1820,7 +1820,8 @@ export interface paths {
          */
         put: operations["BroadcastController_updateBroadcast"];
         post?: never;
-        delete?: never;
+        /** Delete a broadcast */
+        delete: operations["BroadcastController_deleteBroadcast"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1860,6 +1861,23 @@ export interface paths {
          * @description Cancel a scheduled broadcast.
          */
         post: operations["BroadcastController_cancelBroadcast"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/broadcasts/{id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retry a failed broadcast */
+        post: operations["BroadcastController_retryBroadcast"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2753,7 +2771,7 @@ export interface paths {
         };
         /**
          * Financial overview metrics
-         * @description Fetch high-level financial metrics including total payments, escrow, platform revenue, withdrawals, and balances.
+         * @description High-level financial metrics: total payments, escrow, platform revenue, net revenue, refunds, artisan earnings, withdrawals, and balances.
          */
         get: operations["FinancialManagementController_getOverviewMetrics"];
         put?: never;
@@ -2773,7 +2791,7 @@ export interface paths {
         };
         /**
          * Revenue trend
-         * @description Return revenue data for chart display. Supports monthly (default), weekly, and daily grouping based on payment completion date.
+         * @description Revenue data for chart display grouped by monthly, weekly, or daily. Includes total payments, platform fees, artisan payouts, and refunds per period.
          */
         get: operations["FinancialManagementController_getRevenueTrend"];
         put?: never;
@@ -2793,7 +2811,7 @@ export interface paths {
         };
         /**
          * Payment history
-         * @description Paginated list of all payments with sender/artisan names, service, amounts, and status. Supports filtering, search, and sorting.
+         * @description Paginated list of all payments with sender/artisan names, service, amounts, discount, refund info, and status.
          */
         get: operations["FinancialManagementController_getPaymentHistory"];
         put?: never;
@@ -2816,6 +2834,66 @@ export interface paths {
          * @description Paginated list of all withdrawal requests with artisan details, bank info (masked account numbers), status, and balance after withdrawal.
          */
         get: operations["FinancialManagementController_getWithdrawalHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/financial/promo-performance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Promo code performance
+         * @description Usage count, total discount given, and transaction value per promo code. Useful for measuring the financial impact of promotions.
+         */
+        get: operations["FinancialManagementController_getPromoPerformance"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/financial/dispute-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Dispute financial summary
+         * @description Breakdown of dispute resolution outcomes: how much was refunded to customers vs credited to artisans, grouped by resolution type.
+         */
+        get: operations["FinancialManagementController_getDisputeFinancialSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/financial/top-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Top revenue categories
+         * @description Top service categories by platform fee revenue, including transaction count, total revenue, and artisan earnings per category.
+         */
+        get: operations["FinancialManagementController_getTopCategories"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4657,7 +4735,7 @@ export interface components {
              */
             phoneNumber?: string;
             /**
-             * @description Password (min 8 chars, must contain uppercase, lowercase, number, and special character)
+             * @description Password (min 8 chars, must contain uppercase and lowercase letters)
              * @example Password123!
              */
             password: string;
@@ -5821,6 +5899,7 @@ export interface components {
             totalReviews: number;
             totalJobsCompleted: number;
             isAvailable: boolean;
+            dojahReferenceId?: string;
             isVerified: boolean;
             /** Format: date-time */
             createdAt: string;
@@ -8013,6 +8092,11 @@ export interface components {
              * @example 5
              */
             yearsOfExperience?: Record<string, never> | null;
+            /**
+             * @description Average response time in seconds (null if no offer responses yet)
+             * @example 300
+             */
+            averageResponseTimeSeconds?: Record<string, never> | null;
             /**
              * @description Whether artisan is verified
              * @example true
@@ -13546,6 +13630,34 @@ export interface operations {
             };
         };
     };
+    BroadcastController_deleteBroadcast: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Broadcast ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Broadcast deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Cannot delete broadcast in current status */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     BroadcastController_sendBroadcast: {
         parameters: {
             query?: never;
@@ -13627,6 +13739,34 @@ export interface operations {
             };
             /** @description Broadcast not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BroadcastController_retryBroadcast: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Broadcast ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Broadcast retry started */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Can only retry failed broadcasts */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -15275,7 +15415,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Monthly revenue trend data */
+            /** @description Revenue trend data */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -15336,6 +15476,77 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Paginated withdrawal history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialManagementController_getPromoPerformance: {
+        parameters: {
+            query?: {
+                /** @description Filter from date (ISO string) */
+                dateFrom?: string;
+                /** @description Filter to date (ISO string) */
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Promo code performance data */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialManagementController_getDisputeFinancialSummary: {
+        parameters: {
+            query?: {
+                /** @description Filter from date (ISO string) */
+                dateFrom?: string;
+                /** @description Filter to date (ISO string) */
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Dispute financial summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialManagementController_getTopCategories: {
+        parameters: {
+            query?: {
+                /** @description Filter from date (ISO string) */
+                dateFrom?: string;
+                /** @description Filter to date (ISO string) */
+                dateTo?: string;
+                /** @description Number of top categories to return */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Top revenue categories */
             200: {
                 headers: {
                     [name: string]: unknown;

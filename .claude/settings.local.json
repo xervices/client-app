@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npx tsc *)",
       "Bash(pnpm add *)",
-      "PowerShell(pnpm add react-native-compressor)"
+      "PowerShell(pnpm add react-native-compressor)",
+      "PowerShell(npx tsc --noEmit -p C:\\\\Users\\\\MOSES\\\\Documents\\\\Xervices\\\\client-app\\\\tsconfig.json 2>&1 | Select-Object -First 40)"
     ]
   }
 }

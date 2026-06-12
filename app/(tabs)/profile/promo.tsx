@@ -65,7 +65,7 @@ export default function Screen() {
               </Text>
             </View>
 
-            <Button>Use Bonus</Button>
+            <Button onPress={() => router.navigate('/book')}>Use Bonus</Button>
           </View>
 
           <View className="flex w-full flex-row gap-4">

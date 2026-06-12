@@ -175,7 +175,9 @@ export function ProScreen() {
 
             <View className="flex aspect-[98/60] flex-1 items-center justify-center rounded-[8px] bg-[#F4F4F5]">
               <Text className="text-center font-cabinet-bold text-lg text-[#FE6A00]">
-                {offer?.data?.artisanStats?.averageCommunicationRating} min
+                {Number(offer?.data?.artisanStats?.averageResponseTimeSeconds)
+                  ? `${Math.round(Number(offer?.data?.artisanStats?.averageResponseTimeSeconds) / 60)} min`
+                  : '–'}
               </Text>
               <Text className="text-center text-xs text-[#737381]">Response</Text>
             </View>
