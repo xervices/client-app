@@ -96,6 +96,20 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     plugins: [
       [
+        'expo-build-properties',
+        {
+          ios: {
+            // GoogleSignIn 9.x pulls in AppCheckCore (a Swift pod) which needs
+            // GoogleUtilities/RecaptchaInterop to expose module maps when building
+            // as static libraries. Without this, `pod install` fails on EAS.
+            extraPods: [
+              { name: 'GoogleUtilities', modular_headers: true },
+              { name: 'RecaptchaInterop', modular_headers: true },
+            ],
+          },
+        },
+      ],
+      [
         'expo-splash-screen',
         {
           image: './assets/images/splash-transparent.png',
