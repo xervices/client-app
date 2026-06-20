@@ -5,7 +5,7 @@ import ActionSheet, { SheetManager, SheetProps } from 'react-native-actions-shee
 import { ArrowLeft, X } from 'lucide-react-native';
 import { WebView, WebViewNavigation } from 'react-native-webview';
 
-export interface PaystackWebviewPayload {
+export interface PaymentWebviewPayload {
   authorizationUrl: string;
   callbackUrl?: string;
   cancelUrl?: string;
@@ -13,51 +13,15 @@ export interface PaystackWebviewPayload {
   onError?: (errorMessage: string) => void;
 }
 
-export function PaystackWebviewSheet(props: SheetProps<'paystack-webview-sheet'>) {
+export function PaymentWebviewSheet(props: SheetProps<'payment-webview-sheet'>) {
   const webViewRef = useRef<WebView>(null);
 
-  const payload = props.payload as PaystackWebviewPayload | undefined;
+  const payload = props.payload as PaymentWebviewPayload | undefined;
   const authorizationUrl = payload?.authorizationUrl || '';
   const callbackUrl = payload?.callbackUrl;
-  const cancelUrl = payload?.cancelUrl || '"https://standard.paystack.co/close"';
+  const cancelUrl = payload?.cancelUrl || 'https://example.com/';
   const onSuccess = payload?.onSuccess;
   const onError = payload?.onError;
-
-  const handleNavigationStateChange = useCallback(
-    (navState: WebViewNavigation) => {
-      const { url } = navState;
-
-      if (!url) return;
-
-      // Handle successful payment - redirect to callback URL
-      if (callbackUrl && url === callbackUrl) {
-        // Extract reference from URL if present
-        const reference = extractReferenceFromUrl(url);
-        if (reference) {
-          onSuccess?.(reference);
-        }
-        SheetManager.hide('paystack-webview-sheet');
-        return;
-      }
-
-      // Handle 3DS close redirect
-      if (url === 'https://standard.paystack.co/close') {
-        // Check if payment was successful by verifying the transaction
-        // For now, we'll treat this as successful and let the backend verify
-        onSuccess?.('');
-        SheetManager.hide('paystack-webview-sheet');
-        return;
-      }
-
-      // Handle payment cancellation
-      if (cancelUrl && url === cancelUrl) {
-        onError?.('Payment cancelled by user');
-        SheetManager.hide('paystack-webview-sheet');
-        return;
-      }
-    },
-    [callbackUrl, cancelUrl, onSuccess, onError]
-  );
 
   const extractReferenceFromUrl = (url: string): string => {
     try {
@@ -76,7 +40,7 @@ export function PaystackWebviewSheet(props: SheetProps<'paystack-webview-sheet'>
       closeOnPressBack={true}
       onNavigateBack={() => {
         // onError?.('Payment cancelled');
-        SheetManager.hide('paystack-webview-sheet');
+        SheetManager.hide('payment-webview-sheet');
       }}
       backgroundInteractionEnabled={false}
       isModal={false}
@@ -91,11 +55,11 @@ export function PaystackWebviewSheet(props: SheetProps<'paystack-webview-sheet'>
       }}>
       <View className="relative flex h-full w-full flex-col">
         {/* Header with close button */}
-        <View className="realtive flex w-full flex-row items-center gap-4 px-6 py-4">
+        <View className="relative flex w-full flex-row items-center gap-4 px-6 py-4">
           <Pressable
             onPress={() => {
               // onError?.('Payment cancelled');
-              SheetManager.hide('paystack-webview-sheet');
+              SheetManager.hide('payment-webview-sheet');
             }}
             className="h-8 w-8 justify-center">
             <ArrowLeft size={24} color={'#B4B4BC'} />
@@ -130,7 +94,7 @@ export function PaystackWebviewSheet(props: SheetProps<'paystack-webview-sheet'>
                   if (reference) {
                     onSuccess?.(reference);
                   }
-                  SheetManager.hide('paystack-webview-sheet');
+                  SheetManager.hide('payment-webview-sheet');
                   return;
                 }
 
@@ -140,7 +104,7 @@ export function PaystackWebviewSheet(props: SheetProps<'paystack-webview-sheet'>
                   if (reference) {
                     onSuccess?.(reference);
                   }
-                  SheetManager.hide('paystack-webview-sheet');
+                  SheetManager.hide('payment-webview-sheet');
                   return;
                 }
 

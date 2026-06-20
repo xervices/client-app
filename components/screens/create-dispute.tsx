@@ -1,6 +1,6 @@
 import { Text } from '@/components/ui/text';
 import * as React from 'react';
-import { Platform, Pressable, View } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, View } from 'react-native';
 import { Layout } from '@/components/layout';
 import { AuthHeader } from '@/components/auth-header';
 import { Image } from 'expo-image';
@@ -40,11 +40,17 @@ import { useCameraPermissions } from 'expo-camera';
 import { UploadedMedia } from '@/components/uploaded-media';
 import { SheetManager } from 'react-native-actions-sheet';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
+import { Input } from '../ui/input';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { useKeyboardHandler } from 'react-native-keyboard-controller';
 
 const formSchema = z.object({
   jobId: z.string(),
   disputeType: z.string().min(1, 'Issue type is required.'),
   description: z.string().min(1, 'Please describe your concern.'),
+  bankCode: z.string().min(1, 'Bank is required.'),
+  bankName: z.string().min(1, 'Bank Name is required.'),
+  accountNumber: z.string().min(1, 'Account number is required.'),
 });
 
 const issuesData = [
@@ -75,12 +81,41 @@ const issuesData = [
   },
 ];
 
+const PADDING_BOTTOM = Platform.OS === 'ios' ? 20 : 0;
+
+const useGradualAnimation = () => {
+  const height = useSharedValue(PADDING_BOTTOM);
+
+  useKeyboardHandler(
+    {
+      onMove: (e) => {
+        'worklet';
+        height.value = Math.max(e.height, PADDING_BOTTOM);
+      },
+    },
+    []
+  );
+
+  return { height };
+};
+
 export function CreateDisputeScreen() {
+  const { height } = useGradualAnimation();
+
+  const fakeView = useAnimatedStyle(() => {
+    return {
+      height: Math.abs(height.value),
+      marginBottom: height.value > 0 ? 0 : PADDING_BOTTOM,
+    };
+  }, []);
+
   const { id }: { id: string } = useLocalSearchParams();
 
   const { isLoading, refetch, data, isRefetching } = useQuery(api.getJobDetail(id));
 
   const jobs = useQuery(api.getUserJobs());
+  const banks = useQuery(api.getNigerianBanks());
+  const verifyBankAccount = useMutation(api.verifyBankAccount());
 
   const { mutate, isPending } = useMutation(api.createDispute());
 
@@ -90,6 +125,14 @@ export function CreateDisputeScreen() {
   const [media, setMediaSrcs] = React.useState<
     { url: string; mimeType: string; isVideo?: boolean }[]
   >([]);
+
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const filteredBanks = React.useMemo(() => {
+    if (!searchQuery) return banks?.data?.slice(0, 10);
+    return banks?.data
+      ?.filter((bank) => bank.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      .slice(0, 20);
+  }, [searchQuery, banks]);
 
   const insets = useSafeAreaInsets();
   const contentInsets = {
@@ -104,6 +147,9 @@ export function CreateDisputeScreen() {
       jobId: id,
       disputeType: '',
       description: '',
+      bankCode: '',
+      bankName: '',
+      accountNumber: '',
     },
     validators: {
       onSubmit: formSchema,
@@ -128,8 +174,11 @@ export function CreateDisputeScreen() {
   return (
     <Layout
       useBackground
-      isRefreshing={isRefetching}
-      onRefresh={refetch}
+      isRefreshing={isRefetching || banks?.isRefetching}
+      onRefresh={() => {
+        refetch();
+        banks?.refetch();
+      }}
       stickyHeader={
         <View className="pb-4">
           <AuthHeader title="Dispute" />
@@ -321,11 +370,144 @@ export function CreateDisputeScreen() {
             </Text>
           </Pressable>
 
+          <View className="gap-4">
+            <View className="flex flex-row gap-3 rounded-[8px] bg-[#EBF4FF] p-3">
+              <Info size={20} color="#0582F1" />
+              <View className="flex-1">
+                <Text className="font-cabinet-medium text-sm text-[#0582F1]">
+                  If your dispute is approved, we'll refund your payment directly to your bank
+                  account. Please provide your bank details below.
+                </Text>
+              </View>
+            </View>
+
+            <form.Field name="bankCode">
+              {(field) => (
+                <View>
+                  <Label nativeID="bank">Select Bank</Label>
+                  <Select>
+                    <SelectTrigger className="w-full bg-white">
+                      <SelectValue id="bank" placeholder="Select Bank" />
+                    </SelectTrigger>
+                    <SelectContent
+                      avoidKeyboard
+                      insets={contentInsets}
+                      className="mt-2 w-full bg-white"
+                      style={{ maxHeight: 300 }}>
+                      <View className="sticky top-0 z-10 border-b border-gray-100 bg-white p-2">
+                        <Input
+                          autoFocus
+                          placeholder="Search bank..."
+                          value={searchQuery}
+                          onChangeText={setSearchQuery}
+                          className="h-10 bg-gray-50"
+                        />
+                      </View>
+                      <NativeSelectScrollView className="h-full">
+                        <SelectGroup>
+                          <SelectLabel>Bank</SelectLabel>
+                          {filteredBanks?.map((bank, index) => (
+                            <SelectItem
+                              onPress={() => {
+                                field.handleChange(bank.code);
+                                form.setFieldValue('bankName', bank.name);
+                              }}
+                              key={`${bank.code}-${index}`}
+                              label={bank.name}
+                              value={bank.code}>
+                              {bank.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </NativeSelectScrollView>
+                    </SelectContent>
+                  </Select>
+
+                  {!field.state.meta.isValid ? (
+                    <InputError errors={field.state.meta.errors} />
+                  ) : null}
+                </View>
+              )}
+            </form.Field>
+
+            <form.Subscribe
+              selector={(state) => [state.values.accountNumber, state.values.bankCode]}>
+              {([accountNumber, bankCode]) => (
+                <VerificationHandler
+                  accountNumber={accountNumber}
+                  bankCode={bankCode}
+                  verify={verifyBankAccount?.mutate}
+                />
+              )}
+            </form.Subscribe>
+
+            <View>
+              <form.Field name="accountNumber">
+                {(field) => (
+                  <View>
+                    <Label nativeID="number">Account Number</Label>
+                    <Input
+                      editable={!isPending}
+                      className="bg-white"
+                      id="number"
+                      value={field.state.value}
+                      onChangeText={field.handleChange}
+                      placeholder="Enter your account number"
+                      hasError={!field.state.meta.isValid}
+                      keyboardType="number-pad"
+                      rightIcon={
+                        isPending ? <ActivityIndicator size="small" color="#FE6A00" /> : undefined
+                      }
+                    />
+                    {!field.state.meta.isValid ? (
+                      <InputError errors={field.state.meta.errors} />
+                    ) : null}
+                  </View>
+                )}
+              </form.Field>
+
+              <View className="flex min-h-[20px] flex-row justify-end">
+                {verifyBankAccount?.data ? (
+                  <Text className="text-sm text-[#FE6A00]">
+                    {verifyBankAccount?.data.accountName}
+                  </Text>
+                ) : null}
+                {verifyBankAccount?.isError ? (
+                  <Text className="text-sm text-red-500">
+                    {verifyBankAccount?.error?.message
+                      ? verifyBankAccount?.error?.message
+                      : 'Could not verify account'}
+                  </Text>
+                ) : null}
+              </View>
+            </View>
+          </View>
+
           <Button isLoading={isPending} disabled={isPending} onPress={form.handleSubmit}>
             Submit Dispute
           </Button>
+
+          <Animated.View style={fakeView} />
         </View>
       )}
     </Layout>
   );
+}
+
+function VerificationHandler({
+  accountNumber,
+  bankCode,
+  verify,
+}: {
+  accountNumber: string;
+  bankCode: string;
+  verify: (data: { accountNumber: string; bankCode: string }) => void;
+}) {
+  React.useEffect(() => {
+    if (accountNumber && accountNumber.length === 10 && bankCode) {
+      verify({ accountNumber, bankCode });
+    }
+  }, [accountNumber, bankCode, verify]);
+
+  return null;
 }

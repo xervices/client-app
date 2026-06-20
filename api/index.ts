@@ -1136,13 +1136,46 @@ export const api = {
     };
   },
 
+  // bank endpoints
+  getNigerianBanks: () =>
+    queryOptions({
+      queryKey: ['banks', 'nigerian'],
+      queryFn: async () => {
+        const { data } = await apiClient.GET('/api/bank-accounts/banks');
+
+        return data;
+      },
+    }),
+  verifyBankAccount: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/bank-accounts/verify', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/bank-accounts/verify', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to verify bank account.'));
+        }
+
+        return data;
+      },
+    };
+  },
+
   // disputes endpoints
   createDispute: () => {
     return {
       mutationFn: async (credentials: RequestBody<'/api/disputes', 'post'>) => {
         const formData = new FormData();
 
-        const fields = ['jobId', 'disputeType', 'description'];
+        const fields = [
+          'jobId',
+          'disputeType',
+          'description',
+          'bankName',
+          'bankCode',
+          'accountNumber',
+        ];
 
         // Append only non-empty fields
         fields.forEach((field) => {

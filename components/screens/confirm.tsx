@@ -227,7 +227,7 @@ export function ConfirmScreen() {
       { jobId: id || '', callbackUrl: 'https://example.com/' },
       {
         onSuccess: async (res) => {
-          SheetManager?.show('paystack-webview-sheet', {
+          SheetManager?.show('payment-webview-sheet', {
             payload: {
               authorizationUrl: res.authorizationUrl,
               callbackUrl: 'https://example.com/',

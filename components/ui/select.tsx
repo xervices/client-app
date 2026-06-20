@@ -1,13 +1,13 @@
 import { Icon } from '@/components/ui/icon';
-import { NativeOnlyAnimatedView } from '@/components/ui/native-only-animated-view';
 import { TextClassContext } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import * as SelectPrimitive from '@rn-primitives/select';
 import { Check, ChevronDown, ChevronDownIcon, ChevronUpIcon } from 'lucide-react-native';
 import * as React from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
-import { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { FullWindowOverlay as RNFullWindowOverlay } from 'react-native-screens';
+import { useKeyboardHandler } from 'react-native-keyboard-controller';
 
 type Option = SelectPrimitive.Option;
 
@@ -68,25 +68,52 @@ function SelectTrigger({
 }
 
 const FullWindowOverlay = Platform.OS === 'ios' ? RNFullWindowOverlay : React.Fragment;
+const AnimatedSelectContent = Animated.createAnimatedComponent(SelectPrimitive.Content);
 
 function SelectContent({
   className,
   children,
   position = 'popper',
   portalHost,
+  avoidKeyboard = false,
+  keyboardOffset = 8,
+  style,
   ...props
 }: SelectPrimitive.ContentProps &
   React.RefAttributes<SelectPrimitive.ContentRef> & {
     className?: string;
     portalHost?: string;
+    avoidKeyboard?: boolean;
+    keyboardOffset?: number;
   }) {
+  const keyboardHeight = useSharedValue(0);
+
+  useKeyboardHandler(
+    {
+      onMove: (e) => {
+        'worklet';
+        keyboardHeight.value = avoidKeyboard ? Math.max(e.height - keyboardOffset, 0) : 0;
+      },
+      onEnd: (e) => {
+        'worklet';
+        keyboardHeight.value = avoidKeyboard ? Math.max(e.height - keyboardOffset, 0) : 0;
+      },
+    },
+    [avoidKeyboard, keyboardOffset]
+  );
+
+  const keyboardAwareStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: -keyboardHeight.value }],
+    };
+  }, []);
+
   return (
     <SelectPrimitive.Portal hostName={portalHost}>
       <FullWindowOverlay>
         <SelectPrimitive.Overlay style={Platform.select({ native: StyleSheet.absoluteFill })}>
           <TextClassContext.Provider value="text-popover-foreground">
-            {/* <NativeOnlyAnimatedView className="z-50" entering={FadeIn} exiting={FadeOut}> */}
-            <SelectPrimitive.Content
+            <AnimatedSelectContent
               className={cn(
                 'relative z-50 min-w-[8rem] rounded-md border border-border bg-popover',
                 Platform.select({
@@ -107,6 +134,7 @@ function SelectContent({
                 className
               )}
               position={position}
+              style={[style, Platform.OS === 'web' ? undefined : keyboardAwareStyle]}
               {...props}>
               <SelectScrollUpButton />
               <SelectPrimitive.Viewport
@@ -123,8 +151,7 @@ function SelectContent({
                 {children}
               </SelectPrimitive.Viewport>
               <SelectScrollDownButton />
-            </SelectPrimitive.Content>
-            {/* </NativeOnlyAnimatedView> */}
+            </AnimatedSelectContent>
           </TextClassContext.Provider>
         </SelectPrimitive.Overlay>
       </FullWindowOverlay>
