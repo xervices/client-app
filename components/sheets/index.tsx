@@ -7,6 +7,23 @@ import { DeleteImageSheet } from './delete-image-sheet';
 import { CounterOfferSheet } from './counter-offer-sheet';
 import { AddPromoCodeSheet } from './add-promo-code-sheet';
 import { CameraSheet } from './camera-sheet';
+import { LocationSearchSheet } from './location-search-sheet';
+import { LocationMapSearchSheet } from './location-map-search-sheet';
+import { PaymentWebviewSheet, PaymentWebviewPayload } from './payment-webview-sheet';
+import { CancelServiceSheet } from './cancel-service-sheet';
+
+interface CameraSheetPayload {
+  url: string;
+  mimeType: string;
+  isVideo?: boolean;
+}
+
+export interface LocationSearchSheetPayload {
+  address: string;
+  latitude: string;
+  longitude: string;
+  postal_code: string;
+}
 
 declare module 'react-native-actions-sheet' {
   interface Sheets {
@@ -22,7 +39,17 @@ declare module 'react-native-actions-sheet' {
     }>;
     'camera-sheet': SheetDefinition<{
       payload: {
-        onSelect?: (url: string, isVideo?: boolean) => void;
+        onSelect?: (media: CameraSheetPayload) => void;
+      };
+    }>;
+    'location-search-sheet': SheetDefinition<{
+      payload: {
+        onSelect?: (location: LocationSearchSheetPayload) => void;
+      };
+    }>;
+    'location-map-search-sheet': SheetDefinition<{
+      payload: {
+        onSelect?: (location: LocationSearchSheetPayload) => void;
       };
     }>;
     'delete-account-sheet': SheetDefinition;
@@ -31,14 +58,37 @@ declare module 'react-native-actions-sheet' {
         onDelete?: () => void;
       };
     }>;
-    'ongoing-job-sheet': SheetDefinition;
-    'counter-offer-sheet': SheetDefinition;
+    'ongoing-job-sheet': SheetDefinition<{
+      payload: {
+        id: string;
+      };
+    }>;
+    'counter-offer-sheet': SheetDefinition<{
+      payload: {
+        onConfirm?: (amount: number) => void;
+        onReject?: () => void;
+        type: 'offer' | 'counter';
+        name?: string;
+        profileImage?: string;
+        amount?: number;
+        counterAmount?: number;
+      };
+    }>;
+    'cancel-service-sheet': SheetDefinition<{
+      payload: {
+        onConfirm?: (reason?: string) => void;
+      };
+    }>;
+    'payment-webview-sheet': SheetDefinition<{
+      payload: PaymentWebviewPayload;
+    }>;
     'success-sheet': SheetDefinition<{
       payload: {
         title: string;
         subtitle: string;
         hideBackButton?: boolean;
         useCheckImage?: boolean;
+        onRedirect?: () => void;
       };
     }>;
   }
@@ -56,6 +106,10 @@ export const Sheets = () => {
         'counter-offer-sheet': CounterOfferSheet,
         'add-promo-code-sheet': AddPromoCodeSheet,
         'camera-sheet': CameraSheet,
+        'location-search-sheet': LocationSearchSheet,
+        'location-map-search-sheet': LocationMapSearchSheet,
+        'payment-webview-sheet': PaymentWebviewSheet,
+        'cancel-service-sheet': CancelServiceSheet,
       }}
     />
   );

@@ -9,7 +9,14 @@ import { router } from 'expo-router';
 
 const data = [
   {
-    name: 'Terms & conditons',
+    name: 'Privacy Policy',
+    icon: require('@/assets/icons/terms.svg'),
+    isLink: true,
+    isDestructive: false,
+    onPress: () => router.navigate('/profile/privacy'),
+  },
+  {
+    name: 'Terms of Service',
     icon: require('@/assets/icons/terms.svg'),
     isLink: true,
     isDestructive: false,
@@ -38,7 +45,7 @@ export default function Screen() {
           <Pressable
             onPress={item.onPress}
             key={item.name}
-            className="flex h-[60px] w-full flex-row items-center justify-between rounded-[8px] border border-[#E9E9EB] px-4">
+            className="flex h-[60px] w-full flex-row items-center justify-between rounded-[8px] border border-[#9F9FA7] px-4">
             <View className="flex flex-row items-center gap-2">
               <Image
                 source={item.icon}
@@ -50,7 +57,7 @@ export default function Screen() {
               />
 
               <Text
-                className={`text-sm ${item.isDestructive ? 'text-[#B3031E]' : 'text-[#737381]'}`}>
+                className={`font-cabinet-medium text-sm ${item.isDestructive ? 'text-[#B3031E]' : 'text-[#1B1B1E]'}`}>
                 {item.name}
               </Text>
             </View>

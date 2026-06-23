@@ -12,9 +12,27 @@ export function SuccessSheet(props: SheetProps<'success-sheet'>) {
     : require('@/assets/images/success.svg');
 
   useEffect(() => {
-    const redirectTimeout = setTimeout(() => {
-      SheetManager.hide('success-sheet');
-    }, 8000);
+    // Capture the callback into a local so it survives this component's
+    // unmount — on iOS, hide() resolves around the same time the sheet's
+    // React tree tears down, so `props` may be stale by the time we read it.
+    const onRedirect = props.payload?.onRedirect;
+
+    const redirectTimeout = setTimeout(async () => {
+      // Close the sheet first so its native iOS Modal is fully torn down
+      // before any navigation / auth-state change runs. Calling hide() after
+      // navigation leaves the modal's backdrop orphaned on top of the new
+      // screen and blocks all touches.
+      try {
+        await SheetManager.hide('success-sheet');
+      } catch {
+        // Sheet already hidden — fall through and still run the redirect.
+      }
+      // Decouple from this component's lifecycle: by the time hide() resolves
+      // we're unmounting on iOS. Hop to the next macrotask so the redirect
+      // runs cleanly after the iOS Modal's UIViewController has dismissed,
+      // and outside React's unmount path.
+      setTimeout(() => onRedirect?.(), 0);
+    }, 5000);
 
     return () => clearTimeout(redirectTimeout);
   }, []);

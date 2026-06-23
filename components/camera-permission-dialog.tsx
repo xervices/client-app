@@ -6,15 +6,23 @@ import { Button } from './ui/button';
 import { useCameraPermissions } from 'expo-camera';
 import { requestRecordingPermissionsAsync } from 'expo-audio';
 
-export default function CameraPermissionDialog() {
+interface CameraPermissionDialogProps {
+  visible?: boolean;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  onPermissionsGranted: () => void;
+}
+
+export default function CameraPermissionDialog({
+  visible = false,
+  setVisible,
+  onPermissionsGranted,
+}: CameraPermissionDialogProps) {
   const [permission, requestPermission] = useCameraPermissions();
-  const [visible, setVisible] = useState(!permission?.granted);
+  // const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (permission?.granted) {
       setVisible(false);
-    } else {
-      setVisible(true);
     }
   }, [permission]);
 
@@ -25,7 +33,13 @@ export default function CameraPermissionDialog() {
   const onRequestPermission = async () => {
     requestPermission()
       .then(() => {
-        requestRecordingPermissionsAsync();
+        requestRecordingPermissionsAsync()
+          .then((res) => {
+            if (res?.granted) {
+              onPermissionsGranted();
+            }
+          })
+          .finally(() => setVisible(false));
       })
       .finally(() => setVisible(false));
   };
@@ -60,7 +74,7 @@ export default function CameraPermissionDialog() {
           <Text className="text-sm text-[#737381]">So you can record and take photos/videos.</Text>
 
           {/* Action Button */}
-          <Button onPress={onRequestPermission}>Grant permission</Button>
+          <Button onPress={onRequestPermission}>Continue</Button>
         </View>
       </View>
     </Modal>

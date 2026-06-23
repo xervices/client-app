@@ -1,8 +1,12 @@
+import { api } from '@/api';
 import { AuthHeader } from '@/components/auth-header';
 import { Layout } from '@/components/layout';
+import { LoadingState } from '@/components/loading-state';
 import { Text } from '@/components/ui/text';
 import { LegendList } from '@legendapp/list';
+import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import { Pressable, View } from 'react-native';
 
 const data = [
@@ -84,37 +88,59 @@ const data = [
 ];
 
 export default function Screen() {
+  const { data, isLoading, isRefetching, refetch } = useQuery(api.getAllCategories());
+
   return (
     <Layout
       useBackground
+      isRefreshing={isRefetching}
+      onRefresh={refetch}
       stickyHeader={
         <View className="pb-4">
           <AuthHeader title="Our Services" />
         </View>
       }>
-      <View className="flex-1 gap-6">
-        <LegendList
-          data={data}
-          numColumns={3}
-          renderItem={({ item }) => (
-            <Pressable className="flex aspect-square w-full items-center justify-center gap-[2px] rounded-[8px] border border-[#FFCFAD]">
-              <Image source={item.icon} style={{ width: 24, height: 24 }} contentFit="contain" />
+      {isLoading ? (
+        <LoadingState title="Loading Services..." />
+      ) : (
+        <View className="flex-1 gap-6">
+          <LegendList
+            data={data ?? []}
+            numColumns={3}
+            renderItem={({ item }) => (
+              <Pressable
+                onPress={() => {
+                  router.navigate({
+                    pathname: '/book',
+                    params: {
+                      search: item.name,
+                      id: item.id,
+                    },
+                  });
+                }}
+                className="flex aspect-square w-full items-center justify-center gap-[2px] rounded-[8px] border border-[#FE6A00]">
+                <Image
+                  source={item.iconUrl}
+                  style={{ width: 24, height: 24 }}
+                  contentFit="contain"
+                />
 
-              <Text className="text-center font-cabinet-bold text-xs text-[#737381]">
-                {item.name}
-              </Text>
-            </Pressable>
-          )}
-          keyExtractor={(item) => item.name}
-          recycleItems
-          contentContainerStyle={{
-            gap: 16,
-          }}
-          style={{
-            paddingHorizontal: 10,
-          }}
-        />
-      </View>
+                <Text className="text-center font-cabinet-bold text-xs text-[#1B1B1E]">
+                  {item.name}
+                </Text>
+              </Pressable>
+            )}
+            keyExtractor={(item) => item.name}
+            recycleItems
+            contentContainerStyle={{
+              gap: 16,
+            }}
+            style={{
+              paddingHorizontal: 10,
+            }}
+          />
+        </View>
+      )}
     </Layout>
   );
 }

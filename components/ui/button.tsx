@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 import { Platform, Pressable } from 'react-native';
+import { LoadingIndicator } from './loading-indicator';
 
 const buttonVariants = cva(
   cn(
@@ -16,29 +17,26 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: cn(
-          'shadow-black/5 border border-[#CC5600] bg-[#FE6A00] shadow-sm active:bg-primary/90',
+          'shadow-black/5 border border-[#CC5600] bg-[#FE6A00] shadow-sm',
           Platform.select({ web: 'hover:bg-primary/90' })
         ),
         destructive: cn(
-          'shadow-black/5 bg-[#B3031E] shadow-sm active:bg-destructive/90',
+          'shadow-black/5 bg-[#B3031E] shadow-sm',
           Platform.select({
             web: 'hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
           })
         ),
         outline: cn(
-          'shadow-black/5 border border-[#CC5600] bg-white shadow-sm active:bg-accent',
+          'shadow-black/5 border border-[#CC5600] bg-white shadow-sm',
           Platform.select({
             web: 'hover:bg-accent dark:hover:bg-input/50',
           })
         ),
         secondary: cn(
-          'shadow-black/5 bg-secondary shadow-sm active:bg-secondary/80',
+          'shadow-black/5 bg-secondary shadow-sm',
           Platform.select({ web: 'hover:bg-secondary/80' })
         ),
-        ghost: cn(
-          'active:bg-accent dark:active:bg-accent/50',
-          Platform.select({ web: 'hover:bg-accent dark:hover:bg-accent/50' })
-        ),
+        ghost: cn('', Platform.select({ web: 'hover:bg-accent dark:hover:bg-accent/50' })),
         link: '',
       },
       size: {
@@ -95,9 +93,20 @@ type ButtonProps = React.ComponentProps<typeof Pressable> &
   VariantProps<typeof buttonVariants> & {
     children?: React.ReactNode;
     icon?: React.ReactNode;
+    isLoading?: boolean;
+    loadingIndicatorColor?: string;
   };
 
-function Button({ className, variant, size, children, icon, ...props }: ButtonProps) {
+function Button({
+  className,
+  variant,
+  size,
+  children,
+  icon,
+  isLoading,
+  loadingIndicatorColor = '#ffffff',
+  ...props
+}: ButtonProps) {
   const hasText =
     typeof children === 'string' || (React.isValidElement(children) && children.type === Text);
 
@@ -107,8 +116,14 @@ function Button({ className, variant, size, children, icon, ...props }: ButtonPr
         className={cn(props.disabled && 'opacity-50', buttonVariants({ variant, size }), className)}
         role="button"
         {...props}>
-        {icon}
-        {typeof children === 'string' ? <Text>{children}</Text> : children}
+        {isLoading ? (
+          <LoadingIndicator color={loadingIndicatorColor} size={24} />
+        ) : (
+          <>
+            {icon}
+            {typeof children === 'string' ? <Text>{children}</Text> : children}
+          </>
+        )}
       </Pressable>
     </TextClassContext.Provider>
   );

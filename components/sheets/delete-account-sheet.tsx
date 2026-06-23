@@ -8,12 +8,19 @@ import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { InputError } from '../ui/input-error';
 import { Button } from '../ui/button';
+import { useMutation } from '@tanstack/react-query';
+import { api } from '@/api';
+import { tokenStorage } from '@/api/token-storage';
+import { useAuthStore } from '@/store/auth-store';
+import { showErrorMessage } from '@/api/helpers';
 
 const formSchema = z.object({
   reason: z.string().min(1, 'Reason is required.'),
 });
 
 export function DeleteAccountSheet() {
+  const { mutate, isPending } = useMutation(api.deleteAccount());
+
   const form = useForm({
     defaultValues: {
       reason: '',
@@ -22,17 +29,31 @@ export function DeleteAccountSheet() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      let deleteSheet = await SheetManager.hide('delete-account-sheet');
+      mutate(value, {
+        onSuccess: async () => {
+          SheetManager.hide('delete-account-sheet');
+          tokenStorage.clearTokens();
+          useAuthStore.getState().setLoginState(false);
+          // let deleteSheet = await SheetManager.hide('delete-account-sheet');
 
-      if (deleteSheet)
-        return await SheetManager.show('success-sheet', {
-          payload: {
-            subtitle:
-              'Your card has been deleted successfully. You will be redirected to the login page shortly',
-            title: 'Account deleted successfully',
-            useCheckImage: true,
-          },
-        });
+          // if (deleteSheet)
+          //   return await SheetManager.show('success-sheet', {
+          //     payload: {
+          //       subtitle:
+          //         'Your account has been deleted successfully. You will be redirected to the login page shortly',
+          //       title: 'Account deleted successfully',
+          //       useCheckImage: true,
+          //       onRedirect: () => {
+          //         tokenStorage.clearTokens();
+          //         useAuthStore.getState().setLoginState(false);
+          //       },
+          //     },
+          //   });
+        },
+        onError: (err) => {
+          showErrorMessage(err.message);
+        },
+      });
     },
   });
 
@@ -83,7 +104,11 @@ export function DeleteAccountSheet() {
           )}
         </form.Field>
 
-        <Button onPress={form.handleSubmit} variant={'destructive'}>
+        <Button
+          onPress={form.handleSubmit}
+          isLoading={isPending}
+          disabled={isPending}
+          variant={'destructive'}>
           Delete my account
         </Button>
       </View>

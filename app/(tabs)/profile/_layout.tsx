@@ -101,6 +101,14 @@ export default function Layout() {
       />
 
       <Stack.Screen
+        name="privacy"
+        options={{
+          headerShown: false,
+          title: 'Policies',
+        }}
+      />
+
+      <Stack.Screen
         name="terms"
         options={{
           headerShown: false,

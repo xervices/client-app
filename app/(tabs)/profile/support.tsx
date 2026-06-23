@@ -23,13 +23,13 @@ const data = [
     isDestructive: false,
     onPress: () => router.navigate('/profile/policies'),
   },
-  {
-    name: 'Delete account',
-    icon: require('@/assets/icons/delete.svg'),
-    isLink: true,
-    isDestructive: true,
-    onPress: () => SheetManager.show('delete-account-sheet'),
-  },
+  // {
+  //   name: 'Delete account',
+  //   icon: require('@/assets/icons/delete.svg'),
+  //   isLink: true,
+  //   isDestructive: true,
+  //   onPress: () => SheetManager.show('delete-account-sheet'),
+  // },
 ];
 
 export default function Screen() {
@@ -46,7 +46,7 @@ export default function Screen() {
           <Pressable
             onPress={item.onPress}
             key={item.name}
-            className="flex h-[60px] w-full flex-row items-center justify-between rounded-[8px] border border-[#E9E9EB] px-4">
+            className="flex h-[60px] w-full flex-row items-center justify-between rounded-[8px] border border-[#9F9FA7] px-4">
             <View className="flex flex-row items-center gap-2">
               <Image
                 source={item.icon}
@@ -58,7 +58,7 @@ export default function Screen() {
               />
 
               <Text
-                className={`text-sm ${item.isDestructive ? 'text-[#B3031E]' : 'text-[#737381]'}`}>
+                className={`font-cabinet-medium text-sm ${item.isDestructive ? 'text-[#B3031E]' : 'text-[#1B1B1E]'}`}>
                 {item.name}
               </Text>
             </View>

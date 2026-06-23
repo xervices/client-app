@@ -8,20 +8,45 @@
       "developmentClient": true,
       "distribution": "internal",
       "environment": "development",
-      "channel": "development"
+      "channel": "development",
+      "env": {
+        "APP_ENV": "development"
+      }
     },
     "preview": {
       "distribution": "internal",
       "environment": "preview",
-      "channel": "preview"
+      "channel": "preview",
+      "env": {
+        "APP_ENV": "development"
+      }
     },
     "production": {
       "autoIncrement": true,
       "environment": "production",
-      "channel": "production"
+      "channel": "production",
+      "env": {
+        "APP_ENV": "production"
+      }
+    },
+    "production-apk": {
+      "extends": "production",
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "Xervicestechnologies247@gmail.com",
+        "ascAppId": "6761826149",
+        "appleTeamId": "G7635Z8B89"
+      },
+      "android": {
+        "serviceAccountKeyPath": "../xervices-480909-512578d0b6ed.json"
+      }
+    }
   }
 }

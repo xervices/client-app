@@ -24,6 +24,48 @@ export default function Layout() {
           title: 'Services',
         }}
       />
+      <Stack.Screen
+        name="searching"
+        options={{
+          headerShown: false,
+          title: 'Searching',
+        }}
+      />
+      <Stack.Screen
+        name="pro"
+        options={{
+          headerShown: false,
+          title: 'Pro',
+        }}
+      />
+      <Stack.Screen
+        name="offer"
+        options={{
+          headerShown: false,
+          title: 'Offer',
+        }}
+      />
+      <Stack.Screen
+        name="no-result"
+        options={{
+          headerShown: false,
+          title: 'No Result',
+        }}
+      />
+      <Stack.Screen
+        name="confirm"
+        options={{
+          headerShown: false,
+          title: 'Confirm',
+        }}
+      />
+      <Stack.Screen
+        name="cancellation-policy"
+        options={{
+          headerShown: false,
+          title: 'Confirm',
+        }}
+      />
     </Stack>
   );
 }

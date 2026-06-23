@@ -1,27 +1,52 @@
 import * as React from 'react';
-import { Platform, Pressable, View } from 'react-native';
-import { useAuthStore } from '@/store/auth-store';
-import { Text } from '@/components/ui/text';
-import { Layout } from '@/components/layout';
-import { Icon } from '@/components/ui/icon';
+import { Pressable, View } from 'react-native';
 import { router } from 'expo-router';
-import { AuthHeader } from '@/components/auth-header';
 import { useForm } from '@tanstack/react-form';
 import * as z from 'zod';
+import { useMutation } from '@tanstack/react-query';
+
+import { Text } from '@/components/ui/text';
+import { Layout } from '@/components/layout';
+import { AuthHeader } from '@/components/auth-header';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { InputError } from '@/components/ui/input-error';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Image } from 'expo-image';
+import { GoogleSigninButton } from '@/components/google-signin-button';
+import { AppleSigninButton } from '@/components/apple-signin-button';
+
+import { api } from '@/api';
+import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
+import { emojiRegex, formatPhoneNumber, getDeviceInfo } from '@/lib/utils';
+import { getStableDeviceId } from '@/lib/app-install';
 
 const formSchema = z
   .object({
-    fullname: z.string().min(1, 'Fullname is required.'),
-    phone: z.string().min(1, 'Phone number is required.'),
-    email: z.email('Invalid email address').min(1, 'Email is required.'),
-    password: z.string().min(1, 'Password is required.'),
+    fullName: z
+      .string()
+      .min(1, 'Your fullname is required.')
+      .refine((val) => !emojiRegex.test(val), 'Name cannot contain emojis.'),
+    phoneNumber: z.string(),
+    email: z
+      .email('Invalid email address')
+      .min(1, 'Email is required.')
+      .refine(
+        (val) => {
+          const isEmail = val.includes('@');
+          return isEmail ? val === val.toLowerCase() : true;
+        },
+        { message: 'Email must be lowercase.' }
+      ),
+    password: z
+      .string()
+      .min(1, 'Password is required.')
+      .refine((val) => !/\s/.test(val), 'Password cannot contain spaces.')
+      .refine((val) => !emojiRegex.test(val), 'Password cannot contain emojis.'),
     confirmPassword: z.string().min(1, 'Password confirmation is required.'),
+    role: z.union([z.literal('user')]),
+    referralCode: z.string(),
+    deviceId: z.string(),
+    deviceName: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -29,31 +54,59 @@ const formSchema = z
   });
 
 export default function Screen() {
-  const { login } = useAuthStore();
+  const { mutate, isPending } = useMutation({
+    ...api.register(),
+    onError: (err) => {
+      showErrorMessage(err.message);
+    },
+  });
 
-  const [checked, setChecked] = React.useState(false);
-
-  function onCheckedChange(checked: boolean) {
-    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setChecked(checked);
-  }
+  const applyReferralCode = useMutation(api.applyReferralCode());
 
   const form = useForm({
     defaultValues: {
-      fullname: '',
-      phone: '',
+      fullName: '',
+      phoneNumber: '',
       email: '',
       password: '',
       confirmPassword: '',
+      role: 'user' as const,
+      referralCode: '',
+      deviceId: '',
+      deviceName: '',
     },
     validators: {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      router.navigate({
-        pathname: '/verify-email',
-        params: {
-          email: value.email,
+      const deviceInfo = await getDeviceInfo();
+
+      value.deviceId = await getStableDeviceId();
+      value.deviceName = deviceInfo?.deviceName || '';
+
+      const { confirmPassword, referralCode, ...registerData } = value;
+
+      if (registerData.phoneNumber.trim()) {
+        registerData.phoneNumber = formatPhoneNumber(registerData.phoneNumber);
+      } else {
+        // @ts-expect-error — phoneNumber is optional on the server after the App Store 5.1.1(v) fix
+        delete registerData.phoneNumber;
+      }
+
+      mutate(registerData, {
+        onSuccess: () => {
+          showSuccessMessage('Account created successfully');
+
+          if (referralCode) {
+            applyReferralCode?.mutate({ referralCode });
+          }
+
+          router.navigate({
+            pathname: '/verify-email',
+            params: {
+              email: value.email,
+            },
+          });
         },
       });
     },
@@ -70,13 +123,20 @@ export default function Screen() {
           </Text>
         </View>
 
+        <View className="rounded-xl border border-[#FFDCC1] bg-[#FFF6EE] px-4 py-3">
+          <Text className="text-center text-sm leading-normal text-[#737381]">
+            Creating an account helps us find artisans in your specific neighborhood and keeps our
+            community safe.
+          </Text>
+        </View>
+
         <View className="flex gap-4">
-          <form.Field name="fullname">
+          <form.Field name="fullName">
             {(field) => (
               <View>
-                <Label nativeID="fullname">Full name</Label>
+                <Label nativeID="fullName">Full name</Label>
                 <Input
-                  id="fullname"
+                  id="fullName"
                   value={field.state.value}
                   onChangeText={field.handleChange}
                   placeholder="Enter your name"
@@ -104,10 +164,10 @@ export default function Screen() {
             )}
           </form.Field>
 
-          <form.Field name="phone">
+          <form.Field name="phoneNumber">
             {(field) => (
               <View>
-                <Label nativeID="phone">Phone Number</Label>
+                <Label nativeID="phone">Phone Number (Optional)</Label>
                 <Input
                   id="phone"
                   value={field.state.value}
@@ -122,20 +182,47 @@ export default function Screen() {
           </form.Field>
 
           <form.Field name="password">
-            {(field) => (
-              <View>
-                <Label nativeID="password">Password</Label>
-                <Input
-                  id="password"
-                  value={field.state.value}
-                  onChangeText={field.handleChange}
-                  placeholder="Enter your password"
-                  secureTextEntry
-                  hasError={!field.state.meta.isValid}
-                />
-                {!field.state.meta.isValid ? <InputError errors={field.state.meta.errors} /> : null}
-              </View>
-            )}
+            {(field) => {
+              const password = field.state.value;
+              const requirements = [
+                { label: 'Uppercase letter', met: /[A-Z]/.test(password) },
+                { label: 'Lowercase letter', met: /[a-z]/.test(password) },
+                { label: 'Number', met: /[0-9]/.test(password) },
+                { label: 'Special character (e.g. !@#$%)', met: /[^A-Za-z0-9.,]/.test(password) },
+                { label: 'Minimum 8 characters', met: password.length >= 8 },
+              ];
+
+              return (
+                <View>
+                  <Label nativeID="password">Password</Label>
+                  <Input
+                    id="password"
+                    value={field.state.value}
+                    onChangeText={field.handleChange}
+                    placeholder="Enter your password"
+                    secureTextEntry
+                    hasError={!field.state.meta.isValid}
+                  />
+
+                  <View className="mt-2 gap-1">
+                    {requirements.map(({ label, met }) => (
+                      <View key={label} className="flex flex-row items-center gap-2">
+                        <Text className={met ? 'text-sm text-green-600' : 'text-sm text-gray-400'}>
+                          {met ? '✓' : '○'}
+                        </Text>
+                        <Text className={met ? 'text-sm text-green-600' : 'text-sm text-gray-400'}>
+                          {label}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+
+                  {!field.state.meta.isValid ? (
+                    <InputError errors={field.state.meta.errors} />
+                  ) : null}
+                </View>
+              );
+            }}
           </form.Field>
 
           <form.Field name="confirmPassword">
@@ -155,7 +242,25 @@ export default function Screen() {
             )}
           </form.Field>
 
-          <Button onPress={form.handleSubmit}>Get Started</Button>
+          <form.Field name="referralCode">
+            {(field) => (
+              <View>
+                <Label nativeID="referral">Referral Code (Optional)</Label>
+                <Input
+                  id="referral"
+                  value={field.state.value}
+                  onChangeText={field.handleChange}
+                  placeholder="Enter your referral code"
+                  hasError={!field.state.meta.isValid}
+                />
+                {!field.state.meta.isValid ? <InputError errors={field.state.meta.errors} /> : null}
+              </View>
+            )}
+          </form.Field>
+
+          <Button onPress={form.handleSubmit} isLoading={isPending} disabled={isPending}>
+            Get Started
+          </Button>
         </View>
 
         <View className="flex flex-row items-center justify-between gap-4">
@@ -166,41 +271,31 @@ export default function Screen() {
           <View className="h-0.5 flex-1 bg-[#FFDCC1]" />
         </View>
 
-        <Button className="border-[#B4B4BC] bg-background">
-          <Image
-            source={require('@/assets/icons/google.svg')}
-            style={{ width: 18, height: 18 }}
-            contentFit="contain"
-          />
+        <GoogleSigninButton />
 
-          <Text className="font-cabinet-extrabold text-[#737381]">Continue with Google</Text>
-        </Button>
-
-        <View className="flex flex-row items-center justify-center gap-1.5">
-          <Text className="text-[#737381]">Already have an account?</Text>
-
-          <Pressable onPress={() => router.navigate('/login')}>
-            <Text className="text-primary">Log in</Text>
-          </Pressable>
-        </View>
+        <AppleSigninButton />
 
         <View className="flex flex-row items-center justify-center gap-1.5">
           <Text className="text-center text-[#737381]">
-            <Pressable>
-              <Text className="mx-1 leading-normal text-[#737381]">
-                By creating an account, you agree to our
-              </Text>
-            </Pressable>
+            Already have an account?{' '}
+            <Text onPress={() => router.navigate('/login')} className="text-primary">
+              Log in
+            </Text>
+          </Text>
+        </View>
 
-            <Pressable>
-              <Text className="leading-normal text-primary">Terms of Service</Text>
-            </Pressable>
-            <Pressable>
-              <Text className="mx-1 leading-normal text-[#737381]">and</Text>
-            </Pressable>
-            <Pressable>
-              <Text className="leading-normal text-primary">Privacy Policy</Text>
-            </Pressable>
+        <View className="flex w-full flex-row flex-wrap items-center justify-center gap-1">
+          <Text className="text-center leading-normal text-[#737381]">
+            By creating an account, you agree to our applicable{' '}
+            <Text onPress={() => router.navigate('/terms')} className="leading-normal text-primary">
+              Terms of Service
+            </Text>{' '}
+            and{' '}
+            <Text
+              onPress={() => router.navigate('/privacy')}
+              className="leading-normal text-primary">
+              Privacy Policy
+            </Text>
           </Text>
         </View>
       </View>

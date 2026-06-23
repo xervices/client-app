@@ -1,22 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Text } from './ui/text';
 import { Modal, Pressable, View } from 'react-native';
 import { X } from 'lucide-react-native';
 import { Button } from './ui/button';
 import { useLocation } from 'solomo';
 
-export default function EnableLocationDialog() {
+interface EnableLocationDialogProps {
+  visible: boolean;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  onPermissionGranted?: () => void;
+}
+
+export default function EnableLocationDialog({
+  visible,
+  setVisible,
+  onPermissionGranted,
+}: EnableLocationDialogProps) {
   const { hasPermission, requestPermission } = useLocation();
 
-  const [visible, setVisible] = useState(!hasPermission);
-
   useEffect(() => {
-    if (hasPermission) {
+    if (visible && hasPermission) {
       setVisible(false);
-    } else {
-      setVisible(true);
+      onPermissionGranted?.();
     }
-  }, [hasPermission]);
+  }, [visible, hasPermission]);
 
   return (
     <Modal visible={visible} transparent animationType="fade">
@@ -52,9 +59,11 @@ export default function EnableLocationDialog() {
           {/* Action Button */}
           <Button
             onPress={() => {
-              requestPermission().finally(() => setVisible(false));
+              requestPermission()
+                .then(() => onPermissionGranted?.())
+                .finally(() => setVisible(false));
             }}>
-            Turn on location
+            Continue
           </Button>
         </View>
       </View>

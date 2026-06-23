@@ -3,15 +3,25 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Textarea } from '@/components/ui/textarea';
 import { UploadedMedia } from '@/components/uploaded-media';
+import { useServiceStore } from '@/store/service-store';
+import { useCameraPermissions } from 'expo-camera';
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams, usePathname } from 'expo-router';
 import { Camera } from 'lucide-react-native';
 import * as React from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { SheetManager } from 'react-native-actions-sheet';
 
 export default function Screen() {
-  const [mediaSrcs, setMediaSrcs] = React.useState<{ url: string; isVideo?: boolean }[]>([]);
+  const { setStep2 } = useServiceStore();
+
+  const [permission] = useCameraPermissions();
+  const [showPermissionModal, setShowPermissionModal] = React.useState(false);
+
+  const [media, setMediaSrcs] = React.useState<
+    { url: string; mimeType: string; isVideo?: boolean }[]
+  >([]);
+  const [description, setDescription] = React.useState('');
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
@@ -28,21 +38,22 @@ export default function Screen() {
           <Textarea
             placeholder="Describe what you need help with. More details help us assign the right pro to your request"
             className="rounded-[8px] bg-white"
+            value={description}
+            onChangeText={setDescription}
           />
         </View>
 
         <View className="flex gap-2">
-          <Text className="font-cabinet-bold leading-none text-[#737381]">Add Photos & videos</Text>
+          <Text className="font-cabinet-bold leading-none text-[#737381]">Add photos & videos</Text>
 
           <Text className="text-sm text-[#737381]">
-            The media file or document uploaded should show how bad the job is; we don't want it to
-            turn out that what was uploaded is different from the real problem.
+            Show us the service request with a photo/video
           </Text>
 
           <View className="flex gap-4">
             <View className="flex flex-row flex-wrap justify-between gap-4">
               {/* Photo */}
-              {mediaSrcs?.map((item) => (
+              {media?.map((item) => (
                 <UploadedMedia
                   key={item.url}
                   url={item.url}
@@ -58,64 +69,59 @@ export default function Screen() {
                   type={item.isVideo ? 'video' : 'photo'}
                 />
               ))}
-
-              {/* Video */}
-              {/* <View className="relative aspect-square w-[47%] overflow-hidden rounded-[8px]">
-              <Image
-                source={require('@/assets/images/sample.png')}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                }}
-                contentFit="cover"
-              />
-
-              <View className="absolute inset-0 flex h-full w-full items-center justify-center bg-[#FFE6D6]/0 p-4">
-                <Pressable
-                  onPress={() => SheetManager.show('delete-image-sheet')}
-                  className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-[#FFF4EA]">
-                  <Image
-                    source={require('@/assets/icons/trash.svg')}
-                    style={{ width: 14, height: 14 }}
-                    contentFit="contain"
-                  />
-                </Pressable>
-
-                <Pressable className="flex aspect-square w-11 items-center justify-center rounded-full bg-[#FFFFFF]">
-                  <Play size={24} color={'#737381'} fill={'#737381'} />
-                </Pressable>
-              </View>
-            </View> */}
             </View>
 
             <Pressable
-              onPress={() =>
-                SheetManager.show('camera-sheet', {
-                  payload: {
-                    onSelect(url, isVideo) {
-                      const data = {
-                        url,
-                        isVideo,
-                      };
-
-                      setMediaSrcs((prev) => {
-                        return [...prev, data];
-                      });
+              onPress={() => {
+                if (permission?.granted) {
+                  SheetManager.show('camera-sheet', {
+                    payload: {
+                      onSelect(value) {
+                        setMediaSrcs((prev) => {
+                          return [...prev, value];
+                        });
+                      },
                     },
-                  },
-                })
-              }
+                  });
+                } else {
+                  setShowPermissionModal(true);
+                }
+              }}
               className="flex aspect-square w-16 items-center justify-center rounded-[8px] border border-[#E0E0E0]">
               <Camera size={24} color={'#737381'} />
             </Pressable>
           </View>
         </View>
 
-        <Button onPress={() => router.navigate('/book/step-3')} className="mt-auto">
+        <Button
+          disabled={!description || !media || media.length === 0}
+          onPress={() => {
+            setStep2({
+              title: description.substring(0, 243),
+              description,
+              media,
+            });
+            router.navigate('/book/step-3');
+          }}
+          className="mt-auto">
           Continue
         </Button>
 
-        <CameraPermissionDialog />
+        <CameraPermissionDialog
+          onPermissionsGranted={() => {
+            SheetManager.show('camera-sheet', {
+              payload: {
+                onSelect(value) {
+                  setMediaSrcs((prev) => {
+                    return [...prev, value];
+                  });
+                },
+              },
+            });
+          }}
+          visible={showPermissionModal}
+          setVisible={setShowPermissionModal}
+        />
       </View>
     </ScrollView>
   );

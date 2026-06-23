@@ -2,7 +2,6 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Platform, TextInput, type TextInputProps, View, Pressable } from 'react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
-import { Text } from './text';
 
 interface InputProps extends TextInputProps {
   className?: string;
@@ -16,17 +15,12 @@ interface InputProps extends TextInputProps {
 }
 
 const Input = React.forwardRef<TextInput, InputProps>(
-  (
-    { className, placeholderClassName, secureTextEntry, hasError, icon, rightIcon, ...props },
-    ref
-  ) => {
+  ({ className, placeholderClassName, secureTextEntry, hasError, icon, rightIcon, ...props }, ref) => {
     const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
+    const [isFocused, setIsFocused] = React.useState(false);
 
     // Determine if this is meant to be a secure input (password field)
     const isSecureInput = secureTextEntry === true;
-
-    // Determine if this is a phone input
-    const isPhoneInput = props.keyboardType === 'phone-pad';
 
     const togglePasswordVisibility = () => {
       setIsPasswordVisible((prev) => !prev);
@@ -36,17 +30,26 @@ const Input = React.forwardRef<TextInput, InputProps>(
       <View className="relative w-full">
         <TextInput
           ref={ref}
-          // logic: if it is a password field, toggle visibility based on state.
-          // if it is not a password field, just use the passed prop (usually undefined/false).
           secureTextEntry={isSecureInput ? !isPasswordVisible : secureTextEntry}
+          placeholderTextColor="#9F9FA7"
+          style={{
+            color: '#1B1B1E',
+            ...Platform.select({
+              ios: {
+                paddingTop: 0,
+                paddingBottom: 0,
+                lineHeight: undefined,
+              },
+              android: { textAlignVertical: 'center' },
+            }),
+          }}
           className={cn(
             // Base styles
-            'flex h-[56px] w-full min-w-0 flex-row items-center rounded-[4px] border bg-white px-4 py-1 font-cabinet text-base font-thin text-[#1B1B1E]',
+            'flex h-[56px] w-full min-w-0 flex-row items-center rounded-[4px] border bg-white px-4 font-cabinet-medium text-base text-[#1B1B1E]',
             // Error state border color
-            hasError ? 'border-error' : 'border-[#DFDFE1]',
+            hasError ? 'border-error' : isFocused ? 'border-[#FE6A00]' : 'border-[#DFDFE1]',
             // Add right padding only if we have the eye icon to prevent text overlap
             isSecureInput && 'pr-12',
-            isPhoneInput && 'pl-14',
             icon && 'pl-10',
             rightIcon && 'pr-12',
             // Disabled state styling
@@ -70,17 +73,18 @@ const Input = React.forwardRef<TextInput, InputProps>(
             }),
             className
           )}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           {...props}
         />
 
-        {/* Conditionally render the toggle button */}
+        {/* Password toggle button */}
         {isSecureInput && (
           <Pressable
             onPress={togglePasswordVisibility}
             className="absolute right-4 top-0 flex h-[56px] items-center justify-center"
             accessibilityLabel={isPasswordVisible ? 'Hide password' : 'Show password'}
             accessibilityRole="button"
-            // HitSlop increases the touchable area without changing the layout
             hitSlop={8}>
             {isPasswordVisible ? (
               <Eye size={20} color="#B4B4BC" />
@@ -90,24 +94,14 @@ const Input = React.forwardRef<TextInput, InputProps>(
           </Pressable>
         )}
 
-        {isPhoneInput && (
-          <Pressable
-            onPress={togglePasswordVisibility}
-            className="absolute left-4 top-0 flex h-[56px] items-center justify-center"
-            accessibilityLabel={'Area Code'}
-            accessibilityRole="button"
-            // HitSlop increases the touchable area without changing the layout
-            hitSlop={8}>
-            <Text className="text-primary">+234 </Text>
-          </Pressable>
-        )}
-
+        {/* Left icon */}
         {icon && (
           <View className="absolute left-4 top-0 flex h-[56px] items-center justify-center">
             {icon}
           </View>
         )}
 
+        {/* Right icon */}
         {rightIcon && (
           <View className="absolute right-4 top-0 flex h-[56px] items-center justify-center">
             {rightIcon}

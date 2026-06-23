@@ -1,0 +1,513 @@
+import { Text } from '@/components/ui/text';
+import * as React from 'react';
+import { ActivityIndicator, Platform, Pressable, View } from 'react-native';
+import { Layout } from '@/components/layout';
+import { AuthHeader } from '@/components/auth-header';
+import { Image } from 'expo-image';
+import {
+  ArrowUpRight,
+  BadgeCheck,
+  ChevronRight,
+  Info,
+  Mail,
+  MessageCircleMore,
+} from 'lucide-react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useForm } from '@tanstack/react-form';
+import * as z from 'zod';
+import {
+  NativeSelectScrollView,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { InputError } from '@/components/ui/input-error';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { api } from '@/api';
+import { LoadingState } from '@/components/loading-state';
+import { formatCurrency, formatDateTime } from '@/lib/utils';
+import { useCameraPermissions } from 'expo-camera';
+import { UploadedMedia } from '@/components/uploaded-media';
+import { SheetManager } from 'react-native-actions-sheet';
+import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
+import { Input } from '../ui/input';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { useKeyboardHandler } from 'react-native-keyboard-controller';
+
+const formSchema = z.object({
+  jobId: z.string(),
+  disputeType: z.string().min(1, 'Issue type is required.'),
+  description: z.string().min(1, 'Please describe your concern.'),
+  bankCode: z.string().min(1, 'Bank is required.'),
+  bankName: z.string().min(1, 'Bank Name is required.'),
+  accountNumber: z.string().min(1, 'Account number is required.'),
+});
+
+const issuesData = [
+  {
+    id: '1',
+    label: 'Behaviour',
+    value: 'behavior',
+  },
+  {
+    id: '2',
+    label: 'Payment Issue',
+    value: 'payment',
+  },
+  {
+    id: '3',
+    label: 'Service Quality',
+    value: 'service_quality',
+  },
+  {
+    id: '4',
+    label: 'Cancellation',
+    value: 'cancellation',
+  },
+  {
+    id: '5',
+    label: 'Other Issues',
+    value: 'other',
+  },
+];
+
+const PADDING_BOTTOM = Platform.OS === 'ios' ? 20 : 0;
+
+const useGradualAnimation = () => {
+  const height = useSharedValue(PADDING_BOTTOM);
+
+  useKeyboardHandler(
+    {
+      onMove: (e) => {
+        'worklet';
+        height.value = Math.max(e.height, PADDING_BOTTOM);
+      },
+    },
+    []
+  );
+
+  return { height };
+};
+
+export function CreateDisputeScreen() {
+  const { height } = useGradualAnimation();
+
+  const fakeView = useAnimatedStyle(() => {
+    return {
+      height: Math.abs(height.value),
+      marginBottom: height.value > 0 ? 0 : PADDING_BOTTOM,
+    };
+  }, []);
+
+  const { id }: { id: string } = useLocalSearchParams();
+
+  const { isLoading, refetch, data, isRefetching } = useQuery(api.getJobDetail(id));
+
+  const jobs = useQuery(api.getUserJobs());
+  const banks = useQuery(api.getNigerianBanks());
+  const verifyBankAccount = useMutation(api.verifyBankAccount());
+
+  const { mutate, isPending } = useMutation(api.createDispute());
+
+  const [permission] = useCameraPermissions();
+  const [showPermissionModal, setShowPermissionModal] = React.useState(false);
+
+  const [media, setMediaSrcs] = React.useState<
+    { url: string; mimeType: string; isVideo?: boolean }[]
+  >([]);
+
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const filteredBanks = React.useMemo(() => {
+    if (!searchQuery) return banks?.data?.slice(0, 10);
+    return banks?.data
+      ?.filter((bank) => bank.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      .slice(0, 20);
+  }, [searchQuery, banks]);
+
+  const insets = useSafeAreaInsets();
+  const contentInsets = {
+    top: insets.top,
+    bottom: Platform.select({ ios: insets.bottom, android: insets.bottom + 24 }),
+    left: 24,
+    right: 24,
+  };
+
+  const form = useForm({
+    defaultValues: {
+      jobId: id,
+      disputeType: '',
+      description: '',
+      bankCode: '',
+      bankName: '',
+      accountNumber: '',
+    },
+    validators: {
+      onSubmit: formSchema,
+    },
+    onSubmit: async ({ value }) => {
+      const data = { ...value, media };
+
+      // @ts-ignore
+      mutate(data, {
+        onSuccess: (res) => {
+          jobs?.refetch();
+          showSuccessMessage('Dispute created successfully');
+          router.replace('/(tabs)/(home)');
+        },
+        onError: (err) => {
+          showErrorMessage(err?.message);
+        },
+      });
+    },
+  });
+
+  return (
+    <Layout
+      useBackground
+      isRefreshing={isRefetching || banks?.isRefetching}
+      onRefresh={() => {
+        refetch();
+        banks?.refetch();
+      }}
+      stickyHeader={
+        <View className="pb-4">
+          <AuthHeader title="Dispute" />
+        </View>
+      }>
+      {isLoading ? (
+        <LoadingState title="Loading job detail..." />
+      ) : (
+        <View className="flex-1 gap-4">
+          <View className="flex w-full flex-row items-start gap-3">
+            <View className="flex min-w-0 flex-1 flex-row items-center gap-2">
+              <Avatar alt="User's Avatar" className="h-14 w-14 shrink-0">
+                <AvatarImage source={{ uri: data?.artisan?.profile?.avatarUrl }} />
+                <AvatarFallback className="bg-primary">
+                  <Text className="font-cabinet-bold text-xs uppercase leading-none">
+                    {data?.artisan?.profile?.fullName?.substring(0, 2)}
+                  </Text>
+                </AvatarFallback>
+              </Avatar>
+
+              <View className="min-w-0 flex-1">
+                <View className="flex min-w-0 flex-row items-start">
+                  <Text
+                    // numberOfLines={2}
+                    // ellipsizeMode="tail"
+                    className="min-w-0 shrink font-cabinet-bold text-[18px] text-[#1B1B1E]">
+                    {data?.artisan?.profile?.fullName}
+                  </Text>
+
+                  <BadgeCheck
+                    size={16}
+                    fill={'#FE6A00'}
+                    stroke={'#FFFFFF'}
+                    className="mt-1 shrink-0"
+                  />
+                </View>
+
+                <Text numberOfLines={1} ellipsizeMode="tail" className="text-xs text-[#1B1B1E]">
+                  {data?.category?.name} Specialist
+                </Text>
+
+                <Text className="text-xs text-[#FF6A00]">
+                  {data?.artisanRating} ★ ({data?.artisanReviewCount})
+                </Text>
+              </View>
+            </View>
+
+            <View className="w-24 shrink-0">
+              <View className="flex flex-row justify-end">
+                <View className="flex flex-row items-center justify-center rounded-full bg-[#FFEAED] px-5 py-1.5">
+                  <Text className="text-xs leading-none text-[#8C0317]">Dispute</Text>
+                </View>
+              </View>
+
+              <Text className="text-right font-cabinet-bold text-[18px] text-[#FF6A00]">
+                {formatCurrency(data?.finalAmount)}
+              </Text>
+            </View>
+          </View>
+
+          <View className="flex w-full flex-row justify-between">
+            <Text className="flex-1 text-sm text-[#737381]">Booking Date & Time</Text>
+
+            <Text className="font-cabinet-bold text-sm text-[#737381]">
+              {formatDateTime(data?.createdAt)}
+            </Text>
+          </View>
+
+          <View className="flex flex-row gap-3 rounded-[8px] bg-[#EBF4FF] p-3">
+            <Info size={20} color="#0582F1" />
+            <View className="flex-1">
+              <Text className="font-cabinet-medium text-sm text-[#0582F1]">
+                After submitting your dispute, you can track the status and view responses in the
+                Disputes section of your Profile.
+              </Text>
+            </View>
+          </View>
+
+          <form.Field name="disputeType">
+            {(field) => (
+              <View>
+                <Select>
+                  <SelectTrigger className="w-full bg-white">
+                    <SelectValue id="state" placeholder="Select Issue Type" />
+                  </SelectTrigger>
+                  <SelectContent
+                    insets={contentInsets}
+                    className="mt-2 w-full bg-white"
+                    style={{ maxHeight: 300 }}>
+                    <NativeSelectScrollView className="h-full">
+                      <SelectGroup>
+                        <SelectLabel>Issue Type</SelectLabel>
+                        {issuesData.map((type) => (
+                          <SelectItem
+                            onPress={() => {
+                              field.handleChange(type.value);
+                            }}
+                            key={type.id}
+                            label={type.label}
+                            value={type.value}>
+                            {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </NativeSelectScrollView>
+                  </SelectContent>
+                </Select>
+
+                {!field.state.meta.isValid ? <InputError errors={field.state.meta.errors} /> : null}
+              </View>
+            )}
+          </form.Field>
+
+          <form.Field name="description">
+            {(field) => (
+              <View>
+                <Label nativeID="reason">Describe your concern</Label>
+                <Textarea
+                  className="bg-white"
+                  id="reason"
+                  value={field.state.value}
+                  onChangeText={field.handleChange}
+                  placeholder="Clearly explain your issue"
+                  hasError={!field.state.meta.isValid}
+                />
+                {!field.state.meta.isValid ? <InputError errors={field.state.meta.errors} /> : null}
+              </View>
+            )}
+          </form.Field>
+
+          <View>
+            <Text className="font-cabinet-bold text-sm text-[#737381]">Add Photos or Videos.</Text>
+
+            <Text className="text-sm text-[#737381]">
+              Photos and videos will help us resolve disputes faster.
+            </Text>
+
+            <Text className="text-sm text-[#FFAC70]">
+              Include photos of: the completed work, any damage or poor quality and original job
+              agreement/messages.
+            </Text>
+          </View>
+
+          <View className="flex flex-row flex-wrap gap-2">
+            {media?.map((item) => (
+              <UploadedMedia
+                key={item.url}
+                url={item.url}
+                onDelete={() =>
+                  SheetManager.show('delete-image-sheet', {
+                    payload: {
+                      onDelete() {
+                        setMediaSrcs((prev) => prev.filter((media) => media.url !== item.url));
+                      },
+                    },
+                  })
+                }
+                type={item.isVideo ? 'video' : 'photo'}
+              />
+            ))}
+          </View>
+
+          <Pressable
+            onPress={() => {
+              if (permission?.granted) {
+                SheetManager.show('camera-sheet', {
+                  payload: {
+                    onSelect(value) {
+                      setMediaSrcs((prev) => {
+                        return [...prev, value];
+                      });
+                    },
+                  },
+                });
+              } else {
+                setShowPermissionModal(true);
+              }
+            }}
+            className="flex aspect-[327/100] w-full items-center justify-center rounded-[8px] border-[2px] border-[#E9E9EB]">
+            <Image
+              source={require('@/assets/icons/camera-primary.svg')}
+              style={{ width: 24, height: 24 }}
+              contentFit="contain"
+            />
+
+            <Text className="text-center text-sm text-[#FE6A00]">Add Photos/Videos</Text>
+            <Text className="text-center text-xs text-[#B4B4BC]">
+              Tap to add photos of the issue
+            </Text>
+          </Pressable>
+
+          <View className="gap-4">
+            <View className="flex flex-row gap-3 rounded-[8px] bg-[#EBF4FF] p-3">
+              <Info size={20} color="#0582F1" />
+              <View className="flex-1">
+                <Text className="font-cabinet-medium text-sm text-[#0582F1]">
+                  If your dispute is approved, we'll refund your payment directly to your bank
+                  account. Please provide your bank details below.
+                </Text>
+              </View>
+            </View>
+
+            <form.Field name="bankCode">
+              {(field) => (
+                <View>
+                  <Label nativeID="bank">Select Bank</Label>
+                  <Select>
+                    <SelectTrigger className="w-full bg-white">
+                      <SelectValue id="bank" placeholder="Select Bank" />
+                    </SelectTrigger>
+                    <SelectContent
+                      avoidKeyboard
+                      insets={contentInsets}
+                      className="mt-2 w-full bg-white"
+                      style={{ maxHeight: 300 }}>
+                      <View className="sticky top-0 z-10 border-b border-gray-100 bg-white p-2">
+                        <Input
+                          autoFocus
+                          placeholder="Search bank..."
+                          value={searchQuery}
+                          onChangeText={setSearchQuery}
+                          className="h-10 bg-gray-50"
+                        />
+                      </View>
+                      <NativeSelectScrollView className="h-full">
+                        <SelectGroup>
+                          <SelectLabel>Bank</SelectLabel>
+                          {filteredBanks?.map((bank, index) => (
+                            <SelectItem
+                              onPress={() => {
+                                field.handleChange(bank.code);
+                                form.setFieldValue('bankName', bank.name);
+                              }}
+                              key={`${bank.code}-${index}`}
+                              label={bank.name}
+                              value={bank.code}>
+                              {bank.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </NativeSelectScrollView>
+                    </SelectContent>
+                  </Select>
+
+                  {!field.state.meta.isValid ? (
+                    <InputError errors={field.state.meta.errors} />
+                  ) : null}
+                </View>
+              )}
+            </form.Field>
+
+            <form.Subscribe
+              selector={(state) => [state.values.accountNumber, state.values.bankCode]}>
+              {([accountNumber, bankCode]) => (
+                <VerificationHandler
+                  accountNumber={accountNumber}
+                  bankCode={bankCode}
+                  verify={verifyBankAccount?.mutate}
+                />
+              )}
+            </form.Subscribe>
+
+            <View>
+              <form.Field name="accountNumber">
+                {(field) => (
+                  <View>
+                    <Label nativeID="number">Account Number</Label>
+                    <Input
+                      editable={!isPending}
+                      className="bg-white"
+                      id="number"
+                      value={field.state.value}
+                      onChangeText={field.handleChange}
+                      placeholder="Enter your account number"
+                      hasError={!field.state.meta.isValid}
+                      keyboardType="number-pad"
+                      rightIcon={
+                        isPending ? <ActivityIndicator size="small" color="#FE6A00" /> : undefined
+                      }
+                    />
+                    {!field.state.meta.isValid ? (
+                      <InputError errors={field.state.meta.errors} />
+                    ) : null}
+                  </View>
+                )}
+              </form.Field>
+
+              <View className="flex min-h-[20px] flex-row justify-end">
+                {verifyBankAccount?.data ? (
+                  <Text className="text-sm text-[#FE6A00]">
+                    {verifyBankAccount?.data.accountName}
+                  </Text>
+                ) : null}
+                {verifyBankAccount?.isError ? (
+                  <Text className="text-sm text-red-500">
+                    {verifyBankAccount?.error?.message
+                      ? verifyBankAccount?.error?.message
+                      : 'Could not verify account'}
+                  </Text>
+                ) : null}
+              </View>
+            </View>
+          </View>
+
+          <Button isLoading={isPending} disabled={isPending} onPress={form.handleSubmit}>
+            Submit Dispute
+          </Button>
+
+          <Animated.View style={fakeView} />
+        </View>
+      )}
+    </Layout>
+  );
+}
+
+function VerificationHandler({
+  accountNumber,
+  bankCode,
+  verify,
+}: {
+  accountNumber: string;
+  bankCode: string;
+  verify: (data: { accountNumber: string; bankCode: string }) => void;
+}) {
+  React.useEffect(() => {
+    if (accountNumber && accountNumber.length === 10 && bankCode) {
+      verify({ accountNumber, bankCode });
+    }
+  }, [accountNumber, bankCode, verify]);
+
+  return null;
+}

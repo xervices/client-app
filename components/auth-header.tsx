@@ -7,13 +7,26 @@ import { Text } from './ui/text';
 interface AuthHeaderProps {
   title?: string;
   showBackButton?: boolean;
+  onBackButtonPress?: () => void;
 }
 
-export function AuthHeader({ title, showBackButton: showBackButton = true }: AuthHeaderProps) {
+export function AuthHeader({
+  title,
+  showBackButton: showBackButton = true,
+  onBackButtonPress,
+}: AuthHeaderProps) {
   return (
     <View className="relative flex w-full flex-row items-center justify-center">
       {router.canGoBack() && showBackButton && (
-        <Pressable onPress={() => router.back()} className="absolute left-0">
+        <Pressable
+          onPress={() => {
+            if (onBackButtonPress) {
+              onBackButtonPress();
+            } else {
+              router.back();
+            }
+          }}
+          className="absolute left-0">
           <Icon as={ArrowLeft} size={28} color={'#B4B4BC'} />
         </Pressable>
       )}

@@ -1,23 +1,67 @@
 import * as React from 'react';
-import { Platform, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { OtpInput } from 'react-native-otp-entry';
+import { useMutation } from '@tanstack/react-query';
+import { SheetManager } from 'react-native-actions-sheet';
+
 import { Text } from '@/components/ui/text';
 import { Layout } from '@/components/layout';
-import { useLocalSearchParams } from 'expo-router';
 import { AuthHeader } from '@/components/auth-header';
-import { OtpInput } from 'react-native-otp-entry';
+import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { useTimer } from '@/hooks/use-timer';
 
+import { api } from '@/api';
+import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
+import { useAuthStore } from '@/store/auth-store';
+
 export default function Screen() {
-  const { email } = useLocalSearchParams();
+  const { email }: { email: string } = useLocalSearchParams();
 
   const [otpDisabled, setOTPDisabled] = React.useState(false);
-  const [timer, setTimer] = React.useState(60);
+  const [timer, setTimer] = React.useState(0);
   const { minute, seconds } = useTimer({ sec: timer });
+
+  const verifyAccount = useMutation({
+    ...api.verifyAccount(),
+    onMutate: () => {
+      setOTPDisabled(true);
+    },
+    onSuccess: (data) => {
+      SheetManager.show('success-sheet', {
+        payload: {
+          title: 'Welcome',
+          subtitle:
+            'You have successfully signed up to Xervices. You will be redirected to the home page shortly.',
+          onRedirect: () => {
+            useAuthStore.getState().setLoginState(true);
+            router.replace('/(tabs)/(home)');
+          },
+        },
+      });
+    },
+    onError: (err) => {
+      showErrorMessage(err.message);
+    },
+    onSettled: () => [setOTPDisabled(false)],
+  });
+
+  const resendVerificationCode = useMutation({
+    ...api.resendVerificationCode(),
+    onSuccess: (data) => {
+      showSuccessMessage('Verification code sent to your email successfully.');
+    },
+    onError: (err) => {
+      showErrorMessage(err.message);
+    },
+  });
 
   const handleOnResendOTP = () => {
     if (Number(seconds) > 0) return;
 
     setTimer((prev) => prev + 30);
+
+    resendVerificationCode.mutate({ type: 'email', email });
   };
 
   return (
@@ -37,10 +81,10 @@ export default function Screen() {
 
         <View className="mt-16">
           <OtpInput
-            numberOfDigits={4}
+            numberOfDigits={6}
             theme={{
               pinCodeContainerStyle: {
-                width: 60,
+                width: 45,
                 aspectRatio: 1 / 1,
                 borderRadius: 8,
                 borderWidth: 1,
@@ -60,14 +104,15 @@ export default function Screen() {
             }}
             disabled={otpDisabled}
             onFilled={(value) => {
-              setOTPDisabled(true);
-              console.log(value);
+              verifyAccount.mutate({ code: value, email, type: 'account_verification' });
             }}
           />
         </View>
 
         <View className="flex flex-row items-center justify-center gap-1.5">
-          {Number(seconds) > 0 ? (
+          {verifyAccount.isPending || resendVerificationCode.isPending ? (
+            <LoadingIndicator size={24} />
+          ) : Number(seconds) > 0 ? (
             <Text className="text-center text-[#737381]">
               Wait to request code in:{' '}
               <Text className="text-primary">
@@ -76,13 +121,10 @@ export default function Screen() {
             </Text>
           ) : (
             <Text className="text-center text-[#737381]">
-              <Pressable>
-                <Text className="mx-1 leading-normal text-[#737381]">Haven’t gotten any code?</Text>
-              </Pressable>
-
-              <Pressable onPress={handleOnResendOTP}>
-                <Text className="leading-normal text-primary">Resend</Text>
-              </Pressable>
+              Haven’t gotten any code?{' '}
+              <Text onPress={handleOnResendOTP} className="text-primary">
+                Resend
+              </Text>
             </Text>
           )}
         </View>

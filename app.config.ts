@@ -28,10 +28,18 @@ const appIconBadgeConfig: AppIconBadgeConfig = {
 };
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-  const { name, bundleIdentifier, packageName, scheme, googleServicesFile, googleMapsApiKey } =
-    getDynamicAppConfig(
-      (process.env.APP_ENV as 'development' | 'preview' | 'production') || 'development'
-    );
+  const {
+    name,
+    bundleIdentifier,
+    packageName,
+    scheme,
+    googleServicesFile,
+    googleMapsApiKey,
+    iosUrlScheme,
+    iosGoogleMapsApiKey,
+  } = getDynamicAppConfig(
+    (process.env.APP_ENV as 'development' | 'preview' | 'production') || 'development'
+  );
 
   return {
     ...config,
@@ -45,11 +53,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     icon: './assets/images/icon.png',
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
-    splash: {
-      image: './assets/images/splash.png',
-      resizeMode: 'contain',
-      backgroundColor: '#E15D02',
-    },
     updates: {
       url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
     },
@@ -60,8 +63,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ios: {
       supportsTablet: true,
       bundleIdentifier: bundleIdentifier,
+      usesAppleSignIn: true,
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
+      },
+      config: {
+        googleMapsApiKey: iosGoogleMapsApiKey,
       },
     },
     experiments: {
@@ -70,8 +77,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     android: {
       edgeToEdgeEnabled: true,
       adaptiveIcon: {
-        foregroundImage: './assets/images/adaptive-icon.png',
-        backgroundColor: '#ffffff',
+        foregroundImage: './assets/images/splash.png',
+        backgroundColor: '#E15D02',
       },
       package: packageName,
       googleServicesFile,
@@ -80,6 +87,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           apiKey: googleMapsApiKey,
         },
       },
+      softwareKeyboardLayoutMode: 'pan',
     },
     web: {
       bundler: 'metro',
@@ -87,6 +95,29 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       favicon: './assets/images/favicon.png',
     },
     plugins: [
+      [
+        'expo-build-properties',
+        {
+          ios: {
+            // GoogleSignIn 9.x pulls in AppCheckCore (a Swift pod) which needs
+            // GoogleUtilities/RecaptchaInterop to expose module maps when building
+            // as static libraries. Without this, `pod install` fails on EAS.
+            extraPods: [
+              { name: 'GoogleUtilities', modular_headers: true },
+              { name: 'RecaptchaInterop', modular_headers: true },
+            ],
+          },
+        },
+      ],
+      [
+        'expo-splash-screen',
+        {
+          image: './assets/images/splash-transparent.png',
+          imageWidth: 200,
+          resizeMode: 'contain',
+          backgroundColor: '#E15D02',
+        },
+      ],
       [
         'expo-font',
         {
@@ -109,37 +140,44 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         'expo-location',
         {
-          locationWhenInUsePermission: `Allow ${name} to use your location for route tracking functionality.`,
+          locationWhenInUsePermission: `${name} uses your location to match you with nearby service providers and show accurate travel routes and ETAs during a booking.`,
         },
       ],
       'expo-notifications',
       [
         'expo-camera',
         {
-          cameraPermission: `Allow ${name} to access your camera`,
-          microphonePermission: `Allow ${name} to access your microphone`,
+          cameraPermission: `${name} uses your camera to take a profile photo, capture before and after photos of a service, and attach photo or video evidence when you open a dispute.`,
+          microphonePermission: `${name} uses your microphone to record audio while you capture video of a service or dispute, for example a short clip showing the condition of the work area.`,
           recordAudioAndroid: true,
         },
       ],
       [
         'expo-contacts',
         {
-          contactsPermission: `Allow ${name} to access your contacts.`,
+          contactsPermission: `${name} accesses your contacts so you can quickly invite friends to the app and share a service booking with them.`,
         },
       ],
       [
         'expo-audio',
         {
-          microphonePermission: `Allow ${name} to access your microphone.`,
+          microphonePermission: `${name} uses your microphone to record audio alongside video, for example when you capture a short clip of the service area to include with a booking or dispute.`,
           recordAudioAndroid: true,
         },
       ],
       [
         'expo-image-picker',
         {
-          photosPermission: 'The app accesses your photos to let you share them with your friends.',
+          photosPermission: `${name} accesses your photo library so you can choose a profile picture and attach existing photos to a service booking or dispute.`,
         },
       ],
+      [
+        '@react-native-google-signin/google-signin',
+        {
+          iosUrlScheme: iosUrlScheme,
+        },
+      ],
+      'expo-apple-authentication',
     ],
     extra: {
       eas: {
@@ -157,7 +195,9 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
       packageName: PACKAGE_NAME,
       scheme: SCHEME,
       googleServicesFile: './prod-google-services.json',
-      googleMapsApiKey: 'process.env.GOOGLE_MAPS_API_KEY',
+      googleMapsApiKey: 'AIzaSyDA7HnZnWADQ3h1AYCUgCLAccJGPJo67gU',
+      iosUrlScheme: 'com.googleusercontent.apps.254247444720-svvp7snle85nn3giielj7r9cmftm1ofv',
+      iosGoogleMapsApiKey: 'AIzaSyCebyLUsUxuLwTbvQFDKFaHF4B_Hz_lVT8',
     };
   }
 
@@ -168,7 +208,9 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
       packageName: `${PACKAGE_NAME}.preview`,
       scheme: `${SCHEME}-prev`,
       googleServicesFile: './preview-google-services.json',
-      googleMapsApiKey: 'process.env.GOOGLE_MAPS_API_KEY',
+      googleMapsApiKey: 'AIzaSyDA7HnZnWADQ3h1AYCUgCLAccJGPJo67gU',
+      iosUrlScheme: 'com.googleusercontent.apps._some_id_here_',
+      iosGoogleMapsApiKey: 'AIzaSyCebyLUsUxuLwTbvQFDKFaHF4B_Hz_lVT8',
     };
   }
 
@@ -179,5 +221,7 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
     scheme: `${SCHEME}-dev`,
     googleServicesFile: './dev-google-services.json',
     googleMapsApiKey: 'AIzaSyDA7HnZnWADQ3h1AYCUgCLAccJGPJo67gU',
+    iosUrlScheme: 'com.googleusercontent.apps.254247444720-nk2nrjvqda0r37s9kudt7embqirg3efu',
+    iosGoogleMapsApiKey: 'AIzaSyCebyLUsUxuLwTbvQFDKFaHF4B_Hz_lVT8',
   };
 };
