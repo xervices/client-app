@@ -130,7 +130,7 @@ export function CreateDisputeScreen() {
   const filteredBanks = React.useMemo(() => {
     if (!searchQuery) return banks?.data?.slice(0, 10);
     return banks?.data
-      ?.filter((bank) => bank.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      ?.filter((bank) => bank?.name?.toLowerCase().includes(searchQuery?.toLowerCase()))
       .slice(0, 20);
   }, [searchQuery, banks]);
 
@@ -409,13 +409,13 @@ export function CreateDisputeScreen() {
                           {filteredBanks?.map((bank, index) => (
                             <SelectItem
                               onPress={() => {
-                                field.handleChange(bank.code);
-                                form.setFieldValue('bankName', bank.name);
+                                field.handleChange(bank?.code);
+                                form.setFieldValue('bankName', bank?.name);
                               }}
-                              key={`${bank.code}-${index}`}
-                              label={bank.name}
-                              value={bank.code}>
-                              {bank.name}
+                              key={`${bank?.code}-${index}`}
+                              label={bank?.name}
+                              value={bank?.code}>
+                              {bank?.name}
                             </SelectItem>
                           ))}
                         </SelectGroup>
