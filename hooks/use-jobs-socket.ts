@@ -12,8 +12,9 @@ import {
   JoinJobResponse,
 } from './types';
 import { AppState } from 'react-native';
+import { BASE_URL } from '@/api/client';
 
-const SOCKET_URL = 'https://staging-api.getxervices.com';
+const SOCKET_URL = BASE_URL;
 
 type JobsSocket = Socket<JobsServerToClientEvents, JobsClientToServerEvents>;
 

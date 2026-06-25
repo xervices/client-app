@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import { useAuthStore } from '@/store/auth-store';
 import { showErrorMessage } from './helpers';
 
-export const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://staging-api.getxervices.com';
+export const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://api.getxervices.com';
 
 // Staging: https://staging-api.getxervices.com
 // Production: https://api.getxervices.com

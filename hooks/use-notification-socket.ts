@@ -10,8 +10,9 @@ import {
 import { tokenStorage } from '@/api/token-storage';
 import { AppState } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
+import { BASE_URL } from '@/api/client';
 
-const SOCKET_URL = 'https://staging-api.getxervices.com';
+const SOCKET_URL = BASE_URL;
 
 type NotificationSocket = Socket<
   NotificationServerToClientEvents,

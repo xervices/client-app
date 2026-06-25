@@ -10,8 +10,9 @@ import type {
   OfferWithdrawnEvent,
   CounterOfferEvent,
 } from './types';
+import { BASE_URL } from '@/api/client';
 
-const SOCKET_URL = 'https://staging-api.getxervices.com';
+const SOCKET_URL = BASE_URL;
 type OffersSocket = Socket<OffersServerToClientEvents, OffersClientToServerEvents>;
 interface UseOffersOptions {
   serviceRequestId?: string;
