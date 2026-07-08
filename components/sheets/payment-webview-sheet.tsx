@@ -111,7 +111,7 @@ export function PaymentWebviewSheet(props: SheetProps<'payment-webview-sheet'>) 
                 // Handle payment cancellation
                 if (cancelUrl && state.url === cancelUrl) {
                   onError?.('Payment cancelled by user');
-                  SheetManager.hide('paystack-webview-sheet');
+                  SheetManager.hide('payment-webview-sheet');
                   return;
                 }
               }}
