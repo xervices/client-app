@@ -20,6 +20,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SplashScreen } from '@/components/splash-screen';
 import { useTrackAppInstall } from '@/hooks/use-track-app-install';
+import { useReferralDeepLink } from '@/hooks/use-referral-deep-link';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -72,6 +73,7 @@ export default function RootLayout() {
               <NotificationProvider>
                 <SheetProvider>
                   <AppInstallTracker />
+                  <ReferralDeepLinkHandler />
                   <Sheets />
                   <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
                   <Stack>
@@ -132,5 +134,10 @@ export default function RootLayout() {
 
 function AppInstallTracker() {
   useTrackAppInstall();
+  return null;
+}
+
+function ReferralDeepLinkHandler() {
+  useReferralDeepLink();
   return null;
 }

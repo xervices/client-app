@@ -5,7 +5,9 @@
       "Bash(pnpm add *)",
       "PowerShell(pnpm add react-native-compressor)",
       "PowerShell(npx tsc --noEmit -p C:\\\\Users\\\\MOSES\\\\Documents\\\\Xervices\\\\client-app\\\\tsconfig.json 2>&1 | Select-Object -First 40)",
-      "Bash(findstr /I \"config json\")"
+      "Bash(findstr /I \"config json\")",
+      "Bash(node -e \"const s=require\\('./package.json'\\).scripts; console.log\\(JSON.stringify\\(s,null,1\\)\\)\")",
+      "Bash(node -e \"const s=require\\('./package.json'\\).scripts; Object.entries\\(s\\).filter\\(\\([k]\\)=>/build|android/i.test\\(k\\)\\).forEach\\(\\([k,v]\\)=>console.log\\(k+': '+v\\)\\)\")"
     ]
   }
 }

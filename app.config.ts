@@ -11,6 +11,14 @@ const PACKAGE_NAME = 'com.xervices.client'; // android package name
 const APP_NAME = 'Xervices'; // app name
 const SCHEME = 'xervices'; // app scheme
 
+// Universal / App Links — production build only. Dev and preview builds
+// don't claim the domain at all, so they never conflict with the artisan
+// app and the AASA/assetlinks files only ever need to list prod app IDs.
+// The customer app owns the `/u/referral` prefix; the artisan app owns
+// `/pro/referral` (see docs/referral-deep-linking-plan.md).
+const DEEP_LINK_HOST = 'www.getxervices.com';
+const REFERRAL_PATH_PREFIX = '/u/referral';
+
 const appIconBadgeConfig: AppIconBadgeConfig = {
   enabled: process.env.APP_ENV !== 'production',
   badges: [
@@ -37,6 +45,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     googleMapsApiKey,
     iosUrlScheme,
     iosGoogleMapsApiKey,
+    associatedDomains,
+    intentFilters,
   } = getDynamicAppConfig(
     (process.env.APP_ENV as 'development' | 'preview' | 'production') || 'development'
   );
@@ -64,6 +74,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       supportsTablet: true,
       bundleIdentifier: bundleIdentifier,
       usesAppleSignIn: true,
+      associatedDomains,
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
       },
@@ -82,6 +93,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       },
       package: packageName,
       googleServicesFile,
+      intentFilters,
       config: {
         googleMaps: {
           apiKey: googleMapsApiKey,
@@ -198,6 +210,21 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
       googleMapsApiKey: 'AIzaSyDA7HnZnWADQ3h1AYCUgCLAccJGPJo67gU',
       iosUrlScheme: 'com.googleusercontent.apps.254247444720-svvp7snle85nn3giielj7r9cmftm1ofv',
       iosGoogleMapsApiKey: 'AIzaSyCebyLUsUxuLwTbvQFDKFaHF4B_Hz_lVT8',
+      associatedDomains: [`applinks:${DEEP_LINK_HOST}`],
+      intentFilters: [
+        {
+          action: 'VIEW',
+          autoVerify: true,
+          data: [
+            {
+              scheme: 'https',
+              host: DEEP_LINK_HOST,
+              pathPrefix: REFERRAL_PATH_PREFIX,
+            },
+          ],
+          category: ['BROWSABLE', 'DEFAULT'],
+        },
+      ],
     };
   }
 
@@ -211,6 +238,8 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
       googleMapsApiKey: 'AIzaSyDA7HnZnWADQ3h1AYCUgCLAccJGPJo67gU',
       iosUrlScheme: 'com.googleusercontent.apps._some_id_here_',
       iosGoogleMapsApiKey: 'AIzaSyCebyLUsUxuLwTbvQFDKFaHF4B_Hz_lVT8',
+      associatedDomains: undefined,
+      intentFilters: undefined,
     };
   }
 
@@ -223,5 +252,7 @@ export const getDynamicAppConfig = (environment: 'development' | 'preview' | 'pr
     googleMapsApiKey: 'AIzaSyDA7HnZnWADQ3h1AYCUgCLAccJGPJo67gU',
     iosUrlScheme: 'com.googleusercontent.apps.254247444720-nk2nrjvqda0r37s9kudt7embqirg3efu',
     iosGoogleMapsApiKey: 'AIzaSyCebyLUsUxuLwTbvQFDKFaHF4B_Hz_lVT8',
+    associatedDomains: undefined,
+    intentFilters: undefined,
   };
 };

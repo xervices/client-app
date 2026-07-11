@@ -19,6 +19,8 @@ import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 import { emojiRegex, formatPhoneNumber, getDeviceInfo } from '@/lib/utils';
 import { getStableDeviceId } from '@/lib/app-install';
+import { clearPendingReferral } from '@/lib/pending-referral';
+import { useReferralStore } from '@/store/referral-store';
 
 const formSchema = z
   .object({
@@ -63,6 +65,9 @@ export default function Screen() {
 
   const applyReferralCode = useMutation(api.applyReferralCode());
 
+  const pendingReferralCode = useReferralStore((s) => s.code);
+  const clearReferralCode = useReferralStore((s) => s.clearCode);
+
   const form = useForm({
     defaultValues: {
       fullName: '',
@@ -98,7 +103,28 @@ export default function Screen() {
           showSuccessMessage('Account created successfully');
 
           if (referralCode) {
-            applyReferralCode?.mutate({ referralCode });
+            applyReferralCode.mutate(
+              { referralCode },
+              {
+                onSuccess: (data) => {
+                  clearPendingReferral();
+                  clearReferralCode();
+                  if (data?.referrerName) {
+                    showSuccessMessage(`Referred by ${data.referrerName}`);
+                  }
+                },
+                onError: (err) => {
+                  showErrorMessage(err.message);
+                  // Leave the code pending on a network failure so it can
+                  // retry; only clear it once the server has definitively
+                  // rejected it.
+                  if (!(err instanceof TypeError)) {
+                    clearPendingReferral();
+                    clearReferralCode();
+                  }
+                },
+              }
+            );
           }
 
           router.navigate({
@@ -111,6 +137,12 @@ export default function Screen() {
       });
     },
   });
+
+  React.useEffect(() => {
+    if (pendingReferralCode && !form.state.values.referralCode) {
+      form.setFieldValue('referralCode', pendingReferralCode);
+    }
+  }, [pendingReferralCode]);
 
   return (
     <Layout useBackground>
