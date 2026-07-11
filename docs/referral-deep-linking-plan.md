@@ -28,18 +28,32 @@
 
 ## Two constraints that shape everything
 
-### 1. Routing cannot carry the code
+### 1. The deep link URL is not a route, and `+not-found` is waiting for it
 
-In `app/_layout.tsx`, `register` sits inside:
+There is no `app/referral/[code].tsx`. `xervices://referral/USER202673` resolves to the path `/referral/USER202673`, which matches no file in `app/`, so **expo-router mounts `app/+not-found.tsx`** — the "Oops! This screen doesn't exist" screen — before `useReferralDeepLink` ever runs. That happens on every referral link, in every auth state.
+
+**Two things follow, and both are needed:**
+
+1. The URL is *data to capture*, not a navigation instruction. The code is written to durable storage the instant it arrives; `register.tsx` reads it whenever it eventually mounts.
+2. The hook must **also always navigate the user off `+not-found`**, in every auth state. Capturing the code is necessary but not sufficient. An early `return` on any branch strands the user on "Oops!".
+
+> This was the original bug. The first implementation only navigated for logged-out-and-onboarded users, so that one path appeared to work while not-onboarded and already-logged-in both silently parked on the not-found screen.
+
+### 1b. `register` is deliberately outside the onboarding guard
+
+`register` used to sit inside `<Stack.Protected guard={!isLoggedIn && hasCompletedOnboarding}>`, so it was **not mounted** for a first-time user — a referral deep link had nowhere valid to send them. It now has its own guard:
 
 ```tsx
-<Stack.Protected guard={!isLoggedIn && hasCompletedOnboarding}>
+<Stack.Protected guard={!isLoggedIn}>
   <Stack.Screen name="register" ... />
+</Stack.Protected>
 ```
 
-`useAuthStore` rehydrates asynchronously from `expo-sqlite/kv-store`. On the first frame of a cold start, `hasCompletedOnboarding` is `false`, so `register` is **not mounted**. A deep link that tries to *navigate* to `/register` races that guard and loses.
+So sign-up is reachable by *any* logged-out user, onboarded or not, and a brand-new user off a referral link lands directly on it with the code prefilled — skipping onboarding rather than being blocked by it.
 
-**Therefore:** the incoming URL is treated as *data to capture*, not a navigation instruction. The code is written to durable storage the instant the URL arrives; `register.tsx` reads it whenever it eventually mounts. Navigation is a best-effort nicety layered on top.
+**Reaching `register` marks the user onboarded** (an effect in `register.tsx` calls `completeOnboarding()`). This is load-bearing, not bookkeeping: `verify-email`, `verify-device`, `terms`, `privacy` and `login` are all still behind the `hasCompletedOnboarding` guard, so without it a referral user would sign up and then hit a dead end on the very next navigation.
+
+Accepted trade-off: a referral user never sees the onboarding carousel. If they abandon the register screen and reopen the app, they land on `login`, not onboarding.
 
 ### 2. Two apps, one domain
 
@@ -94,16 +108,27 @@ Uses `useLinkingURL()` from `expo-linking` (`useURL()` is deprecated in the inst
 
 On mount: reads `getPendingReferral()` once to hydrate the in-memory store from a previous launch (covers the case where the app was killed before `register.tsx` was ever reached).
 
-On every URL change: parses it, and if a code is found, `setPendingReferral(code)` (durable) + `setCode(code)` (reactive) + best-effort navigate:
-- `isLoggedIn` → do nothing
-- onboarding incomplete → do nothing; the code waits in storage
-- otherwise → `router.navigate('/register')` (a guest browsing without an account is *not* logged in, so this correctly routes them to sign-up with the code prefilled)
+On every URL change: parses it, and if a code is found, `setPendingReferral(code)` (durable) + `setCode(code)` (reactive) + navigate:
+
+```ts
+if (!hydrated) return; // `isLoggedIn` isn't trustworthy yet; this re-runs once it is
+router.replace(isLoggedIn ? '/' : '/register');
+```
+
+Three things about those two lines, each of which was a bug at some point:
+
+- **Navigation is mandatory, not a nicety** — see [constraint 1](#1-the-deep-link-url-is-not-a-route-and-not-found-is-waiting-for-it). `+not-found` is already mounted by the time this runs, so both branches must land somewhere real.
+- **`replace`, not `navigate`** — otherwise `+not-found` stays on the back stack and hardware-back returns the user to "Oops!".
+- **No onboarding branch is needed.** Because `register` now sits outside the onboarding guard ([1b](#1b-register-is-deliberately-outside-the-onboarding-guard)), `/register` is mounted for every logged-out user, onboarded or not — including guests, who are *not* logged in and so correctly route to sign-up.
+
+Gated on a local `useAuthStoreHydrated()` helper. `useAuthStore` rehydrates asynchronously, so `isLoggedIn` can read `false` on the first frame of a cold start even for a signed-in user, which would bounce them to sign-up; the effect re-runs once hydration lands. The helper **re-checks `persist.hasHydrated()` inside the effect** rather than only subscribing via `onFinishHydration` — the store starts hydrating at module import, long before React mounts, so the listener may attach after hydration already finished and never fire, leaving `hydrated` stuck at `false` and no navigation ever running.
 
 Mounted as `<ReferralDeepLinkHandler />` in `app/_layout.tsx`, beside the existing `<AppInstallTracker />`.
 
 ### `app/register.tsx` — consume
 
 - Reads `useReferralStore((s) => s.code)`; an effect prefills `referralCode` via `form.setFieldValue` only when the field is still empty, so an arriving code never clobbers something the user typed.
+- A second effect calls `completeOnboarding()` if `hasCompletedOnboarding` is false — a referral link can drop a first-time user straight here, and the screens this one hands off to are still behind that guard. See [1b](#1b-register-is-deliberately-outside-the-onboarding-guard).
 - Fixed: `applyReferralCode.mutate` previously had no `onSuccess`/`onError` (it was a bare `applyReferralCode?.mutate({ referralCode })`) — a rejected code failed silently and the user believed they were credited. Now shows the error via `showErrorMessage`.
 - On success, surfaces `referrerName` from `ApplyReferralResponseDto` as `"Referred by <name>"`.
 - `clearPendingReferral()` + `clearReferralCode()` run on apply success, or on an apply error **that isn't a `TypeError`** (React Native's fetch throws `TypeError` on network failure, as distinct from the `Error` the API layer throws for a structured 4xx response) — so a network blip doesn't wipe out the code before it can retry.
@@ -236,7 +261,7 @@ Two fingerprints are needed per app because two different signing paths reach a 
 
 ## Verifying it
 
-Cold start is `getInitialURL()`, warm start is the `url` event; `useLinkingURL()` gives both. The guard race described in [constraint 1](#1-routing-cannot-carry-the-code) **only reproduces on a real cold start with cleared storage** — never on Fast Refresh.
+Cold start is `getInitialURL()`, warm start is the `url` event; `useLinkingURL()` gives both. The `+not-found` interception described in [constraint 1](#1-the-deep-link-url-is-not-a-route-and-not-found-is-waiting-for-it) reproduces on **both** cold and warm start; the not-onboarded state behind it needs cleared storage.
 
 Because the native link config is prod-gated, testing splits cleanly in two:
 
@@ -264,12 +289,14 @@ adb shell pm get-app-links com.xervices.client
 
 iOS requires a **real device** with a TestFlight (or App Store) build — the simulator doesn't enforce AASA the way a device does, and no dev/preview build claims the domain at all.
 
-The four states that matter:
+The four states that matter — in each of the first three, confirm the "Oops! This screen doesn't exist" screen is never left on display, and that hardware-back doesn't return to it:
 
-1. Logged out + onboarded (incl. guest) → navigates to register, prefilled
-2. Logged out + **not** onboarded → the guard race; code persists, prefills after onboarding
-3. Already logged in → no navigation, no prefill
+1. Logged out + onboarded (incl. guest) → replaces to register, prefilled
+2. Logged out + **not** onboarded → replaces to register, prefilled, onboarding skipped and marked complete
+3. Already logged in → replaces to tabs home (`/`), no prefill
 4. App not installed → **not handled** (out of scope — see above)
+
+**Testing on an Android dev build without `adb`:** custom-scheme links can't be fired with `npx uri-scheme open` (it shells out to `adb`). Instead, serve a page with an `<a href="xervices-dev://referral/USER202673">` on the LAN and tap it in Chrome on the device — Chrome hands the custom scheme off to the app exactly like a real link would. To reach state 2, clear storage via Settings → Apps → Xervices Development → Storage → Clear data.
 
 ---
 
@@ -279,6 +306,7 @@ The four states that matter:
 |---|---|
 | Parser + capture pipeline (`referral-link.ts`, `pending-referral.ts`, `referral-store.ts`, `use-referral-deep-link.ts`) | **Done** |
 | `register.tsx` consumption + the silent-apply fix | **Done** |
+| Routing off `+not-found` in every auth state; `register` outside the onboarding guard | **Done** — verified on an Android dev build |
 | Native config (`app.config.ts`, prod-gated) | **Done** |
 | Role-namespaced `referralLink` (backend) | **Not started** — blocks correctly-shaped outbound links |
 | `.well-known` files + interstitial (web team) | **Not started** — blocks real `https://` links from opening the app |

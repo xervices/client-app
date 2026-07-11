@@ -21,6 +21,7 @@ import { emojiRegex, formatPhoneNumber, getDeviceInfo } from '@/lib/utils';
 import { getStableDeviceId } from '@/lib/app-install';
 import { clearPendingReferral } from '@/lib/pending-referral';
 import { useReferralStore } from '@/store/referral-store';
+import { useAuthStore } from '@/store/auth-store';
 
 const formSchema = z
   .object({
@@ -67,6 +68,9 @@ export default function Screen() {
 
   const pendingReferralCode = useReferralStore((s) => s.code);
   const clearReferralCode = useReferralStore((s) => s.clearCode);
+
+  const hasCompletedOnboarding = useAuthStore((s) => s.hasCompletedOnboarding);
+  const completeOnboarding = useAuthStore((s) => s.completeOnboarding);
 
   const form = useForm({
     defaultValues: {
@@ -143,6 +147,14 @@ export default function Screen() {
       form.setFieldValue('referralCode', pendingReferralCode);
     }
   }, [pendingReferralCode]);
+
+  // A referral deep link can drop a first-time user straight here, skipping
+  // onboarding entirely. Getting this far counts as onboarded — otherwise the
+  // screens this one hands off to (verify-email, terms, login) stay unmounted
+  // behind the `hasCompletedOnboarding` guard in `_layout.tsx`.
+  React.useEffect(() => {
+    if (!hasCompletedOnboarding) completeOnboarding();
+  }, [hasCompletedOnboarding, completeOnboarding]);
 
   return (
     <Layout useBackground>
