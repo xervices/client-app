@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { queryOptions } from '@tanstack/react-query';
 import { Video as VideoCompressor } from 'react-native-compressor';
 
-import { apiClient, publicApiClient } from './client';
+import { apiClient, publicApiClient, BASE_URL } from './client';
 import { tokenStorage } from './token-storage';
 import { getErrorMessage, RequestBody } from './helpers';
 import { useAuthStore } from '@/store/auth-store';
@@ -376,6 +376,20 @@ export const api = {
         return data;
       },
     }),
+
+  // Fire-and-forget search hit logging. Uses raw fetch since this route isn't
+  // in schema.ts yet; never throws, callers should call without awaiting.
+  logSearchHit: async (payload: { categoryId: string; searchTerm: string }) => {
+    try {
+      await fetch(`${BASE_URL}/api/categories/search-hit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    } catch (error) {
+      console.warn('Failed to log search hit:', error);
+    }
+  },
 
   // promotions, referrals & discounts endpoints
   getMyReferralInfo: () =>

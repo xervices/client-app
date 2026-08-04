@@ -5,7 +5,17 @@
       "Bash(pnpm add *)",
       "PowerShell(pnpm add react-native-compressor)",
       "PowerShell(npx tsc --noEmit -p C:\\\\Users\\\\MOSES\\\\Documents\\\\Xervices\\\\client-app\\\\tsconfig.json 2>&1 | Select-Object -First 40)",
-      "Bash(findstr /I \"config json\")"
+      "Bash(findstr /I \"config json\")",
+      "Bash(eas whoami *)",
+      "Bash(npx expo *)",
+      "Bash(eas build:list --platform ios --limit 3 --non-interactive)",
+      "Bash(eas build:list --limit 5 --non-interactive --json)",
+      "Bash(eas device:list --non-interactive)",
+      "Bash(eas build *)",
+      "Bash(xcrun simctl *)",
+      "Bash(open -a Simulator)",
+      "Bash(eas build:run -p ios --latest --non-interactive)",
+      "Bash(pnpm dev *)"
     ]
   }
 }

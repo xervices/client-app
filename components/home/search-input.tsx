@@ -21,17 +21,24 @@ type Category = {
   displayOrder: number;
   createdAt: string;
   updatedAt: string;
+  isPopular?: boolean;
+  searchCount?: number;
 };
 
 const MIN_SEARCH_LENGTH = 2;
 const MAX_RESULTS = 8;
+// Below this many qualifying "popular" categories, the section isn't worth
+// presenting as "Popular" — fall back to the neutral all-active-categories list.
+const MIN_POPULAR_RESULTS = 4;
 
 interface SearchInputProps {
   defaultCategoryId?: string;
 }
 
 export function SearchInput({ defaultCategoryId }: SearchInputProps = {}) {
-  const { data, isLoading, isError, error } = useQuery(api.getAllCategories());
+  const { data: queryData, isLoading, isError, error } = useQuery(api.getAllCategories());
+  // Widen to include isPopular/searchCount, which aren't in schema.ts yet.
+  const data = queryData as Category[] | undefined;
   const [showBanner, setShowBanner] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -59,10 +66,29 @@ export function SearchInput({ defaultCategoryId }: SearchInputProps = {}) {
     }
   }, [defaultCategoryId, data]);
 
+  // Whether enough categories genuinely qualify as "popular" (>= MIN_POPULAR_RESULTS
+  // active + isPopular) to honestly label the default section "Popular Services".
+  const isPopularSectionActive = useMemo(() => {
+    if (!data) return false;
+
+    return data.filter((cat) => cat.isActive && cat.isPopular).length >= MIN_POPULAR_RESULTS;
+  }, [data]);
+
   // Filter categories based on search value
   const filteredCategories = useMemo(() => {
     if (!data) return [];
-    if (!searchValue.trim()) return data.filter((cat) => cat.isActive).slice(0, MAX_RESULTS);
+    if (!searchValue.trim()) {
+      const activeCategories = data.filter((cat) => cat.isActive);
+
+      if (isPopularSectionActive) {
+        return activeCategories.filter((cat) => cat.isPopular).slice(0, MAX_RESULTS);
+      }
+
+      // Not enough genuinely popular categories yet — this dropdown is a category
+      // picker triggered by the user tapping the search box, so it should still list
+      // something to pick from; it just can't honestly call itself "popular" yet.
+      return activeCategories.slice(0, MAX_RESULTS);
+    }
 
     const query = searchValue.toLowerCase().trim();
 
@@ -101,6 +127,8 @@ export function SearchInput({ defaultCategoryId }: SearchInputProps = {}) {
     setSelectedCategory(category);
     setSearchValue(category.name);
     setShowBanner(false);
+
+    api.logSearchHit({ categoryId: category.id, searchTerm: searchValue });
 
     // Navigate with both name and id
     router.navigate({
@@ -186,7 +214,11 @@ export function SearchInput({ defaultCategoryId }: SearchInputProps = {}) {
       return (
         <View className="flex gap-3">
           <Text className="font-cabinet-medium text-xs uppercase text-gray-500">
-            {searchValue.trim() ? 'Matching Services' : 'Popular Services'}
+            {searchValue.trim()
+              ? 'Matching Services'
+              : isPopularSectionActive
+                ? 'Popular Services'
+                : 'All Services'}
           </Text>
 
           <ScrollView

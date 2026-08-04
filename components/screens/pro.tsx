@@ -16,6 +16,7 @@ import { api } from '@/api';
 import { LoadingState } from '@/components/loading-state';
 import { formatCurrency, formatRelativeTime } from '@/lib/utils';
 import { showErrorMessage } from '@/api/helpers';
+import { useOffersSocket } from '@/hooks/use-offers-socket';
 
 export function ProScreen() {
   const {
@@ -35,6 +36,16 @@ export function ProScreen() {
   const [eta, setEta] = React.useState<string | null>(null);
 
   const acceptOffer = useMutation(api.respondToOffer(offerId));
+
+  // Keep the offer's status/offeredBy in sync when the other party responds
+  // while this screen is open — the accept/reject flow otherwise only shows
+  // up on the next incidental refetch (pull-to-refresh, refocus, etc).
+  useOffersSocket({
+    serviceRequestId: serviceId,
+    onOfferAccepted: () => offer.refetch(),
+    onOfferRejected: () => offer.refetch(),
+    onCounterOffer: () => offer.refetch(),
+  });
 
   const fetchEta = async (
     origin: { latitude: number; longitude: number },
