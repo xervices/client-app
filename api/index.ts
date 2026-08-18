@@ -325,6 +325,13 @@ export const api = {
           formData.append('avatar', file);
         }
 
+        // Handle phone number separately — it lives on the user, not the profile
+        // @ts-ignore
+        if (credentials.phoneNumber && credentials.phoneNumber !== user?.phoneNumber) {
+          // @ts-ignore
+          formData.append('phoneNumber', String(credentials.phoneNumber));
+        }
+
         const { data, error } = await apiClient.PATCH('/api/users/me', {
           // @ts-ignore - FormData not properly typed in openapi-fetch
           body: formData,

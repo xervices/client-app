@@ -35,7 +35,19 @@ export function ProScreen() {
 
   const [eta, setEta] = React.useState<string | null>(null);
 
-  const acceptOffer = useMutation(api.respondToOffer(offerId));
+  // `offerId` from the route can point to an offer that's since been countered —
+  // countering creates a new offer row rather than mutating the old one in place,
+  // so the server resolves `getOfferDetails` forward to the live offer in the
+  // negotiation chain. Mutations must target that resolved id, not the stale route
+  // param, or accepting/rejecting will fail with "Can only accept pending offers".
+  const currentOfferId = offer?.data?.id || offerId;
+
+  const acceptOffer = useMutation(api.respondToOffer(currentOfferId));
+
+  // The customer sent a counter offer that the artisan hasn't responded to yet —
+  // there's nothing to accept until the artisan counters back or accepts.
+  const isWaitingForArtisan =
+    offer?.data?.offeredBy === 'user' && offer?.data?.status !== 'accepted';
 
   // Keep the offer's status/offeredBy in sync when the other party responds
   // while this screen is open — the accept/reject flow otherwise only shows
@@ -229,12 +241,9 @@ export function ProScreen() {
 
           <Button
             isLoading={acceptOffer?.isPending}
-            disabled={acceptOffer?.isPending}
+            disabled={acceptOffer?.isPending || isWaitingForArtisan}
             onPress={() => {
-              if (offer?.data?.offeredBy === 'user' && offer?.data?.status !== 'accepted')
-                return showErrorMessage(
-                  'You cannot accept your own offer. Wait for the artisan to send a counter offer'
-                );
+              if (isWaitingForArtisan) return;
               if (offer?.data?.status === 'accepted') {
                 if (IS_BOOK_TAB) {
                   router.navigate({
@@ -243,7 +252,7 @@ export function ProScreen() {
                       id: offer?.data?.jobId,
                       serviceRequestId: serviceId,
                       artisanId,
-                      offerId,
+                      offerId: currentOfferId,
                     },
                   });
                 } else {
@@ -253,7 +262,7 @@ export function ProScreen() {
                       id: offer?.data?.jobId,
                       serviceRequestId: serviceId,
                       artisanId,
-                      offerId,
+                      offerId: currentOfferId,
                     },
                   });
                 }
@@ -272,7 +281,7 @@ export function ProScreen() {
                             id: res.jobId,
                             serviceRequestId: res.serviceRequestId,
                             artisanId,
-                            offerId,
+                            offerId: currentOfferId,
                           },
                         });
                       } else {
@@ -282,7 +291,7 @@ export function ProScreen() {
                             id: res.jobId,
                             serviceRequestId: res.serviceRequestId,
                             artisanId,
-                            offerId,
+                            offerId: currentOfferId,
                           },
                         });
                       }
@@ -296,6 +305,8 @@ export function ProScreen() {
             }}>
             {offer?.data?.status === 'accepted' ? (
               <Text>Proceed to payment</Text>
+            ) : isWaitingForArtisan ? (
+              <Text>Waiting for artisan's response</Text>
             ) : (
               <Text>Accept offer - {formatCurrency(offer?.data?.amount)}</Text>
             )}
