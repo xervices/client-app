@@ -252,9 +252,15 @@ importers:
       '@babel/core':
         specifier: ^7.26.0
         version: 7.28.4
+      '@babel/plugin-transform-react-jsx':
+        specifier: ^7.27.1
+        version: 7.27.1(@babel/core@7.28.4)
       '@types/react':
         specifier: ~19.1.10
         version: 19.1.17
+      babel-preset-expo:
+        specifier: ^54.0.4
+        version: 54.0.4(@babel/core@7.28.4)(@babel/runtime@7.28.4)(expo@54.0.13)(react-refresh@0.14.2)
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
