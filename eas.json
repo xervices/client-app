@@ -51,7 +51,8 @@
         "appleTeamId": "G7635Z8B89"
       },
       "android": {
-        "serviceAccountKeyPath": "../xervices-480909-512578d0b6ed.json"
+        "serviceAccountKeyPath": "../xervices-480909-23be8c2c8268.json",
+        "track": "production"
       }
     }
   }

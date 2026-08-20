@@ -29,13 +29,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
 import { NIGERIAN_STATES } from '@/store/data';
-import { COUNTRIES } from '@/lib/countries';
+import { COUNTRIES, DEFAULT_COUNTRY, hasValidNationalNumber } from '@/lib/countries';
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
-import { emojiRegex } from '@/lib/utils';
+import { emojiRegex, formatPhoneNumber } from '@/lib/utils';
 
 const formSchema = z.object({
   fullName: z.string().refine((val) => !emojiRegex.test(val), 'Name cannot contain emojis.'),
+  phoneNumber: z
+    .string()
+    .min(1, 'Phone number is required.')
+    .refine(hasValidNationalNumber, 'Enter a valid phone number.'),
   avatarUrl: z.string(),
   avatarMimeType: z.string(),
   state: z.string(),
@@ -62,6 +66,7 @@ export default function Screen() {
   const initialValues = React.useMemo(
     () => ({
       fullName: user?.profile?.fullName || '',
+      phoneNumber: user?.phoneNumber || DEFAULT_COUNTRY.dialCode,
       avatarUrl: user?.profile?.avatarUrl || '',
       avatarMimeType: '',
       city: user?.profile?.city || '',
@@ -79,6 +84,10 @@ export default function Screen() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
+      if (value.phoneNumber.trim()) {
+        value.phoneNumber = formatPhoneNumber(value.phoneNumber);
+      }
+
       // @ts-ignore
       mutate(value, {
         onSuccess: () => {
@@ -168,6 +177,24 @@ export default function Screen() {
                   onChangeText={field.handleChange}
                   placeholder="Enter your name"
                   hasError={!field.state.meta.isValid}
+                />
+                {!field.state.meta.isValid ? <InputError errors={field.state.meta.errors} /> : null}
+              </View>
+            )}
+          </form.Field>
+
+          <form.Field name="phoneNumber">
+            {(field) => (
+              <View>
+                <Label nativeID="phone">Phone Number</Label>
+                <Input
+                  className="bg-white"
+                  id="phone"
+                  value={field.state.value}
+                  onChangeText={field.handleChange}
+                  placeholder="Enter your phone number"
+                  hasError={!field.state.meta.isValid}
+                  keyboardType="phone-pad"
                 />
                 {!field.state.meta.isValid ? <InputError errors={field.state.meta.errors} /> : null}
               </View>

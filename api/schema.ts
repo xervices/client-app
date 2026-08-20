@@ -7751,6 +7751,11 @@ export interface components {
              */
             fullName?: string;
             /**
+             * @description Phone number. Customers can edit this directly; artisans must use the OTP-protected phone change flow (POST /users/me/phone/request-otp) instead.
+             * @example +2348012345678
+             */
+            phoneNumber?: string;
+            /**
              * @description Profile avatar URL
              * @example https://storage.example.com/avatars/user-123.jpg
              */
