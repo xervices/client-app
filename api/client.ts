@@ -11,6 +11,47 @@ export const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://api.getxervi
 // Staging: https://staging-api.getxervices.com
 // Production: https://api.getxervices.com
 
+const DEFAULT_REQUEST_TIMEOUT_MS = 20_000;
+// Multipart/form-data (image/file) uploads get more time than regular JSON requests.
+const UPLOAD_REQUEST_TIMEOUT_MS = 60_000;
+
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit,
+  timeoutMs: number
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// Bounds every openapi-fetch request (and the 401 retry, which reuses this via a cloned Request)
+// with a timeout, so a slow/hung connection fails fast instead of leaving the UI stuck.
+async function fetchRequestWithTimeout(request: Request): Promise<Response> {
+  const isUpload = request.headers.get('content-type')?.includes('multipart/form-data') ?? false;
+  const timeoutMs = isUpload ? UPLOAD_REQUEST_TIMEOUT_MS : DEFAULT_REQUEST_TIMEOUT_MS;
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  if (request.signal.aborted) {
+    controller.abort();
+  } else {
+    request.signal.addEventListener('abort', () => controller.abort(), { once: true });
+  }
+
+  try {
+    return await fetch(new Request(request, { signal: controller.signal }));
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // Track ongoing refresh to prevent multiple simultaneous refresh requests
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
@@ -44,28 +85,38 @@ export async function refreshAccessToken(
   isRefreshing = true;
 
   refreshPromise = (async () => {
+    // Only true when the server has explicitly rejected the refresh token (invalid/expired/missing).
+    // A network error or timeout must NOT set this — those are transient and shouldn't log the user out.
+    let authRejected = false;
+
     try {
       const refreshToken = await tokenStorage.getRefreshToken();
 
       if (!refreshToken) {
         console.error('❌ No refresh token available');
+        authRejected = true;
         throw new Error('No refresh token');
       }
 
       console.log('🔄 Refreshing access token...');
 
       // Use direct fetch instead of client to ensure it works in background tasks
-      const response = await fetch(`${BASE_URL}/api/auth/refresh`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetchWithTimeout(
+        `${BASE_URL}/api/auth/refresh`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refreshToken }),
         },
-        body: JSON.stringify({ refreshToken }),
-      });
+        DEFAULT_REQUEST_TIMEOUT_MS
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
         console.error('❌ Token refresh failed:', errorText);
+        authRejected = true;
         throw new Error('Failed to refresh token');
       }
 
@@ -73,6 +124,7 @@ export async function refreshAccessToken(
 
       if (!data.accessToken) {
         console.error('❌ No access token in response');
+        authRejected = true;
         throw new Error('No access token in response');
       }
 
@@ -84,13 +136,19 @@ export async function refreshAccessToken(
     } catch (error) {
       console.error('❌ Token refresh error:', error);
 
-      // Clear tokens and logout on refresh failure
-      await tokenStorage.clearTokens();
+      if (authRejected) {
+        // The server genuinely rejected the refresh token — clear tokens and log out.
+        await tokenStorage.clearTokens();
 
-      // Only try to update auth state if not in background
-      if (!skipInBackground && useAuthStore.getState) {
-        useAuthStore.getState().setLoginState(false);
-        showSessionExpiredOnce();
+        // Only try to update auth state if not in background
+        if (!skipInBackground && useAuthStore.getState) {
+          useAuthStore.getState().setLoginState(false);
+          showSessionExpiredOnce();
+        }
+      } else {
+        // Network error, timeout, or abort — keep the session intact so the caller can retry
+        // once connectivity improves, instead of logging the user out for a slow connection.
+        console.warn('⚠️ Refresh failed due to a network/timeout error, session kept intact');
       }
 
       return null;
@@ -131,7 +189,7 @@ const authMiddleware: Middleware = {
   async onRequest({ request }) {
     try {
       // Add the role header to every request
-      request.headers.set('X-Active-Role', 'artisan');
+      request.headers.set('X-Active-Role', 'user');
 
       let token = await tokenStorage.getAccessToken();
 
@@ -183,25 +241,24 @@ const authMiddleware: Middleware = {
 
           // Retry the request with new token
           console.log('🔄 Retrying request with new token...');
-          const retryResponse = await fetch(clonedRequest);
+          const retryResponse = await fetchRequestWithTimeout(clonedRequest);
 
           if (retryResponse.ok || retryResponse.status !== 401) {
             console.log('✅ Retry successful');
             return retryResponse;
           }
-        }
 
-        console.error('❌ Token refresh failed or retry still unauthorized');
-        await tokenStorage.clearTokens();
-        useAuthStore.getState().setLoginState(false);
-        showSessionExpiredOnce();
-      } catch (error) {
-        console.error('❌ Error handling 401:', error);
-        if (error?.error === 'Unauthorized') {
+          // A fresh token still got 401'd on retry — this is a genuine auth failure, not a network hiccup.
+          console.error('❌ Retry still unauthorized with a fresh token');
           await tokenStorage.clearTokens();
           useAuthStore.getState().setLoginState(false);
           showSessionExpiredOnce();
         }
+        // If newToken is null, refreshAccessToken() has already handled logout for a genuine
+        // auth rejection, or deliberately left the session intact for a network/timeout error.
+        // Either way, there's nothing more to do here.
+      } catch (error) {
+        console.error('❌ Error handling 401:', error);
       }
     }
 
@@ -211,14 +268,17 @@ const authMiddleware: Middleware = {
 
 const roleMiddleware: Middleware = {
   async onRequest({ request }) {
-    request.headers.set('X-Active-Role', 'artisan');
+    request.headers.set('X-Active-Role', 'user');
 
     return request;
   },
 };
 
-export const apiClient = createClient<paths>({ baseUrl: BASE_URL });
+export const apiClient = createClient<paths>({ baseUrl: BASE_URL, fetch: fetchRequestWithTimeout });
 apiClient.use(authMiddleware);
 
-export const publicApiClient = createClient<paths>({ baseUrl: BASE_URL });
+export const publicApiClient = createClient<paths>({
+  baseUrl: BASE_URL,
+  fetch: fetchRequestWithTimeout,
+});
 publicApiClient.use(roleMiddleware);

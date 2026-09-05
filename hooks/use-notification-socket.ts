@@ -73,7 +73,10 @@ export const useNotificationSocket = ({
         reconnectionDelay: 1000,
         reconnectionDelayMax: 10000,
         autoConnect: true,
-        auth: { token },
+        // Scopes this socket's notification room to the customer app specifically, so a
+        // dual-role (customer + artisan) account logged into both apps on one device
+        // doesn't get artisan-app notifications leaking into this app.
+        auth: { token, role: 'user' },
       });
 
       socketRef.current = socket;
