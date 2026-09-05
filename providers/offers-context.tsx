@@ -78,60 +78,76 @@ export const useOffersContext = (options?: UseOffersContextOptions): OffersConte
     callbackRef.current = options?.onOfferEvent;
   }, [options?.onOfferEvent]);
 
+  // These offer arrays live in a single session-long OffersProvider (mounted once) and are
+  // never reset between service requests, so a freshly-mounted consumer would otherwise see
+  // a non-empty array immediately and replay the last stale event as if it just happened —
+  // and any other concurrently-mounted consumer would replay the same event too. Track each
+  // array's length as of THIS consumer's mount, and only fire the callback for entries added
+  // after that baseline, so only genuinely new events (for this consumer, exactly once) fire.
+  const seenLengthsRef = React.useRef({
+    offers: context.offers.length,
+    views: context.views.length,
+    counterOffers: context.counterOffers?.length ?? 0,
+    acceptedOffers: context.acceptedOffers?.length ?? 0,
+    rejectedOffers: context.rejectedOffers?.length ?? 0,
+    withdrawnOffers: context.withdrawnOffers?.length ?? 0,
+  });
+
   // Trigger callback whenever offers change
   React.useEffect(() => {
     if (!callbackRef.current) return;
-    if (context.offers.length > 0) {
+    if (context.offers.length > seenLengthsRef.current.offers) {
       callbackRef.current('offer:new', context.offers[context.offers.length - 1]);
+      seenLengthsRef.current.offers = context.offers.length;
     }
   }, [context.offers]);
 
   // Trigger callback whenever views change
   React.useEffect(() => {
     if (!callbackRef.current) return;
-    if (context.views.length > 0) {
+    if (context.views.length > seenLengthsRef.current.views) {
       callbackRef.current('request:viewed', context.views[context.views.length - 1]);
+      seenLengthsRef.current.views = context.views.length;
     }
   }, [context.views]);
 
   // Trigger callback whenever counter offers change
   React.useEffect(() => {
     if (!callbackRef.current) return;
-    if (context.counterOffers && context.counterOffers.length > 0) {
-      callbackRef.current('offer:counter', context.counterOffers[context.counterOffers.length - 1]);
+    const length = context.counterOffers?.length ?? 0;
+    if (length > seenLengthsRef.current.counterOffers) {
+      callbackRef.current('offer:counter', context.counterOffers![length - 1]);
+      seenLengthsRef.current.counterOffers = length;
     }
   }, [context.counterOffers]);
 
   // Trigger callback whenever accepted offers change
   React.useEffect(() => {
     if (!callbackRef.current) return;
-    if (context.acceptedOffers && context.acceptedOffers.length > 0) {
-      callbackRef.current(
-        'offer:accepted',
-        context.acceptedOffers[context.acceptedOffers.length - 1]
-      );
+    const length = context.acceptedOffers?.length ?? 0;
+    if (length > seenLengthsRef.current.acceptedOffers) {
+      callbackRef.current('offer:accepted', context.acceptedOffers![length - 1]);
+      seenLengthsRef.current.acceptedOffers = length;
     }
   }, [context.acceptedOffers]);
 
   // Trigger callback whenever rejected offers change
   React.useEffect(() => {
     if (!callbackRef.current) return;
-    if (context.rejectedOffers && context.rejectedOffers.length > 0) {
-      callbackRef.current(
-        'offer:rejected',
-        context.rejectedOffers[context.rejectedOffers.length - 1]
-      );
+    const length = context.rejectedOffers?.length ?? 0;
+    if (length > seenLengthsRef.current.rejectedOffers) {
+      callbackRef.current('offer:rejected', context.rejectedOffers![length - 1]);
+      seenLengthsRef.current.rejectedOffers = length;
     }
   }, [context.rejectedOffers]);
 
   // Trigger callback whenever withdrawn offers change
   React.useEffect(() => {
     if (!callbackRef.current) return;
-    if (context.withdrawnOffers && context.withdrawnOffers.length > 0) {
-      callbackRef.current(
-        'offer:withdrawn',
-        context.withdrawnOffers[context.withdrawnOffers.length - 1]
-      );
+    const length = context.withdrawnOffers?.length ?? 0;
+    if (length > seenLengthsRef.current.withdrawnOffers) {
+      callbackRef.current('offer:withdrawn', context.withdrawnOffers![length - 1]);
+      seenLengthsRef.current.withdrawnOffers = length;
     }
   }, [context.withdrawnOffers]);
 

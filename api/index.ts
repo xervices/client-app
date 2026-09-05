@@ -1070,6 +1070,40 @@ export const api = {
       },
     };
   },
+  markNotificationAsRead: () => {
+    return {
+      mutationFn: async (credentials: RequestBody<'/api/notifications/mark-read', 'post'>) => {
+        const { data, error } = await apiClient.POST('/api/notifications/mark-read', {
+          body: credentials,
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to mark notification as read.'));
+        }
+
+        return data;
+      },
+    };
+  },
+  deleteNotification: (id: string) => {
+    return {
+      mutationFn: async () => {
+        const { data, error } = await apiClient.DELETE('/api/notifications/{id}', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to delete notification.'));
+        }
+
+        return data;
+      },
+    };
+  },
   registerDeviceForPushNotification: () => {
     return {
       mutationFn: async (credentials: RequestBody<'/api/notifications/devices', 'post'>) => {
