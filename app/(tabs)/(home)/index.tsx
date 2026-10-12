@@ -19,11 +19,12 @@ export default function Screen() {
   const { expoPushToken } = useNotification();
   const { mutateAsync: registerDevice } = useMutation(api.registerDeviceForPushNotification());
 
-  const [categories, requests, jobs, userOfWeek, newsPromotions] = useQueries({
+  const [categories, requests, jobs, currentUser, userOfWeek, newsPromotions] = useQueries({
     queries: [
       api.getAllCategories(),
       { ...api.getUserServiceRequests(), enabled: !isGuest },
       { ...api.getUserJobs(), enabled: !isGuest },
+      { ...api.getCurrentUser(), enabled: !isGuest },
       api.getActiveFeaturedProfiles(),
       api.getNewsAndPromotions(),
     ],
@@ -39,6 +40,7 @@ export default function Screen() {
         categories.refetch(),
         !isGuest ? requests?.refetch() : Promise.resolve(),
         !isGuest ? jobs?.refetch() : Promise.resolve(),
+        !isGuest ? currentUser?.refetch() : Promise.resolve(),
         userOfWeek?.refetch(),
         newsPromotions?.refetch(),
       ]);
@@ -69,6 +71,7 @@ export default function Screen() {
         if (!isGuest) {
           requests?.refetch();
           jobs?.refetch();
+          currentUser?.refetch();
         }
       }
     });
