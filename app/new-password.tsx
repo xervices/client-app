@@ -2,7 +2,6 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useForm } from '@tanstack/react-form';
-import * as z from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import { SheetManager } from 'react-native-actions-sheet';
 
@@ -16,22 +15,7 @@ import { InputError } from '@/components/ui/input-error';
 
 import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
-import { emojiRegex } from '@/lib/utils';
-
-const formSchema = z
-  .object({
-    code: z.string().min(1, 'OTP is required.'),
-    newPassword: z
-      .string()
-      .min(1, 'Password is required.')
-      .refine((val) => !/\s/.test(val), 'Password cannot contain spaces.')
-      .refine((val) => !emojiRegex.test(val), 'Password cannot contain emojis.'),
-    confirmPassword: z.string().min(1, 'Password confirmation is required.'),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  });
+import { formSchema } from '@/lib/new-password.schema';
 
 export default function Screen() {
   const { code }: { code: string } = useLocalSearchParams();

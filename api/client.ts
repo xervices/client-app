@@ -164,7 +164,7 @@ export async function refreshAccessToken(
 /**
  * Check if token is expired or about to expire (within 5 minutes)
  */
-function isTokenExpired(token: string, bufferSeconds = 300): boolean {
+export function isTokenExpired(token: string, bufferSeconds = 300): boolean {
   try {
     const decoded = jwtDecode<{ exp?: number }>(token);
 
@@ -185,7 +185,7 @@ function isTokenExpired(token: string, bufferSeconds = 300): boolean {
 }
 
 // Auth middleware that adds the access token to requests
-const authMiddleware: Middleware = {
+export const authMiddleware: Middleware = {
   async onRequest({ request }) {
     try {
       // Add the role header to every request

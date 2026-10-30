@@ -83,12 +83,19 @@ export default function Screen() {
                 { emailOrPhone: selectedOption },
                 {
                   onSuccess: (res) => {
-                    showSuccessMessage(res.message);
+                    if (res.otpDeliveryFailed) {
+                      showErrorMessage(
+                        "We couldn't send your code. Please try resend on the next screen."
+                      );
+                    } else {
+                      showSuccessMessage(res.message);
+                    }
 
                     router.navigate({
                       pathname: '/profile/password-otp',
                       params: {
                         email: selectedOption,
+                        otpDeliveryFailed: res.otpDeliveryFailed ? '1' : undefined,
                       },
                     });
                   },

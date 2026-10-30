@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 import Storage from 'expo-sqlite/kv-store';
 import { paths } from '@/api/schema';
+import { posthog } from '@/lib/posthog';
 
 export type UserType =
   paths['/api/auth/login']['post']['responses'][200]['content']['application/json']['user'];
@@ -32,7 +33,15 @@ export const useAuthStore = create<AuthStoreState>()(
       setUser: (user) => set({ user }),
       clearUser: () => set({ user: null }),
       isLoggedIn: false,
-      setLoginState: (state) => set({ isLoggedIn: state, isGuest: state ? false : get().isGuest }),
+      setLoginState: (state) => {
+        if (!state) {
+          posthog?.reset();
+          set({ isLoggedIn: false, user: null, isGuest: get().isGuest });
+          return;
+        }
+
+        set({ isLoggedIn: true, isGuest: false });
+      },
       isGuest: false,
       setGuestMode: (state) => set({ isGuest: state }),
       hasCompletedOnboarding: false,

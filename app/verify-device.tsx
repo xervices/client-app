@@ -24,11 +24,13 @@ export default function Screen() {
     password: string;
     deviceId: string;
     deviceName: string;
+    otpDeliveryFailed?: string;
   }>();
 
   const [token, setToken] = React.useState(params.token ?? '');
   const [otpDisabled, setOTPDisabled] = React.useState(false);
   const [timer, setTimer] = React.useState(0);
+  const [deliveryFailed, setDeliveryFailed] = React.useState(params.otpDeliveryFailed === '1');
   const { minute, seconds } = useTimer({ sec: timer });
 
   const verifyDevice = useMutation({
@@ -61,7 +63,13 @@ export default function Screen() {
       if (data?.deviceVerificationToken) {
         setToken(data.deviceVerificationToken);
       }
-      showSuccessMessage('Verification code sent to your email successfully.');
+      if (data?.otpDeliveryFailed) {
+        setDeliveryFailed(true);
+        showErrorMessage("We couldn't send your code. Please try again in a moment.");
+      } else {
+        setDeliveryFailed(false);
+        showSuccessMessage('Verification code sent to your email successfully.');
+      }
     },
     onError: (err) => {
       showErrorMessage(err.message);
@@ -87,13 +95,21 @@ export default function Screen() {
         <View className="flex gap-2">
           <AuthHeader title="Verify New Device" />
 
-          <Text className="text-center text-[#737381]">
-            A verification code has been sent to your email
-          </Text>
+          {deliveryFailed ? (
+            <Text className="text-center text-red-500">
+              We couldn't send a code to your email. Tap resend below to try again.
+            </Text>
+          ) : (
+            <>
+              <Text className="text-center text-[#737381]">
+                A verification code has been sent to your email
+              </Text>
 
-          <Text className="text-center text-[#737381]">
-            Please check your email to retrieve the code and enter it here.
-          </Text>
+              <Text className="text-center text-[#737381]">
+                Please check your email to retrieve the code and enter it here.
+              </Text>
+            </>
+          )}
         </View>
 
         <View className="mt-16">

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Platform, Pressable, View } from 'react-native';
 import { useForm } from '@tanstack/react-form';
 import { router } from 'expo-router';
-import * as z from 'zod';
 import * as Haptics from 'expo-haptics';
 import { useMutation } from '@tanstack/react-query';
 
@@ -23,22 +22,7 @@ import { useAuthStore } from '@/store/auth-store';
 import { formatPhoneNumber, getDeviceInfo } from '@/lib/utils';
 import { SheetManager } from 'react-native-actions-sheet';
 import { deviceName } from 'expo-device';
-
-const formSchema = z.object({
-  emailOrPhone: z
-    .string()
-    .min(1, 'Email or Phone is required.')
-    .refine(
-      (val) => {
-        const isEmail = val.includes('@');
-        return isEmail ? val === val.toLowerCase() : true;
-      },
-      { message: 'Email must be lowercase.' }
-    ),
-  password: z.string().min(1, 'Password is required.'),
-  deviceId: z.string(),
-  deviceName: z.string(),
-});
+import { formSchema } from '@/lib/login.schema';
 
 export default function Screen() {
   const { mutate, isPending } = useMutation({
@@ -82,6 +66,7 @@ export default function Screen() {
               pathname: '/verify-email',
               params: {
                 email: value.emailOrPhone,
+                otpDeliveryFailed: res?.otpDeliveryFailed ? '1' : undefined,
               },
             });
           } else if (res?.requiresDeviceVerification) {
@@ -93,6 +78,7 @@ export default function Screen() {
                 password: value?.password,
                 deviceId: value?.deviceId,
                 deviceName: value?.deviceName,
+                otpDeliveryFailed: res?.otpDeliveryFailed ? '1' : undefined,
               },
             });
           } else {

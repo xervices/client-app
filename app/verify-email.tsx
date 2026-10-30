@@ -16,10 +16,12 @@ import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 import { useAuthStore } from '@/store/auth-store';
 
 export default function Screen() {
-  const { email }: { email: string } = useLocalSearchParams();
+  const { email, otpDeliveryFailed }: { email: string; otpDeliveryFailed?: string } =
+    useLocalSearchParams();
 
   const [otpDisabled, setOTPDisabled] = React.useState(false);
   const [timer, setTimer] = React.useState(0);
+  const [deliveryFailed, setDeliveryFailed] = React.useState(otpDeliveryFailed === '1');
   const { minute, seconds } = useTimer({ sec: timer });
 
   const verifyAccount = useMutation({
@@ -49,7 +51,13 @@ export default function Screen() {
   const resendVerificationCode = useMutation({
     ...api.resendVerificationCode(),
     onSuccess: (data) => {
-      showSuccessMessage('Verification code sent to your email successfully.');
+      if (data?.otpDeliveryFailed) {
+        setDeliveryFailed(true);
+        showErrorMessage("We couldn't send your code. Please try again in a moment.");
+      } else {
+        setDeliveryFailed(false);
+        showSuccessMessage('Verification code sent to your email successfully.');
+      }
     },
     onError: (err) => {
       showErrorMessage(err.message);
@@ -70,13 +78,29 @@ export default function Screen() {
         <View className="flex gap-2">
           <AuthHeader title="Verify Email Address" />
 
-          <Text className="text-center text-[#737381]">A verification code has been sent to</Text>
+          {deliveryFailed ? (
+            <>
+              <Text className="text-center text-red-500">We couldn't send a code to</Text>
 
-          {email && <Text className="text-center text-primary">{email}</Text>}
+              {email && <Text className="text-center text-primary">{email}</Text>}
 
-          <Text className="text-center text-[#737381]">
-            Please check your email to retrieve the code and enter it here.
-          </Text>
+              <Text className="text-center text-[#737381]">
+                Tap resend below to try again.
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text className="text-center text-[#737381]">
+                A verification code has been sent to
+              </Text>
+
+              {email && <Text className="text-center text-primary">{email}</Text>}
+
+              <Text className="text-center text-[#737381]">
+                Please check your email to retrieve the code and enter it here.
+              </Text>
+            </>
+          )}
         </View>
 
         <View className="mt-16">

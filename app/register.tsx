@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Pressable, View } from 'react-native';
 import { router } from 'expo-router';
 import { useForm } from '@tanstack/react-form';
-import * as z from 'zod';
 import { useMutation } from '@tanstack/react-query';
 
 import { Text } from '@/components/ui/text';
@@ -17,41 +16,9 @@ import { AppleSigninButton } from '@/components/apple-signin-button';
 
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
-import { emojiRegex, formatPhoneNumber, getDeviceInfo } from '@/lib/utils';
+import { formatPhoneNumber, getDeviceInfo } from '@/lib/utils';
 import { getStableDeviceId } from '@/lib/app-install';
-
-const formSchema = z
-  .object({
-    fullName: z
-      .string()
-      .min(1, 'Your fullname is required.')
-      .refine((val) => !emojiRegex.test(val), 'Name cannot contain emojis.'),
-    phoneNumber: z.string(),
-    email: z
-      .email('Invalid email address')
-      .min(1, 'Email is required.')
-      .refine(
-        (val) => {
-          const isEmail = val.includes('@');
-          return isEmail ? val === val.toLowerCase() : true;
-        },
-        { message: 'Email must be lowercase.' }
-      ),
-    password: z
-      .string()
-      .min(1, 'Password is required.')
-      .refine((val) => !/\s/.test(val), 'Password cannot contain spaces.')
-      .refine((val) => !emojiRegex.test(val), 'Password cannot contain emojis.'),
-    confirmPassword: z.string().min(1, 'Password confirmation is required.'),
-    role: z.union([z.literal('user')]),
-    referralCode: z.string(),
-    deviceId: z.string(),
-    deviceName: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  });
+import { formSchema } from '@/lib/register.schema';
 
 export default function Screen() {
   const { mutate, isPending } = useMutation({
@@ -94,8 +61,14 @@ export default function Screen() {
       }
 
       mutate(registerData, {
-        onSuccess: () => {
-          showSuccessMessage('Account created successfully');
+        onSuccess: (data) => {
+          if (data?.otpDeliveryFailed) {
+            showErrorMessage(
+              "Account created, but we couldn't send your verification code. Please resend it on the next screen."
+            );
+          } else {
+            showSuccessMessage('Account created successfully');
+          }
 
           if (referralCode) {
             applyReferralCode?.mutate({ referralCode });
@@ -105,6 +78,7 @@ export default function Screen() {
             pathname: '/verify-email',
             params: {
               email: value.email,
+              otpDeliveryFailed: data?.otpDeliveryFailed ? '1' : undefined,
             },
           });
         },

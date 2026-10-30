@@ -4900,6 +4900,18 @@ export interface components {
              * @example false
              */
             mfaSetupRequired?: boolean;
+            /**
+             * @description True if requiresVerification is true but the OTP could not be delivered on any channel. The client should show a "resend code" affordance instead of a normal success state.
+             * @example false
+             */
+            otpDeliveryFailed?: boolean;
+            /**
+             * @description Indicates if the login is from a new/unrecognized device and requires OTP verification before issuing tokens.
+             * @example false
+             */
+            requiresDeviceVerification?: boolean;
+            /** @description Short-lived token identifying the pending device verification challenge. */
+            deviceVerificationToken?: string;
         };
         ValidationErrorResponseDto: {
             /**
@@ -5004,6 +5016,11 @@ export interface components {
              * @example Operation completed successfully
              */
             message: string;
+            /**
+             * @description True if the OTP could not be delivered on any channel. The client should offer the user a way to retry/resend rather than treating this as a normal success.
+             * @example false
+             */
+            otpDeliveryFailed?: boolean;
         };
         VerifyAccountDto: {
             /**

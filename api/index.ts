@@ -5,10 +5,28 @@ import { Video as VideoCompressor } from 'react-native-compressor';
 import { apiClient, publicApiClient, BASE_URL } from './client';
 import { tokenStorage } from './token-storage';
 import { getErrorMessage, RequestBody } from './helpers';
-import { useAuthStore } from '@/store/auth-store';
+import { useAuthStore, type UserType } from '@/store/auth-store';
 import { getFileExtension } from '@/lib/utils';
+import { posthog } from '@/lib/posthog';
+import { posthogLogger } from '@/lib/posthog-logger';
 
 const normalizePath = (uri: string) => (Platform.OS === 'ios' ? uri.replace('file://', '') : uri);
+
+const identifyUser = (user: UserType) => {
+  const personProperties: Record<string, string | boolean> = {
+    email: user.email,
+    role: user.role,
+    email_verified: user.emailVerified,
+    phone_verified: user.phoneVerified,
+    is_artisan: user.isArtisan,
+  };
+
+  if (user.profile?.fullName) {
+    personProperties.name = user.profile.fullName;
+  }
+
+  posthog?.identify(user.id, { $set: personProperties });
+};
 
 const maybeCompressVideo = async (uri: string, mimeType?: string): Promise<string> => {
   if (!mimeType?.startsWith('video/')) return uri;
@@ -60,7 +78,10 @@ export const api = {
         }
 
         if (data.user) {
+          identifyUser(data.user);
           useAuthStore.getState().setUser(data.user);
+          posthog?.capture('user_logged_in', { login_method: 'password' });
+          posthogLogger.info('Password authentication completed');
         }
 
         return data;
@@ -83,7 +104,9 @@ export const api = {
         }
 
         if (data.user) {
+          identifyUser(data.user);
           useAuthStore.getState().setUser(data.user);
+          posthog?.capture('device_verified');
         }
 
         return data;
@@ -106,7 +129,9 @@ export const api = {
         }
 
         if (data.user) {
+          identifyUser(data.user);
           useAuthStore.getState().setUser(data.user);
+          posthog?.capture('account_registered');
         }
 
         return data;
@@ -123,6 +148,8 @@ export const api = {
         if (error) {
           throw new Error(getErrorMessage(error, 'Account verification failed'));
         }
+
+        posthog?.capture('account_verified');
 
         return data;
       },
@@ -239,8 +266,10 @@ export const api = {
         }
 
         if (data.user) {
+          identifyUser(data.user);
           useAuthStore.getState().setUser(data.user);
           useAuthStore.getState().setLoginState(true);
+          posthog?.capture('user_logged_in', { login_method: 'google' });
         }
 
         return data;
@@ -263,8 +292,10 @@ export const api = {
         }
 
         if (data.user) {
+          identifyUser(data.user);
           useAuthStore.getState().setUser(data.user);
           useAuthStore.getState().setLoginState(true);
+          posthog?.capture('user_logged_in', { login_method: 'apple' });
         }
 
         return data;
@@ -341,6 +372,8 @@ export const api = {
         if (error) {
           throw new Error(getErrorMessage(error, 'Profile update failed'));
         }
+
+        posthog?.capture('profile_updated');
 
         return data;
       },
@@ -568,7 +601,7 @@ export const api = {
         const { data } = await publicApiClient.GET('/api/promotion-slides', {
           params: {
             query: {
-              audience: 'artisans',
+              audience: 'users',
             },
           },
         });
@@ -588,6 +621,8 @@ export const api = {
         if (error) {
           throw new Error(getErrorMessage(error, 'Login failed'));
         }
+
+        posthog?.capture('support_ticket_created');
 
         return data;
       },
@@ -614,6 +649,8 @@ export const api = {
         if (error) {
           throw new Error(getErrorMessage(error, 'Failed to submit rating'));
         }
+
+        posthog?.capture('app_rating_submitted', { rating: credentials.rating });
 
         return data;
       },
@@ -686,6 +723,16 @@ export const api = {
           throw new Error(getErrorMessage(error, 'Service request failed'));
         }
 
+        const serviceRequest = credentials as unknown as {
+          categoryId: string;
+          destinationAddress?: string;
+        };
+        posthog?.capture('service_request_created', {
+          category_id: serviceRequest.categoryId,
+          has_destination: Boolean(serviceRequest.destinationAddress),
+        });
+        posthogLogger.info('Service request submitted');
+
         return data;
       },
     };
@@ -744,6 +791,8 @@ export const api = {
         if (error) {
           throw new Error(getErrorMessage(error, 'Cancel Service request failed'));
         }
+
+        posthog?.capture('service_request_cancelled');
 
         return data;
       },
@@ -806,6 +855,8 @@ export const api = {
           throw new Error(getErrorMessage(error, 'Approve job request failed'));
         }
 
+        posthog?.capture('job_approved');
+
         return data;
       },
     };
@@ -825,6 +876,8 @@ export const api = {
         if (error) {
           throw new Error(getErrorMessage(error, 'Cancel job request failed'));
         }
+
+        posthog?.capture('job_cancelled');
 
         return data;
       },
@@ -902,6 +955,8 @@ export const api = {
           throw new Error(getErrorMessage(error, 'counter offer failed to send.'));
         }
 
+        posthog?.capture('offer_countered');
+
         return data;
       },
     };
@@ -921,6 +976,8 @@ export const api = {
         if (error) {
           throw new Error(getErrorMessage(error, 'response to offer failed to send.'));
         }
+
+        posthog?.capture('offer_responded');
 
         return data;
       },
@@ -955,6 +1012,8 @@ export const api = {
         if (error) {
           throw new Error(getErrorMessage(error, 'Failed to verify payment'));
         }
+
+        posthog?.capture('payment_verified');
 
         return data;
       },
@@ -1032,6 +1091,13 @@ export const api = {
         if (error) {
           throw new Error(getErrorMessage(error, 'Failed to submit review'));
         }
+
+        const rating =
+          (credentials.punctualityRating +
+            credentials.communicationRating +
+            credentials.qualityRating) /
+          3;
+        posthog?.capture('review_submitted', { rating });
 
         return data;
       },
@@ -1186,6 +1252,8 @@ export const api = {
           throw new Error(getErrorMessage(error, 'Failed to send message.'));
         }
 
+        posthog?.capture('chat_message_sent');
+
         return data;
       },
     };
@@ -1269,6 +1337,9 @@ export const api = {
         if (error) {
           throw new Error(getErrorMessage(error, 'Failed to create dispute.'));
         }
+
+        const dispute = credentials as unknown as { disputeType: string };
+        posthog?.capture('dispute_created', { dispute_type: dispute.disputeType });
 
         return data;
       },

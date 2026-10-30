@@ -16,10 +16,12 @@ import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 
 export default function Screen() {
-  const { email }: { email: string } = useLocalSearchParams();
+  const { email, otpDeliveryFailed }: { email: string; otpDeliveryFailed?: string } =
+    useLocalSearchParams();
 
   const [otpDisabled, setOTPDisabled] = React.useState(false);
   const [timer, setTimer] = React.useState(60);
+  const [deliveryFailed, setDeliveryFailed] = React.useState(otpDeliveryFailed === '1');
   const { minute, seconds } = useTimer({ sec: timer });
 
   const verifyCode = useMutation({
@@ -35,10 +37,16 @@ export default function Screen() {
     },
   });
 
-  const resendVerificationCode = useMutation({
-    ...api.resendVerificationCode(),
+  const resendCode = useMutation({
+    ...api.forgotPassword(),
     onSuccess: (data) => {
-      showSuccessMessage('OTP sent to your email successfully.');
+      if (data?.otpDeliveryFailed) {
+        setDeliveryFailed(true);
+        showErrorMessage("We couldn't send your code. Please try again in a moment.");
+      } else {
+        setDeliveryFailed(false);
+        showSuccessMessage('OTP sent successfully.');
+      }
     },
     onError: (err) => {
       showErrorMessage(err.message);
@@ -50,7 +58,7 @@ export default function Screen() {
 
     setTimer((prev) => prev + 30);
 
-    resendVerificationCode.mutate({ type: 'email', email });
+    resendCode.mutate({ emailOrPhone: email });
   };
 
   return (
@@ -63,10 +71,18 @@ export default function Screen() {
       }>
       <View className="flex-1 gap-6">
         <View className="flex items-center justify-center">
-          <Text className="text-center text-[#737381]">
-            A verification code has been sent to{' '}
-            {email && <Text className="text-center text-primary">{email}</Text>}
-          </Text>
+          {deliveryFailed ? (
+            <Text className="text-center text-red-500">
+              We couldn't send a code to{' '}
+              {email && <Text className="text-center text-primary">{email}</Text>}. Tap resend
+              below to try again.
+            </Text>
+          ) : (
+            <Text className="text-center text-[#737381]">
+              A verification code has been sent to{' '}
+              {email && <Text className="text-center text-primary">{email}</Text>}
+            </Text>
+          )}
         </View>
 
         <OtpInput
@@ -126,7 +142,7 @@ export default function Screen() {
         />
 
         <View className="flex flex-row items-center justify-center gap-1.5">
-          {verifyCode.isPending || resendVerificationCode.isPending ? (
+          {verifyCode.isPending || resendCode.isPending ? (
             <LoadingIndicator size={24} />
           ) : Number(seconds) > 0 ? (
             <Text className="text-center text-[#737381]">

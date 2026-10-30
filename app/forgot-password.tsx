@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Pressable, View } from 'react-native';
 import { Image } from 'expo-image';
-import * as z from 'zod';
 import { useForm } from '@tanstack/react-form';
 import { toast } from 'sonner-native';
 import { router } from 'expo-router';
@@ -19,10 +18,7 @@ import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
 import { GoogleSigninButton } from '@/components/google-signin-button';
 import { formatPhoneNumber } from '@/lib/utils';
-
-const formSchema = z.object({
-  emailOrPhone: z.string().min(1, 'Email/Phone number is required.'),
-});
+import { formSchema } from '@/lib/forgot-password.schema';
 
 export default function Screen() {
   const { isPending, mutate } = useMutation({
@@ -46,11 +42,16 @@ export default function Screen() {
 
       mutate(value, {
         onSuccess: (data) => {
-          toast.success(data.message);
+          if (data.otpDeliveryFailed) {
+            showErrorMessage("We couldn't send your reset code. Please try resend on the next screen.");
+          } else {
+            toast.success(data.message);
+          }
           router.navigate({
             pathname: '/forgot-password-otp',
             params: {
               email: value.emailOrPhone,
+              otpDeliveryFailed: data.otpDeliveryFailed ? '1' : undefined,
             },
           });
         },

@@ -4,7 +4,7 @@ import * as ExpoSplashScreen from 'expo-splash-screen';
 
 import { useAuthStore } from '@/store/auth-store';
 import { PortalHost } from '@rn-primitives/portal';
-import { router, Stack } from 'expo-router';
+import { router, Stack, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import { Toaster } from 'sonner-native';
@@ -20,6 +20,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SplashScreen } from '@/components/splash-screen';
 import { useTrackAppInstall } from '@/hooks/use-track-app-install';
+import { posthog, PostHogRootProvider } from '@/lib/posthog';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -64,73 +65,86 @@ export default function RootLayout() {
 
   return (
     // <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-    <GestureHandlerRootView>
-      <QueryProvider>
-        <LocationProvider>
-          <KeyboardProvider>
-            <View className="flex-1 bg-white">
-              <NotificationProvider>
-                <SheetProvider>
-                  <AppInstallTracker />
-                  <Sheets />
-                  <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-                  <Stack>
-                    <Stack.Protected guard={isLoggedIn || isGuest}>
-                      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                    </Stack.Protected>
+    <PostHogRootProvider>
+      <GestureHandlerRootView>
+        <QueryProvider>
+          <LocationProvider>
+            <KeyboardProvider>
+              <View className="flex-1 bg-white">
+                <NotificationProvider>
+                  <SheetProvider>
+                    <AppInstallTracker />
+                    <ScreenTracker />
+                    <Sheets />
+                    <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+                    <Stack>
+                      <Stack.Protected guard={isLoggedIn || isGuest}>
+                        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                      </Stack.Protected>
 
-                    <Stack.Protected guard={isLoggedIn}>
-                      <Stack.Screen name="chat" options={{ headerShown: false }} />
-                      <Stack.Screen name="ongoing" options={{ headerShown: false }} />
-                      <Stack.Screen name="photo-preview" options={{ headerShown: false }} />
-                      <Stack.Screen name="rate" options={{ headerShown: false }} />
-                      <Stack.Screen name="dispute" options={{ headerShown: false }} />
-                    </Stack.Protected>
+                      <Stack.Protected guard={isLoggedIn}>
+                        <Stack.Screen name="chat" options={{ headerShown: false }} />
+                        <Stack.Screen name="ongoing" options={{ headerShown: false }} />
+                        <Stack.Screen name="photo-preview" options={{ headerShown: false }} />
+                        <Stack.Screen name="rate" options={{ headerShown: false }} />
+                        <Stack.Screen name="dispute" options={{ headerShown: false }} />
+                      </Stack.Protected>
 
-                    <Stack.Protected guard={!isLoggedIn && hasCompletedOnboarding}>
-                      <Stack.Screen name="login" options={{ headerShown: false }} />
-                      <Stack.Screen name="register" options={{ headerShown: false }} />
-                      <Stack.Screen name="verify-email" options={{ headerShown: false }} />
-                      <Stack.Screen name="verify-device" options={{ headerShown: false }} />
-                      <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
-                      <Stack.Screen name="forgot-password-otp" options={{ headerShown: false }} />
-                      <Stack.Screen name="new-password" options={{ headerShown: false }} />
-                      <Stack.Screen name="terms" options={{ headerShown: false }} />
-                      <Stack.Screen name="privacy" options={{ headerShown: false }} />
-                    </Stack.Protected>
+                      <Stack.Protected guard={!isLoggedIn && hasCompletedOnboarding}>
+                        <Stack.Screen name="login" options={{ headerShown: false }} />
+                        <Stack.Screen name="register" options={{ headerShown: false }} />
+                        <Stack.Screen name="verify-email" options={{ headerShown: false }} />
+                        <Stack.Screen name="verify-device" options={{ headerShown: false }} />
+                        <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
+                        <Stack.Screen name="forgot-password-otp" options={{ headerShown: false }} />
+                        <Stack.Screen name="new-password" options={{ headerShown: false }} />
+                        <Stack.Screen name="terms" options={{ headerShown: false }} />
+                        <Stack.Screen name="privacy" options={{ headerShown: false }} />
+                      </Stack.Protected>
 
-                    <Stack.Protected guard={!hasCompletedOnboarding}>
-                      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-                    </Stack.Protected>
-                  </Stack>
-                  <Toaster
-                    theme="light"
-                    richColors
-                    visibleToasts={3}
-                    styles={{
-                      title: {
-                        fontFamily: 'CabinetGrotesk-Bold',
-                      },
-                    }}
-                  />
-                  <PortalHost />
-                  {showSplash && (
-                    <View className="absolute inset-0 z-50">
-                      <SplashScreen />
-                    </View>
-                  )}
-                </SheetProvider>
-              </NotificationProvider>
-            </View>
-          </KeyboardProvider>
-        </LocationProvider>
-      </QueryProvider>
-    </GestureHandlerRootView>
+                      <Stack.Protected guard={!hasCompletedOnboarding}>
+                        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+                      </Stack.Protected>
+                    </Stack>
+                    <Toaster
+                      theme="light"
+                      richColors
+                      visibleToasts={3}
+                      styles={{
+                        title: {
+                          fontFamily: 'CabinetGrotesk-Bold',
+                        },
+                      }}
+                    />
+                    <PortalHost />
+                    {showSplash && (
+                      <View className="absolute inset-0 z-50">
+                        <SplashScreen />
+                      </View>
+                    )}
+                  </SheetProvider>
+                </NotificationProvider>
+              </View>
+            </KeyboardProvider>
+          </LocationProvider>
+        </QueryProvider>
+      </GestureHandlerRootView>
+    </PostHogRootProvider>
     // </ThemeProvider>
   );
 }
 
 function AppInstallTracker() {
   useTrackAppInstall();
+  return null;
+}
+
+function ScreenTracker() {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    posthog?.screen(pathname);
+  }, [pathname]);
+
   return null;
 }
