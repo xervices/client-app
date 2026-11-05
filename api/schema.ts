@@ -3642,6 +3642,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/service-requests/{id}/republish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Re-broadcast a service request to nearby artisans
+         * @description Re-sends the new-request notification to nearby matching artisans, skipping any artisan who already has an offer on this request. Used when the customer's negotiation falls through and they want to keep searching without refiling the request.
+         */
+        post: operations["ServiceRequestsController_republish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/offers": {
         parameters: {
             query?: never;
@@ -17049,6 +17069,66 @@ export interface operations {
                 };
             };
             /** @description Forbidden - User access required or not authorized to cancel */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Service request not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ServiceRequestsController_republish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Notification re-sent to matching artisans */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        matchingArtisansCount: number;
+                    };
+                };
+            };
+            /** @description Service request is no longer accepting offers */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Not authorized to re-broadcast this service request */
             403: {
                 headers: {
                     [name: string]: unknown;

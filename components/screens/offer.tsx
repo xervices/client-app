@@ -113,6 +113,9 @@ export function OfferScreen() {
     }, [serviceRequest?.refetch, redirectToRootTab])
   );
 
+  const cancelServiceRequest = useMutation(api.cancelServiceRequest(id));
+  const republishServiceRequest = useMutation(api.republishServiceRequest(id));
+
   const excludedStatuses = ['withdrawn', 'rejected', 'expired'];
 
   const uniqueOffersByArtisan = React.useMemo(() => {
@@ -139,6 +142,76 @@ export function OfferScreen() {
       }>
       {allOffers?.isLoading ? (
         <LoadingState title="Loading Offers..." />
+      ) : uniqueOffersByArtisan?.length === 0 ? (
+        <View className="flex-1 gap-4">
+          <View className="mx-auto flex h-32 w-32 items-center justify-center rounded-full bg-[#FFE6D6]">
+            <Image
+              source={require('@/assets/images/logo-primary.svg')}
+              style={{ width: 120, height: 120 }}
+              contentFit="contain"
+            />
+          </View>
+
+          <View className="mt-10">
+            <Text className="text-center font-cabinet-bold text-[#737381]">No Offers Left</Text>
+            <Text className="mx-auto max-w-[90%] text-center text-sm text-[#737381]">
+              That offer didn't work out. Keep searching and we'll notify nearby pros again, or you
+              can cancel your request.
+            </Text>
+          </View>
+
+          <View className="mt-auto flex gap-2">
+            <Button
+              isLoading={republishServiceRequest.isPending}
+              disabled={republishServiceRequest.isPending}
+              onPress={() => {
+                republishServiceRequest.mutate(undefined, {
+                  onSuccess: () => {
+                    if (IS_BOOK_TAB) {
+                      router.replace({ pathname: '/book/searching', params: { id } });
+                    } else {
+                      router.replace({ pathname: '/searching', params: { id } });
+                    }
+                  },
+                  onError: (err) => {
+                    showErrorMessage(err.message);
+                  },
+                });
+              }}>
+              Keep Searching
+            </Button>
+
+            <Button
+              onPress={() => {
+                SheetManager?.show('cancel-service-sheet', {
+                  payload: {
+                    onConfirm(reason) {
+                      cancelServiceRequest.mutate(
+                        { reason },
+                        {
+                          onSuccess: () => {
+                            queryClient.invalidateQueries({
+                              queryKey: api.getUserServiceRequests().queryKey,
+                            });
+                            showSuccessMessage('Service Request canceled successfully!');
+                            redirectToRootTab();
+                          },
+                          onError: (err) => {
+                            showErrorMessage(err.message);
+                          },
+                        }
+                      );
+                    },
+                  },
+                });
+              }}
+              isLoading={cancelServiceRequest.isPending}
+              disabled={cancelServiceRequest.isPending}
+              variant={'destructive'}>
+              Cancel Request
+            </Button>
+          </View>
+        </View>
       ) : (
         <View className="flex-1 gap-2">
           <View>
@@ -417,6 +490,7 @@ function OfferCard({
             {!offersLeft ? 'Reject' : 'Counter'}
           </Button>
           <Button
+            disabled={sendCounterOffer?.isPending || rejectOffer?.isPending}
             onPress={() => {
               if (IS_BOOK_TAB) {
                 router.navigate({

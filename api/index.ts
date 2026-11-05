@@ -308,11 +308,17 @@ export const api = {
     queryOptions({
       queryKey: ['users', 'me'],
       queryFn: async () => {
-        const { data } = await apiClient.GET('/api/users/me');
+        const { data, error } = await apiClient.GET('/api/users/me');
 
-        if (data) {
-          useAuthStore.getState().setUser(data);
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to fetch current user'));
         }
+
+        if (!data) {
+          throw new Error('No user data returned');
+        }
+
+        useAuthStore.getState().setUser(data);
 
         return data;
       },
@@ -411,7 +417,11 @@ export const api = {
     queryOptions({
       queryKey: ['categories'],
       queryFn: async () => {
-        const { data } = await publicApiClient.GET('/api/categories');
+        const { data, error } = await publicApiClient.GET('/api/categories');
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to fetch categories'));
+        }
 
         return data;
       },
@@ -581,13 +591,17 @@ export const api = {
     queryOptions({
       queryKey: ['profiles', 'active', 'featured'],
       queryFn: async () => {
-        const { data } = await publicApiClient.GET('/api/featured-profiles', {
+        const { data, error } = await publicApiClient.GET('/api/featured-profiles', {
           params: {
             query: {
               type: 'user',
             },
           },
         });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to fetch featured profiles'));
+        }
 
         return data;
       },
@@ -598,13 +612,17 @@ export const api = {
     queryOptions({
       queryKey: ['news', 'promotions'],
       queryFn: async () => {
-        const { data } = await publicApiClient.GET('/api/promotion-slides', {
+        const { data, error } = await publicApiClient.GET('/api/promotion-slides', {
           params: {
             query: {
               audience: 'users',
             },
           },
         });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to fetch news and promotions'));
+        }
 
         return data;
       },
@@ -741,7 +759,11 @@ export const api = {
     queryOptions({
       queryKey: ['service-request', 'user'],
       queryFn: async () => {
-        const { data } = await apiClient.GET('/api/service-requests');
+        const { data, error } = await apiClient.GET('/api/service-requests');
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Failed to fetch service requests'));
+        }
 
         return data;
       },
@@ -793,6 +815,27 @@ export const api = {
         }
 
         posthog?.capture('service_request_cancelled');
+
+        return data;
+      },
+    };
+  },
+  republishServiceRequest: (id: string) => {
+    return {
+      mutationFn: async () => {
+        const { data, error } = await apiClient.POST('/api/service-requests/{id}/republish', {
+          params: {
+            path: {
+              id,
+            },
+          },
+        });
+
+        if (error) {
+          throw new Error(getErrorMessage(error, 'Could not re-notify nearby pros'));
+        }
+
+        posthog?.capture('service_request_republished');
 
         return data;
       },
