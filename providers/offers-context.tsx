@@ -93,9 +93,22 @@ export const useOffersContext = (options?: UseOffersContextOptions): OffersConte
     withdrawnOffers: context.withdrawnOffers?.length ?? 0,
   });
 
+  // resetEvents() (called when re-broadcasting the same service request id) shrinks these
+  // arrays back to 0. When that happens, resync this consumer's baseline down too instead of
+  // treating the shrink as "nothing new" forever — otherwise the next genuinely-new event
+  // would need to clear the old (higher) baseline before a callback could fire again.
+  const resyncIfShrunk = (key: keyof typeof seenLengthsRef.current, length: number) => {
+    if (length < seenLengthsRef.current[key]) {
+      seenLengthsRef.current[key] = length;
+      return true;
+    }
+    return false;
+  };
+
   // Trigger callback whenever offers change
   React.useEffect(() => {
     if (!callbackRef.current) return;
+    if (resyncIfShrunk('offers', context.offers.length)) return;
     if (context.offers.length > seenLengthsRef.current.offers) {
       callbackRef.current('offer:new', context.offers[context.offers.length - 1]);
       seenLengthsRef.current.offers = context.offers.length;
@@ -105,6 +118,7 @@ export const useOffersContext = (options?: UseOffersContextOptions): OffersConte
   // Trigger callback whenever views change
   React.useEffect(() => {
     if (!callbackRef.current) return;
+    if (resyncIfShrunk('views', context.views.length)) return;
     if (context.views.length > seenLengthsRef.current.views) {
       callbackRef.current('request:viewed', context.views[context.views.length - 1]);
       seenLengthsRef.current.views = context.views.length;
@@ -115,6 +129,7 @@ export const useOffersContext = (options?: UseOffersContextOptions): OffersConte
   React.useEffect(() => {
     if (!callbackRef.current) return;
     const length = context.counterOffers?.length ?? 0;
+    if (resyncIfShrunk('counterOffers', length)) return;
     if (length > seenLengthsRef.current.counterOffers) {
       callbackRef.current('offer:counter', context.counterOffers![length - 1]);
       seenLengthsRef.current.counterOffers = length;
@@ -125,6 +140,7 @@ export const useOffersContext = (options?: UseOffersContextOptions): OffersConte
   React.useEffect(() => {
     if (!callbackRef.current) return;
     const length = context.acceptedOffers?.length ?? 0;
+    if (resyncIfShrunk('acceptedOffers', length)) return;
     if (length > seenLengthsRef.current.acceptedOffers) {
       callbackRef.current('offer:accepted', context.acceptedOffers![length - 1]);
       seenLengthsRef.current.acceptedOffers = length;
@@ -135,6 +151,7 @@ export const useOffersContext = (options?: UseOffersContextOptions): OffersConte
   React.useEffect(() => {
     if (!callbackRef.current) return;
     const length = context.rejectedOffers?.length ?? 0;
+    if (resyncIfShrunk('rejectedOffers', length)) return;
     if (length > seenLengthsRef.current.rejectedOffers) {
       callbackRef.current('offer:rejected', context.rejectedOffers![length - 1]);
       seenLengthsRef.current.rejectedOffers = length;
@@ -145,6 +162,7 @@ export const useOffersContext = (options?: UseOffersContextOptions): OffersConte
   React.useEffect(() => {
     if (!callbackRef.current) return;
     const length = context.withdrawnOffers?.length ?? 0;
+    if (resyncIfShrunk('withdrawnOffers', length)) return;
     if (length > seenLengthsRef.current.withdrawnOffers) {
       callbackRef.current('offer:withdrawn', context.withdrawnOffers![length - 1]);
       seenLengthsRef.current.withdrawnOffers = length;

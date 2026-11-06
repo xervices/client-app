@@ -64,7 +64,9 @@ export const useOffersSocket = ({
   useEffect(() => {
     if (!autoConnect) return;
     const socket: OffersSocket = io(`${SOCKET_URL}/offers`, {
-      transports: ['websocket'],
+      // See the matching comment in use-notification-socket.ts: websocket-only has no
+      // fallback when the initial upgrade handshake hiccups on a flaky mobile connection.
+      transports: ['polling', 'websocket'],
       autoConnect: true,
     });
     socketRef.current = socket;
@@ -130,6 +132,19 @@ export const useOffersSocket = ({
   const joinServiceRequest = (serviceRequestId: string) => {
     socketRef.current?.emit('join_service_request', { serviceRequestId });
   };
+  // Clears accumulated events for the *current* service request without tearing down the
+  // socket connection. Needed when a customer re-broadcasts the same service request id
+  // (e.g. "Keep Searching" after a rejection) — the serviceRequestId-change effect above
+  // never fires in that case since the id didn't change, so stale offers/views from the
+  // previous negotiation round would otherwise still be shown as if they just happened.
+  const resetEvents = () => {
+    setOffers([]);
+    setViews([]);
+    setCounterOffers([]);
+    setAcceptedOffers([]);
+    setRejectedOffers([]);
+    setWithdrawnOffers([]);
+  };
   return {
     socket: socketRef.current,
     isConnected,
@@ -140,5 +155,6 @@ export const useOffersSocket = ({
     rejectedOffers,
     withdrawnOffers,
     joinServiceRequest,
+    resetEvents,
   };
 };

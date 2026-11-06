@@ -58,7 +58,7 @@ export function OfferScreen() {
     }
   };
 
-  const { joinServiceRequest, isConnected } = useOffersContext({
+  const { joinServiceRequest, isConnected, resetEvents } = useOffersContext({
     onOfferEvent(eventType, data) {
       if (eventType === 'offer:accepted') {
         showSuccessMessage('Offer accepted, You can proceed to payment');
@@ -167,6 +167,7 @@ export function OfferScreen() {
               onPress={() => {
                 republishServiceRequest.mutate(undefined, {
                   onSuccess: () => {
+                    resetEvents();
                     if (IS_BOOK_TAB) {
                       router.replace({ pathname: '/book/searching', params: { id } });
                     } else {

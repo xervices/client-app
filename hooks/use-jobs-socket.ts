@@ -83,7 +83,9 @@ export const useJobsSocket = ({
       }
 
       socket = io(`${SOCKET_URL}/jobs`, {
-        transports: ['websocket'],
+        // See the matching comment in use-notification-socket.ts: websocket-only has no
+        // fallback when the initial upgrade handshake hiccups on a flaky mobile connection.
+        transports: ['polling', 'websocket'],
         reconnection: true,
         reconnectionAttempts: Infinity,
         reconnectionDelay: 1000,

@@ -133,6 +133,13 @@ export function SearchingScreen() {
     }, [serviceRequest?.refetch, IS_BOOK_TAB])
   );
 
+  const excludedOfferStatuses = ['withdrawn', 'rejected', 'expired'];
+
+  const activeOffers = React.useMemo(
+    () => allOffers?.data?.filter((offer) => !excludedOfferStatuses.includes(offer.status)) ?? [],
+    [allOffers?.data]
+  );
+
   const uniqueViews = React.useMemo(
     () =>
       views?.filter(
@@ -242,7 +249,7 @@ export function SearchingScreen() {
             </Text>
           </View>
 
-          {allOffers?.data && allOffers?.data.length > 0 && (
+          {activeOffers.length > 0 && (
             <View
               style={{
                 shadowColor: '#000',
@@ -258,7 +265,7 @@ export function SearchingScreen() {
                     {serviceRequest?.data?.category?.name}
                   </Text>
                   <Text className="flex-1 text-xs text-[#FE6A00]">
-                    {formatRelativeTime(allOffers?.data[0]?.createdAt)}
+                    {formatRelativeTime(activeOffers[0]?.createdAt)}
                   </Text>
                 </View>
 

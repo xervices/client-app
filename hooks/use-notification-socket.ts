@@ -10,7 +10,7 @@ import {
 import { tokenStorage } from '@/api/token-storage';
 import { AppState } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
-import { BASE_URL } from '@/api/client';
+import { BASE_URL, refreshAccessToken } from '@/api/client';
 
 const SOCKET_URL = BASE_URL;
 
@@ -57,6 +57,10 @@ export const useNotificationSocket = ({
     if (!autoConnect) return;
 
     let socket: NotificationSocket | null = null;
+    // Guards against retry loops: the server rejects a stale/expired access token with
+    // 'error' + disconnect (not 'connect_error'), so recovery has to live here. Reset on
+    // every successful connect so a *later* genuine auth failure can still retry once.
+    let hasRetriedAuth = false;
 
     const initSocket = async () => {
       const token = await tokenStorage.getAccessToken();
@@ -67,7 +71,12 @@ export const useNotificationSocket = ({
       }
 
       socket = io(`${SOCKET_URL}/notifications`, {
-        transports: ['websocket'],
+        // websocket-only has no fallback when the initial upgrade handshake hiccups on a
+        // flaky mobile connection (NAT, weak wifi, cellular handoff) — it just errors with
+        // no recovery path other than a full retry. Allowing polling first lets socket.io
+        // establish the session over HTTP and upgrade to websocket once stable, same as
+        // its default behavior.
+        transports: ['polling', 'websocket'],
         reconnection: true,
         reconnectionAttempts: Infinity,
         reconnectionDelay: 1000,
@@ -84,6 +93,7 @@ export const useNotificationSocket = ({
       socket.on('connect', () => {
         console.log('✅ Connected to /notifications');
         setIsConnected(true);
+        hasRetriedAuth = false;
         // Invalidate queries on reconnection to get fresh state
         invalidateNotificationQueries();
       });
@@ -103,12 +113,27 @@ export const useNotificationSocket = ({
         if (!socket) return;
         const freshToken = await tokenStorage.getAccessToken();
         if (freshToken) {
-          socket.auth = { token: freshToken };
+          socket.auth = { token: freshToken, role: 'user' };
         }
       });
 
-      socket.on('error', (err) => {
+      // The server rejects an expired/invalid access token by emitting 'error' and then
+      // disconnecting the socket (not 'connect_error', since the handshake itself
+      // succeeded). socket.io-client won't auto-reconnect after a server-initiated
+      // disconnect, so without this the socket would stay dead until the app restarts.
+      // getAccessToken() alone can't fix this — it returns the same stale token that was
+      // just rejected — so this calls refreshAccessToken() to mint a genuinely new one.
+      socket.on('error', async (err) => {
         console.error('Notification Socket Error:', err);
+
+        if (err?.message === 'Invalid authentication token' && !hasRetriedAuth) {
+          hasRetriedAuth = true;
+          const freshToken = await refreshAccessToken();
+          if (freshToken && socket) {
+            socket.auth = { token: freshToken, role: 'user' };
+            socket.connect();
+          }
+        }
       });
 
       socket.on('notification:new', (event) => {
@@ -138,19 +163,23 @@ export const useNotificationSocket = ({
         const socket = socketRef.current;
         if (!socket) return;
 
-        // Always refresh the token so the socket uses the latest one
-        const freshToken = await tokenStorage.getAccessToken();
-        if (freshToken) {
-          socket.auth = { token: freshToken };
-        }
-
         if (socket.connected) {
           // Already connected — refresh notification data
           invalidateNotificationQueries();
-        } else {
-          // Reconnect the socket with the fresh token
-          socket.connect();
+          return;
         }
+
+        // Reconnect with whatever's currently cached. Deliberately NOT calling
+        // refreshAccessToken() here — that rotates the refresh token, and doing it on
+        // every foreground/reconnect (most of which are just a dropped connection, not an
+        // actually-expired token) caused the rotation-related logout bug fixed earlier.
+        // If this cached token really is stale, the 'error' handler above reactively
+        // refreshes once the server actually rejects it.
+        const freshToken = await tokenStorage.getAccessToken();
+        if (freshToken) {
+          socket.auth = { token: freshToken, role: 'user' };
+        }
+        socket.connect();
       }
     };
 

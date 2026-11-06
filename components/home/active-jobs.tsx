@@ -11,6 +11,7 @@ import { LoadingIndicator } from '../ui/loading-indicator';
 import { showErrorMessage } from '@/api/helpers';
 import { SheetManager } from 'react-native-actions-sheet';
 import { useAuthStore } from '@/store/auth-store';
+import { useOffersContext } from '@/providers/offers-context';
 
 export function ActiveJobs() {
   const isGuest = useAuthStore((s) => s.isGuest);
@@ -192,6 +193,10 @@ function NegotiatingJobCard({ jobId, onCancelFn }: NegotiatingJobCardProp) {
 
   const { mutate, isPending } = useMutation(api.cancelServiceRequest(jobId));
 
+  const republishServiceRequest = useMutation(api.republishServiceRequest(jobId));
+
+  const { resetEvents } = useOffersContext();
+
   const excludedStatuses = ['withdrawn', 'rejected', 'expired'];
 
   const uniqueOffersByArtisan = React.useMemo(() => {
@@ -206,13 +211,88 @@ function NegotiatingJobCard({ jobId, onCancelFn }: NegotiatingJobCardProp) {
       .filter((offer) => !excludedStatuses.includes(offer.status));
   }, [data]);
 
-  if (
-    isLoading ||
-    !data ||
-    data?.length === 0 ||
-    !uniqueOffersByArtisan ||
-    uniqueOffersByArtisan?.length === 0
-  )
+  if (isLoading || !data) return null;
+
+  if (data?.length > 0 && uniqueOffersByArtisan?.length === 0) {
+    return (
+      <View
+        style={{
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          elevation: 4,
+        }}
+        className="flex gap-4 rounded-[8px] bg-white p-4">
+        <View className="flex flex-row items-center justify-between">
+          <Text className="flex-1 font-cabinet-bold text-primary">No offers left</Text>
+
+          {isPending ? (
+            <LoadingIndicator size={16} />
+          ) : (
+            <Pressable
+              onPress={() => {
+                SheetManager?.show('cancel-service-sheet', {
+                  payload: {
+                    onConfirm(reason) {
+                      mutate(
+                        { reason },
+                        {
+                          onError: (err) => {
+                            showErrorMessage(err?.message);
+                          },
+                          onSuccess: () => {
+                            onCancelFn?.();
+                          },
+                        }
+                      );
+                    },
+                  },
+                });
+              }}
+              className="flex h-4 w-4 items-center justify-center">
+              <X size={14} color={'#737381'} />
+            </Pressable>
+          )}
+        </View>
+
+        <Text className="text-sm text-[#737381]">
+          That offer didn't work out. Keep searching and we'll notify nearby pros again.
+        </Text>
+
+        <View className="flex flex-row items-center justify-end">
+          <Pressable
+            disabled={republishServiceRequest.isPending}
+            onPress={() => {
+              republishServiceRequest.mutate(undefined, {
+                onSuccess: () => {
+                  resetEvents();
+                  router.navigate({
+                    pathname: '/searching',
+                    params: { id: jobId },
+                  });
+                },
+                onError: (err) => {
+                  showErrorMessage(err.message);
+                },
+              });
+            }}
+            className="flex flex-row items-center gap-1">
+            {republishServiceRequest.isPending ? (
+              <LoadingIndicator size={14} />
+            ) : (
+              <>
+                <Text className="font-cabinet-bold text-sm text-primary">Keep searching</Text>
+                <ArrowUpRight size={14} color={'#FE6A00'} />
+              </>
+            )}
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
+
+  if (data?.length === 0 || !uniqueOffersByArtisan || uniqueOffersByArtisan?.length === 0)
     return null;
 
   return (
