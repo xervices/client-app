@@ -116,7 +116,11 @@ export function OfferScreen() {
   const cancelServiceRequest = useMutation(api.cancelServiceRequest(id));
   const republishServiceRequest = useMutation(api.republishServiceRequest(id));
 
-  const excludedStatuses = ['withdrawn', 'rejected', 'expired'];
+  // 'countered' rows are always superseded (counterOffer() marks the old row countered and
+  // creates a new pending one) — the artisan-dedup below already masks this since it keeps
+  // only the newest row per artisan, but excluding it explicitly too avoids relying on that
+  // ordering assumption.
+  const excludedStatuses = ['withdrawn', 'rejected', 'expired', 'countered'];
 
   const uniqueOffersByArtisan = React.useMemo(() => {
     if (!allOffers?.data) return [];

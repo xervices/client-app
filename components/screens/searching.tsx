@@ -133,12 +133,24 @@ export function SearchingScreen() {
     }, [serviceRequest?.refetch, IS_BOOK_TAB])
   );
 
-  const excludedOfferStatuses = ['withdrawn', 'rejected', 'expired'];
+  const excludedOfferStatuses = ['withdrawn', 'rejected', 'expired', 'countered'];
 
-  const activeOffers = React.useMemo(
-    () => allOffers?.data?.filter((offer) => !excludedOfferStatuses.includes(offer.status)) ?? [],
-    [allOffers?.data]
-  );
+  // A multi-round negotiation leaves behind superseded 'countered' rows for every prior
+  // offer/counter-offer in the thread — only the newest row per artisan reflects where
+  // that thread actually ended up. Dedup by artisan first (data is newest-first), THEN
+  // drop excluded statuses, same as offer.tsx's uniqueOffersByArtisan — otherwise a dead
+  // thread's old 'countered' rows look like separate active offers.
+  const activeOffers = React.useMemo(() => {
+    if (!allOffers?.data) return [];
+    const seen = new Set();
+    return allOffers.data
+      .filter((offer) => {
+        if (seen.has(offer.artisanId)) return false;
+        seen.add(offer.artisanId);
+        return true;
+      })
+      .filter((offer) => !excludedOfferStatuses.includes(offer.status));
+  }, [allOffers?.data]);
 
   const uniqueViews = React.useMemo(
     () =>
