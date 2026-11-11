@@ -8073,6 +8073,12 @@ export interface components {
              */
             updatedAt: string;
             /**
+             * Format: date-time
+             * @description Timestamp of the most recent "Keep Searching" re-broadcast. Null if never republished. Marks the start of the current negotiation round - offers/views from before this timestamp (or before createdAt, if this is null) belong to a previous round.
+             * @example 2025-12-08T10:00:00.000Z
+             */
+            republishedAt?: string | null;
+            /**
              * @description Number of unique artisans (Pros) that have viewed this service request
              * @example 3
              */

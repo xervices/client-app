@@ -15,6 +15,7 @@ import { api } from '@/api';
 import { LoadingState } from '@/components/loading-state';
 import { useOffersContext } from '@/providers/offers-context';
 import { formatCurrency } from '@/lib/utils';
+import { filterCurrentRoundOffers } from '@/lib/offer-rounds';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
 
 export function OfferScreen() {
@@ -42,6 +43,20 @@ export function OfferScreen() {
 
   const queryClient = useQueryClient();
 
+  type OfferItem = NonNullable<typeof allOffers.data>[number];
+
+  // Optimistically patches the cached offers list from a socket event's payload, instead of
+  // round-tripping to the server via refetch() and waiting on the network before the UI can
+  // show the correct state. This is what actually removes the "flash of stale negotiation" on
+  // a slow connection - refetch() alone just makes the stale window SHORTER, not zero. Still
+  // followed by a background refetch for eventual consistency (e.g. respondedAt, or anything
+  // else this optimistic patch doesn't know about).
+  const patchOfferStatus = (offerId: string, status: OfferItem['status']) => {
+    queryClient.setQueryData(api.getOffers(id).queryKey, (old?: OfferItem[]) =>
+      old?.map((offer) => (offer.id === offerId ? { ...offer, status } : offer))
+    );
+  };
+
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 
   const handleOnRefresh = async () => {
@@ -61,16 +76,21 @@ export function OfferScreen() {
   const { joinServiceRequest, isConnected, resetEvents } = useOffersContext({
     onOfferEvent(eventType, data) {
       if (eventType === 'offer:accepted') {
+        patchOfferStatus(data.offerId, 'accepted');
         showSuccessMessage('Offer accepted, You can proceed to payment');
+      }
+
+      if (eventType === 'offer:rejected') {
+        patchOfferStatus(data.offerId, 'rejected');
+      }
+
+      if (eventType === 'offer:withdrawn') {
+        patchOfferStatus(data.offerId, 'withdrawn');
       }
 
       allOffers?.refetch();
       queryClient.invalidateQueries({ queryKey: api.getUserServiceRequests().queryKey });
       queryClient.invalidateQueries({ queryKey: api.getUserJobs().queryKey });
-
-      // if (eventType === "offer:rejected" || eventType === "offer:withdrawn") {
-
-      // }
     },
   });
 
@@ -133,6 +153,15 @@ export function OfferScreen() {
       })
       .filter((offer) => !excludedStatuses.includes(offer.status));
   }, [allOffers?.data]);
+
+  // Scoped to the CURRENT negotiation round (see lib/offer-rounds.ts) - used below to count
+  // counter-offers "left" per artisan. A re-engaged artisan (customer rejected, then "Keep
+  // Searching") should start with a fresh budget, not one already exhausted by a round
+  // that's over.
+  const currentRoundOffers = React.useMemo(
+    () => filterCurrentRoundOffers(allOffers?.data, serviceRequest?.data),
+    [allOffers?.data, serviceRequest?.data]
+  );
 
   return (
     <Layout
@@ -233,7 +262,7 @@ export function OfferScreen() {
 
           <View className="flex gap-4">
             {uniqueOffersByArtisan?.map((offer) => {
-              const offersMadeCount = allOffers?.data?.filter(
+              const offersMadeCount = currentRoundOffers.filter(
                 (i) => i.artisanId === offer?.artisanId && i.offeredBy === 'user'
               )?.length;
 
