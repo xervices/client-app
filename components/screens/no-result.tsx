@@ -81,7 +81,7 @@ export function NoResultScreen() {
         <View className="flex-1 gap-4">
           <View className="mx-auto flex h-32 w-32 items-center justify-center rounded-full bg-[#FFE6D6]">
             <Image
-              source={require('@/assets/images/logo-primary.svg')}
+              source={require('@/assets/images/logo-primary.png')}
               style={{ width: 120, height: 120 }}
               contentFit="contain"
             />
