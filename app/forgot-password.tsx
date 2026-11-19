@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
 import { GoogleSigninButton } from '@/components/google-signin-button';
-import { formatPhoneNumber } from '@/lib/utils';
+import { formatPhoneNumber, normalizeEmail } from '@/lib/utils';
 import { formSchema } from '@/lib/forgot-password.schema';
 
 export default function Screen() {
@@ -36,6 +36,8 @@ export default function Screen() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
+      value.emailOrPhone = normalizeEmail(value.emailOrPhone);
+
       if (!value.emailOrPhone.includes('@')) {
         value.emailOrPhone = formatPhoneNumber(value.emailOrPhone);
       }
@@ -98,7 +100,7 @@ export default function Screen() {
                   <Input
                     id="email"
                     value={field.state.value}
-                    onChangeText={field.handleChange}
+                    onChangeText={(text) => field.handleChange(normalizeEmail(text))}
                     placeholder="alexbaker@gmail.com or +23480123456789"
                     hasError={!field.state.meta.isValid}
                     keyboardType="email-address"

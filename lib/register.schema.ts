@@ -10,14 +10,7 @@ export const formSchema = z
     phoneNumber: z.string(),
     email: z
       .email('Invalid email address')
-      .min(1, 'Email is required.')
-      .refine(
-        (val) => {
-          const isEmail = val.includes('@');
-          return isEmail ? val === val.toLowerCase() : true;
-        },
-        { message: 'Email must be lowercase.' }
-      ),
+      .min(1, 'Email is required.'),
     password: z
       .string()
       .min(1, 'Password is required.')

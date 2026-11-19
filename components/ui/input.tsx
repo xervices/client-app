@@ -22,6 +22,9 @@ const Input = React.forwardRef<TextInput, InputProps>(
     // Determine if this is meant to be a secure input (password field)
     const isSecureInput = secureTextEntry === true;
 
+    // Email inputs should never be auto-capitalized or auto-corrected
+    const isEmailInput = props.keyboardType === 'email-address';
+
     const togglePasswordVisibility = () => {
       setIsPasswordVisible((prev) => !prev);
     };
@@ -75,6 +78,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
           )}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          {...(isEmailInput && ({ autoCapitalize: 'none', autoCorrect: false } as const))}
           {...props}
         />
 

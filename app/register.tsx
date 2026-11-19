@@ -16,7 +16,7 @@ import { AppleSigninButton } from '@/components/apple-signin-button';
 
 import { api } from '@/api';
 import { showErrorMessage, showSuccessMessage } from '@/api/helpers';
-import { formatPhoneNumber, getDeviceInfo } from '@/lib/utils';
+import { formatPhoneNumber, getDeviceInfo, normalizeEmail } from '@/lib/utils';
 import { getStableDeviceId } from '@/lib/app-install';
 import { formSchema } from '@/lib/register.schema';
 
@@ -50,6 +50,8 @@ export default function Screen() {
 
       value.deviceId = await getStableDeviceId();
       value.deviceName = deviceInfo?.deviceName || '';
+
+      value.email = normalizeEmail(value.email);
 
       const { confirmPassword, referralCode, ...registerData } = value;
 
@@ -128,7 +130,7 @@ export default function Screen() {
                 <Input
                   id="email"
                   value={field.state.value}
-                  onChangeText={field.handleChange}
+                  onChangeText={(text) => field.handleChange(normalizeEmail(text))}
                   placeholder="Enter your email"
                   hasError={!field.state.meta.isValid}
                   keyboardType="email-address"

@@ -530,3 +530,8 @@ export const getDeviceInfo = async (): Promise<DeviceInfo> => {
 };
 
 export const emojiRegex = /\p{Emoji_Presentation}|\p{Extended_Pictographic}/gu;
+
+/** Lowercases an email (or email-or-phone) value and strips surrounding whitespace. */
+export function normalizeEmail(value: string): string {
+  return value.trim().toLowerCase();
+}

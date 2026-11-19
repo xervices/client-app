@@ -33,11 +33,6 @@ describe('register.schema', () => {
     expect(result.success).toBe(false);
   });
 
-  it('rejects an uppercase email address', () => {
-    const result = formSchema.safeParse({ ...validInput, email: 'Jane@Example.com' });
-    expect(result.success).toBe(false);
-  });
-
   it('rejects a password containing spaces', () => {
     const result = formSchema.safeParse({
       ...validInput,

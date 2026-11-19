@@ -19,7 +19,7 @@ import { AppleSigninButton } from '@/components/apple-signin-button';
 import { api } from '@/api';
 import { showErrorMessage } from '@/api/helpers';
 import { useAuthStore } from '@/store/auth-store';
-import { formatPhoneNumber, getDeviceInfo } from '@/lib/utils';
+import { formatPhoneNumber, getDeviceInfo, normalizeEmail } from '@/lib/utils';
 import { SheetManager } from 'react-native-actions-sheet';
 import { deviceName } from 'expo-device';
 import { formSchema } from '@/lib/login.schema';
@@ -54,6 +54,8 @@ export default function Screen() {
 
       value.deviceId = deviceInfo?.deviceId || '';
       value.deviceName = deviceInfo?.deviceName || '';
+
+      value.emailOrPhone = normalizeEmail(value.emailOrPhone);
 
       if (!value.emailOrPhone.includes('@')) {
         value.emailOrPhone = formatPhoneNumber(value.emailOrPhone);
@@ -108,7 +110,7 @@ export default function Screen() {
                 <Input
                   id="email"
                   value={field.state.value}
-                  onChangeText={field.handleChange}
+                  onChangeText={(text) => field.handleChange(normalizeEmail(text))}
                   placeholder="Enter your email"
                   hasError={!field.state.meta.isValid}
                   keyboardType="email-address"
