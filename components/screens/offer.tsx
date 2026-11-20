@@ -286,6 +286,7 @@ export function OfferScreen() {
                   serviceLong={offer?.serviceRequest?.serviceLongitude}
                   serviceRequestId={offer?.serviceRequestId}
                   offersLeft={2 - (offersMadeCount ? offersMadeCount : 0)}
+                  awaitingArtisan={offer.offeredBy === 'user'}
                 />
               );
             })}
@@ -312,6 +313,8 @@ interface OfferCardProps {
   artisanLat?: number | null | Record<string, never>;
   artisanLong?: number | null | Record<string, never>;
   offersLeft?: number;
+  /** The newest offer with this artisan is the customer's own counter, waiting on the artisan. */
+  awaitingArtisan?: boolean;
 }
 
 function OfferCard({
@@ -330,6 +333,7 @@ function OfferCard({
   serviceLat,
   serviceLong,
   offersLeft,
+  awaitingArtisan,
 }: OfferCardProps) {
   const sendCounterOffer = useMutation(api.createCounterOffer());
   const rejectOffer = useMutation(api.respondToOffer(id));
@@ -455,106 +459,116 @@ function OfferCard({
         )}
       </View>
 
-      <View>
-        <View className="flex flex-row gap-4">
-          <Button
-            isLoading={sendCounterOffer?.isPending || rejectOffer?.isPending}
-            disabled={sendCounterOffer?.isPending || rejectOffer?.isPending}
-            loadingIndicatorColor="#CC5600"
-            onPress={() => {
-              if (!offersLeft) {
-                rejectOffer?.mutate(
-                  {
-                    action: 'reject',
-                  },
-                  {
-                    onSuccess: () => {
-                      onRejectOfferCallback?.();
-                      showSuccessMessage('Rejected offer successfully.');
-                    },
-                    onError: (err) => {
-                      showErrorMessage(err.message);
-                    },
-                  }
-                );
-              } else {
-                SheetManager.show('counter-offer-sheet', {
-                  payload: {
-                    type: 'counter',
-                    amount: amount,
-                    name: name,
-                    profileImage: avatarUrl,
-                    onReject: () => {
-                      rejectOffer?.mutate(
-                        {
-                          action: 'reject',
-                        },
-                        {
-                          onSuccess: () => {
-                            onRejectOfferCallback?.();
-                            showSuccessMessage('Rejected offer successfully.');
-                          },
-                          onError: (err) => {
-                            showErrorMessage(err.message);
-                          },
-                        }
-                      );
-                    },
-                    onConfirm: (amount) => {
-                      sendCounterOffer.mutate(
-                        // @ts-ignore
-                        { amount, id },
-                        {
-                          onSuccess: () => {
-                            onCounterOfferCallback?.();
-                            showSuccessMessage('Counter offer sent successfully.');
-                          },
-                          onError: (err) => {
-                            showErrorMessage(err.message);
-                          },
-                        }
-                      );
-                    },
-                  },
-                });
-              }
-            }}
-            className="h-12 flex-1"
-            variant={'outline'}>
-            {!offersLeft ? 'Reject' : 'Counter'}
-          </Button>
-          <Button
-            disabled={sendCounterOffer?.isPending || rejectOffer?.isPending}
-            onPress={() => {
-              if (IS_BOOK_TAB) {
-                router.navigate({
-                  pathname: '/book/pro',
-                  params: {
-                    serviceId: serviceRequestId,
-                    artisanId: artisanId,
-                    offerId: id,
-                  },
-                });
-              } else {
-                router.navigate({
-                  pathname: '/pro',
-                  params: {
-                    serviceId: serviceRequestId,
-                    artisanId: artisanId,
-                    offerId: id,
-                  },
-                });
-              }
-            }}
-            className="h-12 flex-1">
-            Accept
-          </Button>
+      {awaitingArtisan ? (
+        // The server refuses to let the customer reject or counter their own pending counter,
+        // so don't offer buttons that can only fail - show that the ball is in the artisan's court.
+        <View className="rounded-[8px] bg-[#FFF4EA] p-3">
+          <Text className="text-center font-cabinet-medium text-xs text-[#522200]">
+            Waiting for {name || 'the pro'} to respond to your counter offer.
+          </Text>
         </View>
+      ) : (
+        <View>
+          <View className="flex flex-row gap-4">
+            <Button
+              isLoading={sendCounterOffer?.isPending || rejectOffer?.isPending}
+              disabled={sendCounterOffer?.isPending || rejectOffer?.isPending}
+              loadingIndicatorColor="#CC5600"
+              onPress={() => {
+                if (!offersLeft) {
+                  rejectOffer?.mutate(
+                    {
+                      action: 'reject',
+                    },
+                    {
+                      onSuccess: () => {
+                        onRejectOfferCallback?.();
+                        showSuccessMessage('Rejected offer successfully.');
+                      },
+                      onError: (err) => {
+                        showErrorMessage(err.message);
+                      },
+                    }
+                  );
+                } else {
+                  SheetManager.show('counter-offer-sheet', {
+                    payload: {
+                      type: 'counter',
+                      amount: amount,
+                      name: name,
+                      profileImage: avatarUrl,
+                      onReject: () => {
+                        rejectOffer?.mutate(
+                          {
+                            action: 'reject',
+                          },
+                          {
+                            onSuccess: () => {
+                              onRejectOfferCallback?.();
+                              showSuccessMessage('Rejected offer successfully.');
+                            },
+                            onError: (err) => {
+                              showErrorMessage(err.message);
+                            },
+                          }
+                        );
+                      },
+                      onConfirm: (amount) => {
+                        sendCounterOffer.mutate(
+                          // @ts-ignore
+                          { amount, id },
+                          {
+                            onSuccess: () => {
+                              onCounterOfferCallback?.();
+                              showSuccessMessage('Counter offer sent successfully.');
+                            },
+                            onError: (err) => {
+                              showErrorMessage(err.message);
+                            },
+                          }
+                        );
+                      },
+                    },
+                  });
+                }
+              }}
+              className="h-12 flex-1"
+              variant={'outline'}>
+              {!offersLeft ? 'Reject' : 'Counter'}
+            </Button>
+            <Button
+              disabled={sendCounterOffer?.isPending || rejectOffer?.isPending}
+              onPress={() => {
+                if (IS_BOOK_TAB) {
+                  router.navigate({
+                    pathname: '/book/pro',
+                    params: {
+                      serviceId: serviceRequestId,
+                      artisanId: artisanId,
+                      offerId: id,
+                    },
+                  });
+                } else {
+                  router.navigate({
+                    pathname: '/pro',
+                    params: {
+                      serviceId: serviceRequestId,
+                      artisanId: artisanId,
+                      offerId: id,
+                    },
+                  });
+                }
+              }}
+              className="h-12 flex-1">
+              Accept
+            </Button>
+          </View>
 
-        <Text className="mt-2 text-center font-cabinet-medium text-xs text-primary">
-          You have {offersLeft ? offersLeft : 0} counter offers left.
-        </Text>
-      </View>
+          <Text className="mt-2 text-center font-cabinet-medium text-xs text-primary">
+            You have {offersLeft ? offersLeft : 0} counter offers left.
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
