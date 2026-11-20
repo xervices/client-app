@@ -52,3 +52,4 @@ expo-env.d.ts
 # @end expo-cli
 .env.local
 .env
+xervices-480909-*.json
