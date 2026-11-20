@@ -60,8 +60,14 @@ export default function Screen() {
     );
   }
 
+  // 'pending' = offer accepted but checkout not finished. Listed here so the client can
+  // get back to payment if they dropped out of checkout.
   const inProgressJobs = data?.filter(
-    (i) => i.status === 'paid' || i.status === 'in_progress' || i.status === 'completed'
+    (i) =>
+      i.status === 'pending' ||
+      i.status === 'paid' ||
+      i.status === 'in_progress' ||
+      i.status === 'completed'
   );
   const completedJobs = data?.filter((i) => i.status === 'approved');
 
@@ -142,7 +148,9 @@ export default function Screen() {
                           </View>
 
                           <View className="flex h-[26px] items-center justify-center rounded-full bg-[#FFF4EA] px-3">
-                            <Text className="text-sm text-primary">In Progress</Text>
+                            <Text className="text-sm text-primary">
+                              {item?.status === 'pending' ? 'Awaiting Payment' : 'In Progress'}
+                            </Text>
                           </View>
                         </View>
 
@@ -171,17 +179,30 @@ export default function Screen() {
                           </View>
 
                           <Pressable
-                            onPress={() =>
+                            onPress={() => {
+                              if (item?.status === 'pending') {
+                                router.navigate({
+                                  pathname: '/jobs/confirm',
+                                  params: {
+                                    id: item?.id,
+                                    serviceRequestId: item?.serviceRequestId,
+                                    artisanId: item?.artisanId,
+                                    offerId: item?.acceptedOfferId,
+                                  },
+                                });
+                                return;
+                              }
+
                               router.navigate({
                                 pathname: '/ongoing',
                                 params: {
                                   id: item?.id,
                                 },
-                              })
-                            }
+                              });
+                            }}
                             className="flex flex-row items-center gap-1">
                             <Text className="font-cabinet-bold text-sm text-primary">
-                              Track activities
+                              {item?.status === 'pending' ? 'Complete payment' : 'Track activities'}
                             </Text>
 
                             <ArrowUpRight size={14} color={'#FE6A00'} />

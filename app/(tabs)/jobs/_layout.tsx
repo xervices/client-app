@@ -51,6 +51,22 @@ export default function Layout() {
           title: 'Dispute',
         }}
       />
+
+      <Stack.Screen
+        name="confirm"
+        options={{
+          headerShown: false,
+          title: 'Complete Payment',
+        }}
+      />
+
+      <Stack.Screen
+        name="cancellation-policy"
+        options={{
+          headerShown: false,
+          title: 'Cancellation Policy',
+        }}
+      />
     </Stack>
   );
 }

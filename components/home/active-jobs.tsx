@@ -501,7 +501,7 @@ function PendingJobCard({
       }}
       className="flex gap-4 rounded-[8px] bg-white p-4">
       <View className="flex flex-row items-center justify-between">
-        <Text className="flex-1 font-cabinet-bold text-primary">Pending request</Text>
+        <Text className="flex-1 font-cabinet-bold text-primary">Payment pending</Text>
 
         {isPending ? (
           <LoadingIndicator size={16} />
@@ -535,17 +535,19 @@ function PendingJobCard({
       </View>
 
       <Text className="text-sm text-[#737381]">
-        Your previous search for "{category}" was not complete. Click "continue to payment" to
-        complete your request.
+        You accepted an offer for "{category}" but payment wasn't completed. Click "continue to
+        payment" to confirm your booking.
       </Text>
 
       <View className="flex flex-row items-center justify-end">
         <Pressable
           onPress={() => {
+            // The offer is already accepted, so go straight to checkout for this job.
             router.navigate({
-              pathname: '/pro',
+              pathname: '/confirm',
               params: {
-                serviceId,
+                id,
+                serviceRequestId: serviceId,
                 artisanId,
                 offerId,
               },

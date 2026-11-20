@@ -40,6 +40,7 @@ export function ConfirmScreen() {
   const pathname = usePathname();
 
   const IS_BOOK_TAB = pathname.includes('book');
+  const IS_JOBS_TAB = pathname.includes('jobs');
 
   const [offer, referrals] = useQueries({
     queries: [api.getOfferDetails(offerId), api.getMyPromotions()],
@@ -606,6 +607,8 @@ export function ConfirmScreen() {
               onPress={() => {
                 if (IS_BOOK_TAB) {
                   router.navigate('/book/cancellation-policy');
+                } else if (IS_JOBS_TAB) {
+                  router.navigate('/jobs/cancellation-policy');
                 } else {
                   router.navigate('/cancellation-policy');
                 }
